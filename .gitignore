@@ -68,3 +68,12 @@ build/
 ## OS Specific
 .DS_Store
 Thumbs.db
+
+## Latex
+*.ox
+*.dvi
+*.fpd_latexmk
+*.fls
+*.log
+*.toc
+*.synctex.gz
