@@ -70,9 +70,9 @@ build/
 Thumbs.db
 
 ## Latex
-*.ox
+*.aux
 *.dvi
-*.fpd_latexmk
+*.fdb_latexmk
 *.fls
 *.log
 *.toc

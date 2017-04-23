@@ -1,0 +1,55 @@
+\documentclass{report}
+\usepackage[francais ]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\title{Cahier des charges}
+\author{M. \textsc{Friedli}, A. \textsc{Gillioz}, J. \textsc{Guerne}\\
+He-Arc Ingénieurie\\
+2000 Neuchatel}
+\date{\today{}}
+\begin{document}
+\maketitle{}
+\chapter{Introduction}
+Le but de ce projet est de créer une application multi-platforme en java. Dans ce projet nous allons créer des minis jeux, jouable sur différentes plateformes et en réseau. Les minis jeux implémenté ne seront pas
+très complexe, car le véritable objectif de ce projet est de faire communiqué plusieurs clients via un serveur. L'architecture client/serveur que nous allons utilisé sera décrite dans ce document dans la partie ......
+\chapter{Objectifs}
+Cette partie décrit les principaux objectifs que nous nous sommes fixés.
+\section{Objectifs}\label{objectifs}
+\begin{itemize}
+	\item Faire communiquer un client avec un serveur.
+	\item Le serveur renvera ensuite les données demandé par le client.
+	\item Créer des mini-jeux.
+	\item Faire communiquer les clients entre eux via le serveur.
+	\item Sérializer les données des jeux pour permettre le jeu en ligne.
+	\item Le serveur fera la synchronisation des clients.
+\end{itemize}
+\section{Objectifs bonus}\label{objectifs-bonus}
+\begin{itemize}
+	\item Rechercher automatiquement les joueurs connectés à l'application.
+\end{itemize}
+\chapter{Description du projet}
+Ce chapitre, présente les différentes phases du programme.
+\section{Coté serveur}
+Le serveur recevra les données qui lui seront envoyées par le client. Il les traitera, puis les renvera aux différents client qui joue ensemble. La partie traitement que fera le serveur
+sera la partie \og model \fg{} de notre application.
+\section{Coté client}
+Le joueur poura choisir à quel mini-jeu il veut jouer.
+\chapter{Fonctionnlités}
+\section{Minimum Viable Product (MVP)}
+\subsection{Minis-jeux}
+Nous implémenterons, dans l’ordre, les jeux suivants :
+\begin{itemize}
+	\item Le morpion
+    \item La bataille navale
+    \item Jeu de dames
+\end{itemize}
+\subsection{Plateformes}
+Notre projet devra être utilisable sur, au moins, les plateformes suivantes :
+\begin{itemize}
+	\item PC (Mac,Window et linux)
+    \item Android
+    \item IOS
+    \item HTML5
+\end{itemize}
+\end{document}
