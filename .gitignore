@@ -69,6 +69,13 @@ build/
 .DS_Store
 Thumbs.db
 
+server/nbproject/private/
+server/build/
+server/nbbuild/
+sever/dist/
+server/nbdist/
+server.nb-gradle/
+
 ## Latex
 *.aux
 *.dvi
@@ -77,3 +84,4 @@ Thumbs.db
 *.log
 *.toc
 *.synctex.gz
+>>>>>>> origin/master
