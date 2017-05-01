@@ -1,18 +1,15 @@
 package ch.arc.ete;
 
-import com.badlogic.gdx.Screen;
-import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Client;
 
 /**
  * Created by jonathan.guerne on 01.05.2017.
  */
 
-public class TicTacToe implements Screen {
+public class Draughts extends GameScreen {
 
-    Connection client;
-
-    public TicTacToe(Connection client) {
-        this.client = client;
+    public Draughts(Client client) {
+        super(client);
     }
 
     @Override

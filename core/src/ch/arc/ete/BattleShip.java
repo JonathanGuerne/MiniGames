@@ -1,0 +1,48 @@
+package ch.arc.ete;
+
+import com.esotericsoftware.kryonet.Client;
+
+/**
+ * Created by jonathan.guerne on 01.05.2017.
+ */
+
+public class BattleShip extends GameScreen {
+    public BattleShip(Client client) {
+        super(client);
+    }
+
+    @Override
+    public void show() {
+
+    }
+
+    @Override
+    public void render(float delta) {
+
+    }
+
+    @Override
+    public void resize(int width, int height) {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
+    @Override
+    public void dispose() {
+
+    }
+}
