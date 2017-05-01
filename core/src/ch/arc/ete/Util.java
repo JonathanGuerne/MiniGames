@@ -16,4 +16,8 @@ public class Util {
         parameter.size = dp;
         return ftfg.generateFont(parameter);
     }
+
+    public static float getRatio(){
+        return Gdx.graphics.getWidth()/1024;
+    }
 }
