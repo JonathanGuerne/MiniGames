@@ -11,10 +11,10 @@ He-Arc Ingénierie\\
 \begin{document}
 \maketitle{}
 \chapter{Introduction}
-Le but de ce projet est de créer une application multi-platforme en java. Dans ce projet nous allons créer des minis jeux, jouable sur différentes plateformes et en réseau. Les minis jeux implémenté
-ne seront pas très complexe, car le véritable objectif de ce projet est de faire communiqué plusieurs clients via un serveur.\par
-Nous listons les objectifs que nous nous sommes fixé dans la seconde partie. L'architecture client/serveur que nous allons utilisé sera décrite dans la partie \ref{desciption-projet} de ce document.
-Et la dernière partie du document sera consacré aux fonctionnalités proposées par notre application.
+Le but de ce projet est de créer une application multiplateforme en java. Dans ce projet nous allons créer des minis jeux, jouables sur différentes plateformes et en réseau. Les minis jeux implémentés
+ne seront pas très complexes, car le véritable objectif de ce projet est de faire communiquer plusieurs clients via un serveur.\par
+Nous listons les objectifs que nous nous sommes fixés dans la seconde partie. L'architecture client/serveur que nous allons utiliser sera décrite dans la partie \ref{desciption-projet} de ce document.
+Et la dernière partie du document sera consacrée aux fonctionnalités proposées par notre application.
 \chapter{Objectifs}
 Cette partie décrit les principaux objectifs que nous nous sommes fixés.
 \section{Objectifs}\label{objectifs}
@@ -23,31 +23,32 @@ Cette partie décrit les principaux objectifs que nous nous sommes fixés.
 	\item Le serveur renvera ensuite les données demandé par le client.
 	\item Créer des mini-jeux.
 	\item Faire communiquer les clients entre eux via le serveur.
-	\item Sérializer les données des jeux pour permettre le jeu en ligne.
+	\item Sérialiser les données des jeux pour permettre le jeu en ligne.
 	\item Le serveur fera la synchronisation des clients.
 \end{itemize}
-\section{Objectifs bonus}\label{objectifs-bonus}
+\section{Objectifs secondaires}\label{objectifs-secondaires}
 \begin{itemize}
 	\item Rechercher automatiquement les joueurs connectés à l'application.
 \end{itemize}
 \chapter{Description du projet}\label{desciption-projet}
-Ce chapitre présente les différentes phases du programme. En expliquant l'architecture client/serveur que nous allons utiliser. La figure \ref{schema-architecture} montre un schéma de notre
+Ce chapitre présente les différentes phases du programme, en expliquant l'architecture client/serveur que nous allons utiliser. La figure \ref{schema-architecture} montre un schéma de notre
 structure réseau.
 \section{Coté serveur}
-Le serveur recevra les données qui lui seront envoyées par le client. Il les traitera, puis les renvera aux différents clients qui joue ensemble. La partie traitement que fera le serveur
+Le serveur recevra les données qui lui seront envoyées par le client. Il les traitera, puis les renverra aux différents clients qui jouent ensemble. La partie traitement que fera le serveur
 sera la partie \og model \fg{} de notre application.
-\section{Coté client}
-Le launcher client de notre application va servir a afficher les jeux et le menu, c'est la partie \og view \fg{} de notre programme. Ce launcher nous servira aussi de \og controller \fg{}, pour gérer
+\section{Côté client}
+Le launcher client de notre application va servir à afficher les jeux et le menu, c'est la partie \og view \fg{} de notre programme. Ce launcher nous servira aussi de \og controller \fg{}, pour gérer
 les actions des joueurs.\par
 Le joueur poura choisir à quel mini-jeu il veut jouer, depuis sa propre plateforme (ex: Desktop, Android, Web). Une fois le jeu choisi, il ouvrira une connexion de jeu avec le serveur et un autre joueur.
-Une fois connecté, le joueur pourra faire des actions qui seront envoyé au serveur. Le serveur traitera les données reçus et les renvera. Quand le client reçoit des informations du serveur, il met à jour
+Une fois connecté, le joueur pourra faire des actions qui seront envoyées au serveur. Le serveur traitera les données reçues et les renverra. \par
+Quand le client reçoit des informations du serveur, il met à jour
 sa partie graphique.
 \begin{figure}[ht]
 	\centering\includegraphics[width=12cm]{maquette_base}
 	\caption{Schéma de l'architecture client/serveur}
 	\label{schema-architecture}
 \end{figure}
-\chapter{Fonctionnlités}
+\chapter{Fonctionnalités}
 \section{Minis-jeux}
 Nous implémenterons, dans l’ordre, les jeux suivants :
 \begin{itemize}
@@ -62,7 +63,7 @@ Notre projet devra être utilisable sur, au moins, les plateformes suivantes :
     \item Android
 \end{itemize}
 \section{Avancées}
-Les plateformes ci-dessous seront plus dures a mettre en place. Nous les plaçons donc dans cette section avancé, et nous les implémenterons si nous avons le temps.
+Les plateformes ci-dessous seront plus dures à mettre en place. Nous les plaçons donc dans cette section \og avancées \fg{}, et nous les implémenterons si nous avons le temps.
 \begin{itemize}
     \item IOS
     \item HTML5
