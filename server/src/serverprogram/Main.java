@@ -114,6 +114,11 @@ public class Main {
             public void disconnected(Connection connection) {
 
                 System.out.println("Client Leaving :ID : " + connection.getID());
+                for(int i=0;i<clientIDWaitingPerGame.length;i++){
+                    if(clientIDWaitingPerGame[i] == connection.getID()){
+                        clientIDWaitingPerGame[i] = -1;
+                    }
+                }
 
             }
 
