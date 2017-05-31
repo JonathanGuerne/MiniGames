@@ -23,6 +23,16 @@ public class Draughts extends GameScreen {
     }
 
     @Override
+    public void display() {
+
+    }
+
+    @Override
+    public void update() {
+
+    }
+
+    @Override
     public void resize(int width, int height) {
 
     }

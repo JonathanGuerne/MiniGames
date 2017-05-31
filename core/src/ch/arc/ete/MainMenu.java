@@ -1,14 +1,25 @@
 package ch.arc.ete;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -22,7 +33,7 @@ import packets.MiniGamePacket;
 import packets.Packet;
 
 
-public class MainMenu implements Screen, InputProcessor {
+public class MainMenu implements Screen {
     SpriteBatch batch;
     private BitmapFont font;
 
@@ -32,7 +43,13 @@ public class MainMenu implements Screen, InputProcessor {
 
     String text = "the answer is : ?";
 
-    public MainMenu(Client client) {
+    Table tableMenu;
+
+    Stage stage;
+
+    TextButton btnMoripon;
+
+    public MainMenu(final Client client) {
         this.client = client;
     }
 
@@ -65,7 +82,35 @@ public class MainMenu implements Screen, InputProcessor {
         font = Util.createFont(72);
         font.setColor(Color.RED);
 
-        Gdx.input.setInputProcessor(this);
+        tableMenu = new Table();
+        stage = new Stage();
+
+        tableMenu.setPosition(0,0);
+        tableMenu.setHeight(Gdx.graphics.getHeight());
+        tableMenu.setWidth(Gdx.graphics.getWidth());
+
+        tableMenu.center();
+
+        Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+
+        btnMoripon = new TextButton("Jouer au morpion",skin);
+
+        btnMoripon.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new Morpion(client));
+            }
+        });
+
+        tableMenu.add(new Label("Menu Principal",skin));
+        tableMenu.row();
+        tableMenu.add(btnMoripon);
+
+        stage.addActor(tableMenu);
+
+        ((OrthographicCamera)stage.getCamera()).zoom = Util.getRatio()/2;
+
+        Gdx.input.setInputProcessor(stage);
 
     }
 
@@ -73,9 +118,7 @@ public class MainMenu implements Screen, InputProcessor {
     public void render(float delta) {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
-        font.draw(batch, text, 100, 100);
-        batch.end();
+        stage.draw();
     }
 
     @Override
@@ -102,49 +145,5 @@ public class MainMenu implements Screen, InputProcessor {
     public void dispose() {
         batch.dispose();
         font.dispose();
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        System.out.println("touch");
-        MiniGamePacket mp = new MiniGamePacket();
-        mp.answer = client.getID();
-        client.sendUDP(mp);
-        return true;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
     }
 }
