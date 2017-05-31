@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 import packets.LoginConfirmPacket;
 import packets.LoginPacket;
 import packets.MiniGamePacket;
+import packets.MorpionStartConfirmPacket;
+import packets.MorpionStartPacket;
 import packets.Packet;
 
 /**
@@ -20,15 +22,22 @@ public class Main {
     static int tcp = 23900, udp = 23901;
 
     public static HashMap<Integer, Connection> clients = new HashMap<Integer, Connection>();
+    
+    public static int clientIDWaitingPerGame[] = {-1,-1};
 
     public static void main(String args[]) throws IOException {
+       
+        
+        
         Server server = new Server();
 
         server.getKryo().register(Packet.class, 100);
         server.getKryo().register(MiniGamePacket.class, 200);
-        server.getKryo().register(LoginPacket.class,300);
-        server.getKryo().register(LoginConfirmPacket.class,350);
-
+        server.getKryo().register(LoginPacket.class, 300);
+        server.getKryo().register(LoginConfirmPacket.class, 350);
+        server.getKryo().register(MorpionStartPacket.class, 1001);
+        server.getKryo().register(MorpionStartConfirmPacket.class, 1010);
+        
         server.start();
 
         server.bind(tcp, udp);
@@ -45,10 +54,25 @@ public class Main {
                         System.out.println("Client à envoyé : " + miniGamePacket.answer);
 
                     }
-                    if(p instanceof LoginPacket){
+                    if (p instanceof LoginPacket) {
                         LoginConfirmPacket lcp = new LoginConfirmPacket();
                         lcp.msg = "connected";
                         server.sendToTCP(connection.getID(), lcp);
+                    }
+                    if (p instanceof MorpionStartPacket) {
+                       if(clientIDWaitingPerGame[0] == -1){
+                           clientIDWaitingPerGame[0] = connection.getID();
+                           System.out.println("change user waiting id to "+connection.getID());
+                       }
+                       else{
+                           MorpionStartConfirmPacket mscp = new MorpionStartConfirmPacket();
+                           mscp.idPlayer1 = clientIDWaitingPerGame[0];
+                           mscp.idPlaer2 = connection.getID();
+                           clientIDWaitingPerGame[0] = -1;
+                           System.out.println(mscp.idPlayer1+" and "+mscp.idPlaer2+" will play");
+                           server.sendToTCP(mscp.idPlayer1, mscp);
+                           server.sendToTCP(mscp.idPlaer2,mscp);
+                       }
                     }
 //                        if (object instanceof Packet1Connect) {
 //                            Packet1Connect p1 = (Packet1Connect) object;

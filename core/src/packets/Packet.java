@@ -1,5 +1,7 @@
 package packets;
 
+import java.io.Serializable;
+
 /**
  * @author Jonathan Guerne
  * @date 22 juin 2015

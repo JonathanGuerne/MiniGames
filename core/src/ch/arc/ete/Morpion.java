@@ -8,8 +8,14 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 
 import java.util.HashMap;
+
+import packets.LoginConfirmPacket;
+import packets.MorpionStartConfirmPacket;
+import packets.MorpionStartPacket;
+import packets.Packet;
 
 /**
  * Created by jonathan.guerne on 01.05.2017.
@@ -23,6 +29,40 @@ public class Morpion extends GameScreen implements InputProcessor {
 
     public Morpion(Client client) {
         super(client);
+
+    }
+
+    @Override
+    public void show() {
+        shapeRenderer = new ShapeRenderer();
+        w = Gdx.graphics.getWidth() / 3;
+        h = Gdx.graphics.getHeight() / 3;
+        shapeRenderer.setColor(Color.BLACK);
+
+
+        tabGame = new HashMap<Integer, char[]>();
+
+        tabGame.put(0,new char[9]);
+
+        Gdx.input.setInputProcessor(this);
+
+        MorpionStartPacket msp = new MorpionStartPacket();
+        msp.idPlayer = localPlayerId;
+
+        client.sendTCP(msp);
+
+        client.addListener(new Listener(){
+            @Override
+            public void received(Connection connection, Object o) {
+                if(o instanceof Packet){
+                    if(o instanceof MorpionStartConfirmPacket){
+                        foundOpponent = true;
+                    }
+                }
+            }
+        });
+
+
     }
 
     @Override
@@ -58,21 +98,7 @@ public class Morpion extends GameScreen implements InputProcessor {
         System.out.println("update stuff");
     }
 
-    @Override
-    public void show() {
-        shapeRenderer = new ShapeRenderer();
-        w = Gdx.graphics.getWidth() / 3;
-        h = Gdx.graphics.getHeight() / 3;
-        shapeRenderer.setColor(Color.BLACK);
 
-
-        tabGame = new HashMap<Integer, char[]>();
-
-        tabGame.put(0,new char[9]);
-
-        Gdx.input.setInputProcessor(this);
-
-    }
 
     @Override
     public void resize(int width, int height) {
