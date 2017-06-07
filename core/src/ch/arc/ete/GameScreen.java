@@ -27,11 +27,10 @@ public abstract class GameScreen implements Screen {
 
     protected int tabSize;
 
-    protected int currentPlayerId;
+    protected int currentPlayerID;
 
-    protected int localPlayerId;
-
-    protected ArrayList<Player> listPlayer;
+    protected Player localPlayer;
+    protected Player opponentPlayer;
 
     boolean foundOpponent;
 
@@ -42,7 +41,7 @@ public abstract class GameScreen implements Screen {
 
     public GameScreen(Client client) {
         this.client = client;
-        this.localPlayerId = client.getID();
+        this.localPlayer = new Player(client.getID(),"Bob");
         this.foundOpponent = false;
 
         batch = new SpriteBatch();

@@ -13,6 +13,8 @@ import com.esotericsoftware.kryonet.Listener;
 import java.util.HashMap;
 
 import packets.LoginConfirmPacket;
+import packets.MorpionInGameConfirmPacket;
+import packets.MorpionInGamePacket;
 import packets.MorpionStartConfirmPacket;
 import packets.MorpionStartPacket;
 import packets.Packet;
@@ -25,6 +27,9 @@ public class Morpion extends GameScreen implements InputProcessor {
 
     ShapeRenderer shapeRenderer;
     float w, h;
+    char charUser;
+
+    int touchIndex = -1;
 
 
     public Morpion(Client client) {
@@ -47,7 +52,7 @@ public class Morpion extends GameScreen implements InputProcessor {
         Gdx.input.setInputProcessor(this);
 
         MorpionStartPacket msp = new MorpionStartPacket();
-        msp.idPlayer = localPlayerId;
+        msp.idPlayer = localPlayer.getId();
 
         client.sendTCP(msp);
 
@@ -56,8 +61,26 @@ public class Morpion extends GameScreen implements InputProcessor {
             public void received(Connection connection, Object o) {
                 if(o instanceof Packet){
                     if(o instanceof MorpionStartConfirmPacket){
+                        MorpionStartConfirmPacket mscp = (MorpionStartConfirmPacket) o;
                         foundOpponent = true;
+                        currentPlayerID = mscp.idPlayer1;
+
+                        if(localPlayer.getId() == mscp.idPlayer1){
+                            charUser = mscp.charPlayer1;
+                            opponentPlayer = new Player(mscp.idPlayer2,"Jules");
+                        }
+                        else{
+                            charUser = mscp.charPlayer2;
+                            opponentPlayer = new Player(mscp.idPlayer1,"Jules");
+                        }
+
                     }
+                }
+                if(o instanceof MorpionInGameConfirmPacket){
+                    MorpionInGameConfirmPacket migcp = (MorpionInGameConfirmPacket)o;
+                    touchIndex = -1;
+                    tabGame.put(0,migcp.tabGame);
+                    currentPlayerID = migcp.currentPlayerID;
                 }
             }
         });
@@ -81,6 +104,17 @@ public class Morpion extends GameScreen implements InputProcessor {
             }
         }
         shapeRenderer.end();
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        for (int i = 0; i < tabGame.get(0).length; i++) {
+            if (tabGame.get(0)[i] == 'o') {
+                int x = i%3;
+                int y = i/3;
+                shapeRenderer.rect(x*w, y*h,w,h);
+            }
+        }
+        shapeRenderer.end();
+
         shapeRenderer.setColor(Color.BLACK);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -95,7 +129,18 @@ public class Morpion extends GameScreen implements InputProcessor {
 
     @Override
     public void update() {
-        System.out.println("update stuff");
+       if(currentPlayerID == localPlayer.getId()){
+           if(touchIndex != -1){
+               tabGame.get(0)[touchIndex] = charUser;
+               MorpionInGamePacket migp = new MorpionInGamePacket();
+               migp.currentPlayerChar = charUser;
+               migp.currentPlayerID = localPlayer.getId();
+               migp.opponentPlayerID = opponentPlayer.getId();
+               migp.tabGame = tabGame.get(0);
+
+               client.sendTCP(migp);
+           }
+       }
     }
 
 
@@ -143,12 +188,9 @@ public class Morpion extends GameScreen implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-        System.out.println("screen x : " + screenX + " screen y : " + screenY + "");
         int x = (int)(screenX/w);
         int y = (3*(2-(int)(screenY/h)));
-        int index = x+y;
-        System.out.println("index : "+index);
-        tabGame.get(0)[index] = 'x';
+        touchIndex = x+y;
         return false;
     }
 

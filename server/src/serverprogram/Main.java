@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 import packets.LoginConfirmPacket;
 import packets.LoginPacket;
 import packets.MiniGamePacket;
+import packets.MorpionInGameConfirmPacket;
+import packets.MorpionInGamePacket;
 import packets.MorpionStartConfirmPacket;
 import packets.MorpionStartPacket;
 import packets.Packet;
@@ -32,11 +34,14 @@ public class Main {
         Server server = new Server();
 
         server.getKryo().register(Packet.class, 100);
+        server.getKryo().register(char[].class,110);
         server.getKryo().register(MiniGamePacket.class, 200);
         server.getKryo().register(LoginPacket.class, 300);
         server.getKryo().register(LoginConfirmPacket.class, 350);
         server.getKryo().register(MorpionStartPacket.class, 1001);
         server.getKryo().register(MorpionStartConfirmPacket.class, 1010);
+        server.getKryo().register(MorpionInGamePacket.class,1020);
+        server.getKryo().register(MorpionInGameConfirmPacket.class,1030);
         
         server.start();
 
@@ -67,46 +72,23 @@ public class Main {
                        else{
                            MorpionStartConfirmPacket mscp = new MorpionStartConfirmPacket();
                            mscp.idPlayer1 = clientIDWaitingPerGame[0];
-                           mscp.idPlaer2 = connection.getID();
+                           mscp.idPlayer2 = connection.getID();
                            clientIDWaitingPerGame[0] = -1;
-                           System.out.println(mscp.idPlayer1+" and "+mscp.idPlaer2+" will play");
+                           System.out.println(mscp.idPlayer1+" and "+mscp.idPlayer2+" will play");
                            server.sendToTCP(mscp.idPlayer1, mscp);
-                           server.sendToTCP(mscp.idPlaer2,mscp);
+                           server.sendToTCP(mscp.idPlayer2,mscp);
                        }
                     }
-//                        if (object instanceof Packet1Connect) {
-//                            Packet1Connect p1 = (Packet1Connect) object;
-//                            clients.put(connection.getID(), connection);
-//
-//                            Packet1_5ConnectConfirm p1_5 = new Packet1_5ConnectConfirm();
-//                            p1_5.ID = connection.getID();
-//
-//                            server.sendToTCP(connection.getID(), p1_5);
-//                            
-//                            
-//                            Packet2ClientConnected p2 = new Packet2ClientConnected();
-//                            p2.clientName = p1.username;
-//                            server.sendToAllExceptTCP(connection.getID(), p2);
-//                            Packet5ListUsers p5 = new Packet5ListUsers();
-//                            for (Entry<Integer, Connection> entry : clients.entrySet()) {
-//                                int key = entry.getKey();
-//                                p5.users.add(clients_name.get(key));
-//                            }
-//
-//                            server.sendToAllTCP(p5);
-//                        } else if (object instanceof Packet3ClientDisconnect) {
-//                            Packet3ClientDisconnect p3 = (Packet3ClientDisconnect) object;
-//                            clients.remove(p3.ClientName);
-//                            server.sendToAllExceptTCP(clients.get(p3.ClientName).getID(), p3);
-//                        } else if (object instanceof Packet4Chat) {
-//                            Packet4Chat p4 = (Packet4Chat) object;
-//                            server.sendToAllTCP(p4);
-//                        }
-//                    } else {
-////                        Packet6Error p6 = new Packet6Error();
-////                        p6.erreorMessage = "Mauvaise mise à jour";
-////                        server.sendToTCP(connection.getID(), p6);
-
+                    if(p instanceof MorpionInGamePacket){
+                        MorpionInGamePacket migp = (MorpionInGamePacket) p;
+                        MorpionInGameConfirmPacket migcp = new MorpionInGameConfirmPacket();
+                        migcp.tabGame = migp.tabGame;
+                        migcp.currentPlayerID = migp.opponentPlayerID;
+                        
+                        server.sendToTCP(migp.currentPlayerID,migcp);
+                        server.sendToTCP(migp.opponentPlayerID,migcp);
+                        
+                    }
                 }
             }
 
