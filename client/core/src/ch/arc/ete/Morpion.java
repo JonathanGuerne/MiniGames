@@ -130,7 +130,8 @@ public class Morpion extends GameScreen implements InputProcessor {
     @Override
     public void update() {
        if(currentPlayerID == localPlayer.getId()){
-           if(touchIndex != -1){
+           //if touchIndex is a value >= 0 and tab[touchIndex] is null
+           if(touchIndex != -1 && tabGame.get(0)[touchIndex] == '\0'){
                tabGame.get(0)[touchIndex] = charUser;
                MorpionInGamePacket migp = new MorpionInGamePacket();
                migp.currentPlayerChar = charUser;
