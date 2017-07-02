@@ -5,6 +5,7 @@ package packets;
  */
 
 public class MorpionStartConfirmPacket extends Packet{
+    public int gameId;
     public int idPlayer1;
     public char charPlayer1 = 'x';
     public int idPlayer2;

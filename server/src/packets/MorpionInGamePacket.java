@@ -9,4 +9,5 @@ public class MorpionInGamePacket extends Packet {
     public int opponentPlayerID;
     public char currentPlayerChar;
     public char[] tabGame;
+    public int gameId;
 }

@@ -5,6 +5,7 @@ import com.esotericsoftware.kryonet.Client;
 import packets.LoginConfirmPacket;
 import packets.LoginPacket;
 import packets.MiniGamePacket;
+import packets.MorpionEndGamePacket;
 import packets.MorpionInGameConfirmPacket;
 import packets.MorpionInGamePacket;
 import packets.MorpionStartConfirmPacket;
@@ -28,6 +29,7 @@ public class ClientBuilder {
         client.getKryo().register(MorpionStartConfirmPacket.class,1010);
         client.getKryo().register(MorpionInGamePacket.class,1020);
         client.getKryo().register(MorpionInGameConfirmPacket.class,1030);
+        client.getKryo().register(MorpionEndGamePacket.class,1050);
 
         return client;
     }

@@ -32,7 +32,10 @@ public abstract class GameScreen implements Screen {
     protected Player localPlayer;
     protected Player opponentPlayer;
 
+    protected int gameId;
+
     boolean foundOpponent;
+    boolean gameOver;
 
     SpriteBatch batch;
     GlyphLayout layout;
@@ -48,7 +51,8 @@ public abstract class GameScreen implements Screen {
         font = Util.createFont(48);
         layout = new GlyphLayout();
         final String text = "Waiting for an other player...";
-        layout.setText(font, text, Color.BLACK, Gdx.graphics.getWidth(), Align.center, true);
+        setCenterText(text);
+        gameOver = false;
     }
 
     @Override
@@ -72,5 +76,9 @@ public abstract class GameScreen implements Screen {
     public abstract void display();
 
     public abstract void update();
+
+    public void setCenterText(String text){
+        layout.setText(font, text, Color.BLACK, Gdx.graphics.getWidth(), Align.center, true);
+    }
 
 }

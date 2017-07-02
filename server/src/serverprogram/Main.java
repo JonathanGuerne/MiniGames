@@ -4,12 +4,14 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import packets.LoginConfirmPacket;
 import packets.LoginPacket;
 import packets.MiniGamePacket;
+import packets.MorpionEndGamePacket;
 import packets.MorpionInGameConfirmPacket;
 import packets.MorpionInGamePacket;
 import packets.MorpionStartConfirmPacket;
@@ -27,6 +29,10 @@ public class Main {
     
     public static int clientIDWaitingPerGame[] = {-1,-1};
 
+    static ArrayList<Game> listGames = new ArrayList<>();
+
+    private static int currentGameId = 1;
+
     public static void main(String args[]) throws IOException {
        
         
@@ -42,7 +48,8 @@ public class Main {
         server.getKryo().register(MorpionStartConfirmPacket.class, 1010);
         server.getKryo().register(MorpionInGamePacket.class,1020);
         server.getKryo().register(MorpionInGameConfirmPacket.class,1030);
-        
+        server.getKryo().register(MorpionEndGamePacket.class,1050);
+
         server.start();
 
         server.bind(tcp, udp);
@@ -64,6 +71,7 @@ public class Main {
                         lcp.msg = "connected";
                         server.sendToTCP(connection.getID(), lcp);
                     }
+                    //BEGIN MORPION
                     if (p instanceof MorpionStartPacket) {
                        if(clientIDWaitingPerGame[0] == -1){
                            clientIDWaitingPerGame[0] = connection.getID();
@@ -75,20 +83,63 @@ public class Main {
                            mscp.idPlayer2 = connection.getID();
                            clientIDWaitingPerGame[0] = -1;
                            System.out.println(mscp.idPlayer1+" and "+mscp.idPlayer2+" will play");
+
+                           Game morpion =new Game(GameType.MORPION,mscp.idPlayer1,mscp.idPlayer2,currentGameId++);
+                           morpion.setCharPlayer1(mscp.charPlayer1);
+                           morpion.setCharPlayer2(mscp.charPlayer2);
+                           listGames.add(morpion);
+
+                           mscp.gameId = morpion.getId();
+
                            server.sendToTCP(mscp.idPlayer1, mscp);
                            server.sendToTCP(mscp.idPlayer2,mscp);
                        }
                     }
                     if(p instanceof MorpionInGamePacket){
                         MorpionInGamePacket migp = (MorpionInGamePacket) p;
-                        MorpionInGameConfirmPacket migcp = new MorpionInGameConfirmPacket();
-                        migcp.tabGame = migp.tabGame;
-                        migcp.currentPlayerID = migp.opponentPlayerID;
-                        
-                        server.sendToTCP(migp.currentPlayerID,migcp);
-                        server.sendToTCP(migp.opponentPlayerID,migcp);
-                        
+
+                        GameChar winnerChar = new GameChar();
+
+
+                        if(MorpionHandler.getInstance().isGameOver(migp.tabGame,winnerChar)){
+
+                            MorpionEndGamePacket megp = new MorpionEndGamePacket();
+
+                            if(winnerChar.getInfoChar() == selectGameFromId(migp.gameId).getCharPlayer1()){
+                                //player 1 win
+                                System.out.println("PLAYER 1 WIN");
+                                megp.winnerId = selectGameFromId(migp.gameId).getIdPlayer1();
+                            }
+                            else if(winnerChar.getInfoChar() == selectGameFromId(migp.gameId).getCharPlayer2()){
+                                //player 2 win
+                                System.out.println("PLAYER 2 WIN");
+                                megp.winnerId = selectGameFromId(migp.gameId).getIdPlayer2();
+                            }
+                            else{
+                                System.out.println("DRAW");
+                                megp.winnerId = -1;
+                            }
+
+                            System.out.println("Winner id = "+megp.winnerId);
+
+                            megp.gameId = migp.gameId;
+                            megp.tabGame = migp.tabGame;
+
+                            server.sendToTCP(migp.currentPlayerID,megp);
+                            server.sendToTCP(migp.opponentPlayerID,megp);
+
+                        }
+                        else {
+
+                            MorpionInGameConfirmPacket migcp = new MorpionInGameConfirmPacket();
+                            migcp.tabGame = migp.tabGame;
+                            migcp.currentPlayerID = migp.opponentPlayerID;
+
+                            server.sendToTCP(migp.currentPlayerID, migcp);
+                            server.sendToTCP(migp.opponentPlayerID, migcp);
+                        }
                     }
+                    //END MORPION
                 }
             }
 
@@ -131,6 +182,16 @@ public class Main {
             //System.out.println("send answer");
             server.sendToAllTCP(mp);
         }
+    }
+
+
+    public static Game selectGameFromId(int id){
+        for(Game g : listGames){
+            if(g.getId() == id){
+                return g;
+            }
+        }
+        return null;
     }
 
 }
