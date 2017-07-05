@@ -36,6 +36,7 @@ public abstract class GameScreen implements Screen {
 
     boolean foundOpponent;
     boolean gameOver;
+    boolean initGame;
 
     SpriteBatch batch;
     GlyphLayout layout;

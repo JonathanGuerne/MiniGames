@@ -2,6 +2,9 @@ package ch.arc.ete;
 
 import com.esotericsoftware.kryonet.Client;
 
+import packets.BattleShip.BattleShipInGamePacket;
+import packets.BattleShip.BattleShipStartConfirmPacket;
+import packets.BattleShip.BattleShipStartPacket;
 import packets.LoginConfirmPacket;
 import packets.LoginPacket;
 import packets.MiniGamePacket;
@@ -30,7 +33,9 @@ public class ClientBuilder {
         client.getKryo().register(MorpionInGamePacket.class,1020);
         client.getKryo().register(MorpionInGameConfirmPacket.class,1030);
         client.getKryo().register(MorpionEndGamePacket.class,1050);
-
+        client.getKryo().register(BattleShipStartPacket.class, 2001);
+        client.getKryo().register(BattleShipStartConfirmPacket.class, 2010);
+        client.getKryo().register(BattleShipInGamePacket.class, 2020);
         return client;
     }
 

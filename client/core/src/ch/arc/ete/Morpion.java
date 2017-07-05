@@ -36,7 +36,6 @@ public class Morpion extends GameScreen implements InputProcessor {
 
     public Morpion(Client client) {
         super(client);
-
     }
 
     @Override
@@ -175,8 +174,6 @@ public class Morpion extends GameScreen implements InputProcessor {
             }
         }
     }
-
-
 
     @Override
     public void resize(int width, int height) {

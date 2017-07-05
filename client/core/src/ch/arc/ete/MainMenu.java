@@ -48,6 +48,7 @@ public class MainMenu implements Screen {
     Stage stage;
 
     TextButton btnMoripon;
+    TextButton btnBattleShip;
 
     public MainMenu(final Client client) {
         this.client = client;
@@ -94,6 +95,7 @@ public class MainMenu implements Screen {
         Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
 
         btnMoripon = new TextButton("Jouer au morpion",skin);
+        btnBattleShip = new TextButton("Jouer a la bataille navale", skin);
 
         btnMoripon.addListener(new ClickListener(){
             @Override
@@ -101,10 +103,17 @@ public class MainMenu implements Screen {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new Morpion(client));
             }
         });
+        btnBattleShip.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new BattleShip(client));
+            }
+        });
 
         tableMenu.add(new Label("Menu Principal",skin));
         tableMenu.row();
         tableMenu.add(btnMoripon);
+        tableMenu.add(btnBattleShip);
 
         stage.addActor(tableMenu);
 
