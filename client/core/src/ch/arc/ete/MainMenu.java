@@ -104,7 +104,7 @@ public class MainMenu implements Screen {
 
         tableMenu.center();
 
-        Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+        Skin skin = new Skin(Gdx.files.internal("skin/comic-ui.json"));
 
         btnMoripon = new TextButton("Jouer au morpion",skin);
         btnBattleShip = new TextButton("Jouer a la bataille navale", skin);
@@ -151,7 +151,7 @@ public class MainMenu implements Screen {
 
         stage.addActor(tableMenu);
 
-        ((OrthographicCamera)stage.getCamera()).zoom = Util.getRatio()/2;
+        ((OrthographicCamera)stage.getCamera()).zoom = Util.getRatio()/1.5f;
 
         Gdx.input.setInputProcessor(stage);
 

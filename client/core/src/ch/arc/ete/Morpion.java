@@ -29,7 +29,7 @@ import packets.Packet;
  * Created by jonathan.guerne on 01.05.2017.
  */
 
-public class Morpion extends GameScreen implements InputProcessor {
+public class Morpion extends GameScreen {
 
     ShapeRenderer shapeRenderer;
     float w, h;
@@ -58,8 +58,6 @@ public class Morpion extends GameScreen implements InputProcessor {
 
         tabGame.put(0,new char[9]);
 
-        Gdx.input.setInputProcessor(this);
-
         MorpionStartPacket msp = new MorpionStartPacket();
         msp.idPlayer = localPlayer.getId();
 
@@ -83,6 +81,8 @@ public class Morpion extends GameScreen implements InputProcessor {
                         }
 
                         gameId = mscp.gameId;
+
+
 
                     } else if (o instanceof MorpionInGameConfirmPacket) {
                         MorpionInGameConfirmPacket migcp = (MorpionInGameConfirmPacket) o;
@@ -110,12 +110,22 @@ public class Morpion extends GameScreen implements InputProcessor {
 
         tableDisplay.center();
 
-        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+
 
         stage.addActor(tableDisplay);
 
         currentPlayerPseudo = new Label (localPlayer.getPseudo(), skin);
         tableDisplay.add(currentPlayerPseudo);
+
+    }
+
+
+    /**
+     * method call when the player choose to left
+     * todo: tell the server
+     */
+    @Override
+    public void playerLeft() {
 
     }
 

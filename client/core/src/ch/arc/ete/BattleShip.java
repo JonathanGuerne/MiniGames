@@ -21,7 +21,7 @@ import packets.BattleShip.BattleShipStartPacket;
  * Created by jonathan.guerne on 01.05.2017.
  */
 
-public class BattleShip extends GameScreen implements InputProcessor {
+public class BattleShip extends GameScreen {
 
     ShapeRenderer shapeRenderer;
     float w, h;
@@ -31,6 +31,7 @@ public class BattleShip extends GameScreen implements InputProcessor {
     boolean showInit;
     int shipInitialized;
     char[] opponentTab;
+    boolean initGame;
 
     int touchIndex = -1;
 
@@ -48,7 +49,7 @@ public class BattleShip extends GameScreen implements InputProcessor {
         tabGame = new HashMap<Integer, char[]>();
         tabGame.put(0, new char[NB_CASE * NB_CASE]);
 
-        Gdx.input.setInputProcessor(this);
+       // Gdx.input.setInputProcessor(this);
 
         BattleShipStartPacket bssp = new BattleShipStartPacket();
         /*J regarde la
@@ -229,6 +230,15 @@ public class BattleShip extends GameScreen implements InputProcessor {
         }
 
         return false;
+    }
+
+    /**
+     * method called when the player choose to left the game
+     * TODO : notify the server
+     */
+    @Override
+    public void playerLeft() {
+
     }
 
     @Override

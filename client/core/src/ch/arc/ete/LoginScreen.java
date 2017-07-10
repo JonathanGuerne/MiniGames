@@ -43,6 +43,7 @@ public class LoginScreen implements Screen {
     TextButton btnValider;
     TextField serverAdress;
     TextField clientPseudo;
+    TextButton btnRefreshServersList;
     SelectBox<String> serversAdresses;
 
     Stage stage;
@@ -53,7 +54,7 @@ public class LoginScreen implements Screen {
     static int tcp = 23900, udp = 23901;
 
     boolean connectionOk = false;
-    boolean serverDiscoveringFinish = false;
+//    boolean serverDiscoveringFinish = false;
 
 
     @Override
@@ -76,7 +77,7 @@ public class LoginScreen implements Screen {
         tableDisplay.center();
 
 
-        Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+        Skin skin = new Skin(Gdx.files.internal("skin/comic-ui.json"));
 
 
         serversListLabel = new Label("Liste des serveurs : ",skin);
@@ -89,6 +90,8 @@ public class LoginScreen implements Screen {
         errorLabel.setColor(255, 0, 0, 255);
 
         btnValider = new TextButton("Connexion", skin);
+
+        btnRefreshServersList = new TextButton("Rafraichire",skin);
 
         serversAdresses = new SelectBox<String>(skin);
         serversAdresses.setDisabled(true);
@@ -113,7 +116,7 @@ public class LoginScreen implements Screen {
                 } else {
                     serversAdresses.setItems(listAddressesString);
                     serversAdresses.setDisabled(false);
-                    serverDiscoveringFinish = true;
+//                    serverDiscoveringFinish = true;
                 }
 
             }
@@ -151,12 +154,19 @@ public class LoginScreen implements Screen {
         serversAdresses.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (serverDiscoveringFinish) {
+//                if (serverDiscoveringFinish) {
                     serverAdress.setText(serversAdresses.getSelected());
-                }
+//                }
             }
         });
 
+
+        btnRefreshServersList.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                new Thread(new DiscoverHostThread()).start();
+            }
+        });
 
         client.addListener(new Listener() {
             @Override
@@ -175,23 +185,24 @@ public class LoginScreen implements Screen {
         clientPseudo = new TextField("", skin);
 
         tableDisplay.add(serverLabel);
-        tableDisplay.add(serverAdress).width(300);
+        tableDisplay.add(serverAdress).width(200);
         tableDisplay.row();
         tableDisplay.add(pseudoLabel);
-        tableDisplay.add(clientPseudo).width(300);
+        tableDisplay.add(clientPseudo).width(200);
         tableDisplay.row();
         tableDisplay.row();
         tableDisplay.add(serversListLabel);
-        tableDisplay.add(serversAdresses).width(300);
+        tableDisplay.add(serversAdresses).width(200);
+        tableDisplay.add(btnRefreshServersList);
         tableDisplay.row();
         tableDisplay.add(errorLabel).colspan(2);
         tableDisplay.row();
-        tableDisplay.add(btnValider).colspan(2);
+        tableDisplay.add(btnValider).width(250);
         tableDisplay.row();
 
         stage.addActor(tableDisplay);
 
-        ((OrthographicCamera) stage.getCamera()).zoom = Util.getRatio() / 2;
+        ((OrthographicCamera) stage.getCamera()).zoom = Util.getRatio() / 1.5f;
 
         Gdx.input.setInputProcessor(stage);
 
@@ -211,7 +222,7 @@ public class LoginScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        ((OrthographicCamera) stage.getCamera()).zoom = Util.getRatio() / 2;
+        ((OrthographicCamera) stage.getCamera()).zoom = Util.getRatio() / 1.5f;
     }
 
     @Override
