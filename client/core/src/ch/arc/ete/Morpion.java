@@ -6,7 +6,11 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -32,6 +36,10 @@ public class Morpion extends GameScreen implements InputProcessor {
     char charUser;
 
     int touchIndex = -1;
+    int gameLayoutWith = Gdx.graphics.getWidth() /10 * 8;
+    int informationLayoutWith = Gdx.graphics.getWidth() / 10 * 2;
+
+    Label currentPlayerPseudo;
 
 
     public Morpion(Client client, Player localPlayer) {
@@ -41,7 +49,7 @@ public class Morpion extends GameScreen implements InputProcessor {
     @Override
     public void show() {
         shapeRenderer = new ShapeRenderer();
-        w = Gdx.graphics.getWidth() / 3;
+        w =  gameLayoutWith / 3;
         h = Gdx.graphics.getHeight() / 3;
         shapeRenderer.setColor(Color.BLACK);
 
@@ -93,6 +101,21 @@ public class Morpion extends GameScreen implements InputProcessor {
             }
         });
 
+        tableDisplay = new Table();
+
+        tableDisplay.setPosition(gameLayoutWith, 0);
+
+        tableDisplay.setWidth(informationLayoutWith);
+        tableDisplay.setHeight(Gdx.graphics.getHeight());
+
+        tableDisplay.center();
+
+        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+
+        stage.addActor(tableDisplay);
+
+        currentPlayerPseudo = new Label (localPlayer.getPseudo(), skin);
+        tableDisplay.add(currentPlayerPseudo);
 
     }
 
@@ -100,6 +123,24 @@ public class Morpion extends GameScreen implements InputProcessor {
     public void display() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+
+        stage.act();
+
+        stage.draw();
+
+
+
+
+        /*batch.begin();
+        String playerTurn;
+        font.setColor(255, 255, 0, 255);
+        font.draw(batch, localPlayer.getPseudo(), gameLayoutWith + 20, 100);
+        font.draw(batch, "VS", gameLayoutWith + 20, 150);
+        font.draw(batch, opponentPlayer.getPseudo(), gameLayoutWith + 20, 200);
+        playerTurn = (currentPlayerID == localPlayer.getId()) ? "A vous de jouer " : "Votre adversaire est en train de jouer";
+        font.draw(batch, playerTurn, gameLayoutWith + 20, 250);
+        batch.end();*/
 
 
         shapeRenderer.setColor(Color.GREEN);
@@ -129,7 +170,7 @@ public class Morpion extends GameScreen implements InputProcessor {
 
         for (int i = 0; i < 4; i++) {
             shapeRenderer.line(i * w, 0, i * w, Gdx.graphics.getHeight());
-            shapeRenderer.line(0, i * h, Gdx.graphics.getWidth(), i * h);
+            shapeRenderer.line(0, i * h, gameLayoutWith, i * h);
         }
 
         shapeRenderer.end();
@@ -177,7 +218,7 @@ public class Morpion extends GameScreen implements InputProcessor {
 
     @Override
     public void resize(int width, int height) {
-        w = Gdx.graphics.getWidth() / 3;
+        w = gameLayoutWith / 3;
         h = Gdx.graphics.getHeight() / 3;
     }
 
@@ -220,6 +261,10 @@ public class Morpion extends GameScreen implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
         if(!gameOver) {
+            if(screenX > gameLayoutWith)
+            {
+                return false;
+            }
             int x = (int) (screenX / w);
             int y = (3 * (int) (screenY / h));
             touchIndex = x + y;

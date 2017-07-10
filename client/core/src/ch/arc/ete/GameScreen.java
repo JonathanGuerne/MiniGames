@@ -7,9 +7,14 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.kryonet.Client;
+
+
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +39,10 @@ public abstract class GameScreen implements Screen {
 
     protected int gameId;
 
+    protected  Skin skin;
+    protected Table tableDisplay;
+    protected Stage stage;
+
     boolean foundOpponent;
     boolean gameOver;
     boolean initGame;
@@ -45,10 +54,10 @@ public abstract class GameScreen implements Screen {
 
     public GameScreen(Client client, Player localPlayer) {
         this.client = client;
-        //this.localPlayer = new Player(client.getID(),"Bob");
         this.localPlayer = localPlayer;
         this.foundOpponent = false;
 
+        stage = new Stage();
         batch = new SpriteBatch();
         font = Util.createFont(48);
         layout = new GlyphLayout();

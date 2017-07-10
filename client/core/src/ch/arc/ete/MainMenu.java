@@ -139,7 +139,8 @@ public class MainMenu implements Screen {
             }
         });
 
-        tableMenu.add(new Label("Menu Principal",skin));
+        tableMenu.add(new Label("Bienvenue " + localPlayer.getPseudo(), skin));
+        tableMenu.row();
         tableMenu.row();
         tableMenu.add(btnMoripon);
         tableMenu.row();
