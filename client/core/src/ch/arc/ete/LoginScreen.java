@@ -5,10 +5,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
@@ -18,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -43,8 +47,8 @@ public class LoginScreen implements Screen {
     TextButton btnValider;
     TextField serverAdress;
     TextField clientPseudo;
-    TextButton btnRefreshServersList;
     SelectBox<String> serversAdresses;
+    ImageButton btnRefreshServersList;
 
     Stage stage;
     SpriteBatch sb;
@@ -91,7 +95,11 @@ public class LoginScreen implements Screen {
 
         btnValider = new TextButton("Connexion", skin);
 
-        btnRefreshServersList = new TextButton("Rafraichire",skin);
+        btnRefreshServersList = new ImageButton(skin);
+        btnRefreshServersList.getStyle().imageUp = new TextureRegionDrawable(
+                new TextureRegion(
+                        new Texture(Gdx.files.internal("refresh.png"))));
+
 
         serversAdresses = new SelectBox<String>(skin);
         serversAdresses.setDisabled(true);
@@ -179,7 +187,6 @@ public class LoginScreen implements Screen {
                 }
             }
         });
-
 
         serverAdress = new TextField("127.0.0.1", skin);
         clientPseudo = new TextField("", skin);
