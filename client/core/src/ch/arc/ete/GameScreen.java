@@ -59,6 +59,10 @@ public abstract class GameScreen implements Screen,InputProcessor {
 
     TextButton btnBack;
 
+    protected int gameLayoutWith = Gdx.graphics.getWidth() /10 * 8;
+    protected int informationLayoutWith = Gdx.graphics.getWidth() / 10 * 2;
+
+
 
     public GameScreen(final Client client, final Player localPlayer) {
         this.client = client;
