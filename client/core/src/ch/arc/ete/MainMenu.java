@@ -76,6 +76,7 @@ public class MainMenu implements Screen {
             public void received(Connection connection, Object object) {
                     if(object instanceof Packet){
                         if(object instanceof MiniGamePacket){
+                            System.out.println("MINI GAME PACKET");
                             MiniGamePacket mp = (MiniGamePacket) object;
                         }
                     }

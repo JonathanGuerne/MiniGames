@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import packets.MorpionPlayerLeaving;
 import packets.battleship.BattleShipInGamePacket;
 import packets.battleship.BattleShipStartConfirmPacket;
 import packets.battleship.BattleShipStartInitGamePacket;
@@ -59,6 +60,7 @@ public class Main {
         server.getKryo().register(MorpionInGamePacket.class,1020);
         server.getKryo().register(MorpionInGameConfirmPacket.class,1030);
         server.getKryo().register(MorpionEndGamePacket.class,1050);
+        server.getKryo().register(MorpionPlayerLeaving.class,1110);
         server.getKryo().register(BattleShipStartPacket.class, 2001);
         server.getKryo().register(BattleShipStartConfirmPacket.class, 2010);
         server.getKryo().register(BattleShipInGamePacket.class, 2020);
@@ -210,6 +212,14 @@ public class Main {
                             server.sendToTCP(migp.opponentPlayerID, migcp);
                         }
                     }
+                    if(p instanceof MorpionPlayerLeaving){
+                        MorpionPlayerLeaving mpl = (MorpionPlayerLeaving) p;
+                        for(int i=0;i<clientIDWaitingPerGame.length;i++){
+                            if(clientIDWaitingPerGame[i]==mpl.playerid){
+                                clientIDWaitingPerGame[i] = -1;
+                            }
+                        }
+                    }
                     //END MORPION
                 }
             }
@@ -237,22 +247,6 @@ public class Main {
 
         });
 
-        MiniGamePacket mp = new MiniGamePacket();
-        mp.answer = 42;
-
-        System.out.println("Server ready");
-
-        while (true) {
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            //System.out.println("send answer");
-            server.sendToAllTCP(mp);
-        }
     }
 
 

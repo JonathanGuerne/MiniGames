@@ -18,6 +18,7 @@ import java.util.HashMap;
 import packets.MorpionEndGamePacket;
 import packets.MorpionInGameConfirmPacket;
 import packets.MorpionInGamePacket;
+import packets.MorpionPlayerLeaving;
 import packets.MorpionStartConfirmPacket;
 import packets.MorpionStartPacket;
 import packets.Packet;
@@ -62,8 +63,12 @@ public class Morpion extends GameScreen {
             @Override
             public void received(Connection connection, Object o) {
                 if(o instanceof Packet) {
-                    if (o instanceof MorpionStartConfirmPacket) {
+                    if (o instanceof MorpionStartConfirmPacket && !foundOpponent) {
+
                         MorpionStartConfirmPacket mscp = (MorpionStartConfirmPacket) o;
+
+                        System.out.println("GAME "+mscp.gameId+" STARTED");
+
                         foundOpponent = true;
                         currentPlayerId = mscp.idPlayer1;
 
@@ -77,7 +82,6 @@ public class Morpion extends GameScreen {
 
                         gameId = mscp.gameId;
 
-                        initInformationTable(opponentPlayer.getPseudo());
                         System.out.println("End of the initialisation");
 
                     } else if (o instanceof MorpionInGameConfirmPacket) {
@@ -106,7 +110,10 @@ public class Morpion extends GameScreen {
      */
     @Override
     public void playerLeft() {
-
+        MorpionPlayerLeaving mpl = new MorpionPlayerLeaving();
+        mpl.playerid = localPlayer.getId();
+        mpl.playerName = localPlayer.getPseudo();
+        client.sendTCP(mpl);
     }
 
     @Override
@@ -115,7 +122,7 @@ public class Morpion extends GameScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if(playerTurn != null) {
-            String playerPlaying = (currentPlayerID == localPlayer.getId()) ? "Votre tour " : "Tour de l'adversaire";
+            String playerPlaying = (currentPlayerId == localPlayer.getId()) ? "Votre tour " : "Tour de l'adversaire";
             playerTurn.setText(playerPlaying);
         }
 
@@ -181,6 +188,8 @@ public class Morpion extends GameScreen {
     @Override
     public void update() {
         if(!gameOver) {
+
+
             if (currentPlayerId == localPlayer.getId()) {
                 //if touchIndex is a value >= 0 and tab[touchIndex] is null
                 if (touchIndex != -1 && tabGame.get(0)[touchIndex] == '\0') {

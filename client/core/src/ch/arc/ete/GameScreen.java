@@ -112,6 +112,7 @@ public abstract class GameScreen implements Screen,InputProcessor {
             if(!initializationOver){
                 initializationOver = true;
                 Gdx.input.setInputProcessor(this);
+                initInformationTable(opponentPlayer.getPseudo());
             }
             update();
             display();
