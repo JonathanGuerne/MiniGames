@@ -80,7 +80,8 @@ public class Morpion extends GameScreen {
 
                         gameId = mscp.gameId;
 
-
+                        initInformationTable(opponentPlayer.getPseudo());
+                        System.out.println("End of the initialisation");
 
                     } else if (o instanceof MorpionInGameConfirmPacket) {
                         MorpionInGameConfirmPacket migcp = (MorpionInGameConfirmPacket) o;
@@ -99,22 +100,6 @@ public class Morpion extends GameScreen {
             }
         });
 
-        tableDisplay = new Table();
-
-        tableDisplay.setPosition(gameLayoutWith, 0);
-
-        tableDisplay.setWidth(informationLayoutWith);
-        tableDisplay.setHeight(Gdx.graphics.getHeight());
-
-        tableDisplay.center();
-
-
-
-        stage.addActor(tableDisplay);
-
-        currentPlayerPseudo = new Label (localPlayer.getPseudo(), skin);
-        tableDisplay.add(currentPlayerPseudo);
-
     }
 
 
@@ -132,24 +117,16 @@ public class Morpion extends GameScreen {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        if(playerTurn != null) {
+            String playerPlaying = (currentPlayerID == localPlayer.getId()) ? "Votre tour " : "Tour de l'adversaire";
+            playerTurn.setText(playerPlaying);
+        }
 
-        stage.act();
-
-        stage.draw();
-
-
-
-
-        /*batch.begin();
-        String playerTurn;
-        font.setColor(255, 255, 0, 255);
-        font.draw(batch, localPlayer.getPseudo(), gameLayoutWith + 20, 100);
-        font.draw(batch, "VS", gameLayoutWith + 20, 150);
-        font.draw(batch, opponentPlayer.getPseudo(), gameLayoutWith + 20, 200);
-        playerTurn = (currentPlayerID == localPlayer.getId()) ? "A vous de jouer " : "Votre adversaire est en train de jouer";
-        font.draw(batch, playerTurn, gameLayoutWith + 20, 250);
-        batch.end();*/
-
+        if(gameLoaded)
+        {
+            stage.act();
+            stage.draw();
+        }
 
         shapeRenderer.setColor(Color.GREEN);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);

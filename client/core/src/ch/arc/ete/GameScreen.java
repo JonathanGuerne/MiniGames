@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.esotericsoftware.kryonet.Client;
 
 
@@ -48,9 +49,15 @@ public abstract class GameScreen implements Screen,InputProcessor {
     protected Table tableDisplay;
     protected Stage stage;
     protected Stage waitingStage;
+    protected Label currentPlayerPseudo;
+    protected Label opponentPlayerPseudo;
+    protected Label playerTurn;
+    protected Label vsLabel;
 
     boolean foundOpponent;
     boolean gameOver;
+    boolean initGame;
+    boolean gameLoaded;
     boolean initializationOver;
 
     SpriteBatch batch;
@@ -93,6 +100,7 @@ public abstract class GameScreen implements Screen,InputProcessor {
         });
 
         gameOver = false;
+        gameLoaded = false;
 
         Gdx.input.setInputProcessor(waitingStage);
 
@@ -133,4 +141,40 @@ public abstract class GameScreen implements Screen,InputProcessor {
         layout.setText(font, text, Color.BLACK, Gdx.graphics.getWidth(), Align.center, true);
     }
 
+    protected void initInformationTable(String oppenentPseudo)
+    {
+        tableDisplay = new Table();
+        tableDisplay.setPosition(gameLayoutWith, 0);
+        tableDisplay.setWidth(informationLayoutWith);
+        tableDisplay.setHeight(Gdx.graphics.getHeight());
+        tableDisplay.center();
+
+        stage.addActor(tableDisplay);
+
+        System.out.println("Step init ok");
+
+        currentPlayerPseudo = new Label(localPlayer.getPseudo(), skin);
+        currentPlayerPseudo.setColor(0, 255, 0, 255);
+        tableDisplay.add(currentPlayerPseudo);
+        tableDisplay.row();
+        System.out.println("Step currentPlayer ok");
+
+        vsLabel = new Label("VS", skin);
+        vsLabel.setColor(0, 255, 0, 255);
+        tableDisplay.add(vsLabel);
+        tableDisplay.row();
+        System.out.println("Step vs ok");
+
+        opponentPlayerPseudo = new Label(oppenentPseudo, skin);
+        opponentPlayerPseudo.setColor(0, 255, 0, 255);
+        tableDisplay.add(opponentPlayerPseudo);
+        tableDisplay.row();
+        System.out.println("Step opponentPlayer ok");
+
+        playerTurn = new Label("", skin);
+        playerTurn.setColor(0, 255, 0, 255);
+        tableDisplay.add(playerTurn);
+        System.out.println("Step turn ok");
+        gameLoaded = true;
+    }
 }
