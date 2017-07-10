@@ -82,7 +82,7 @@ public class LoginScreen implements Screen {
                     client.sendTCP(lp);
 
                     while (!connectionOk){
-                        System.out.println("waiting for server response");
+//                        System.out.println("waiting for server response");
                     }
 
                     ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, clientPseudo.getText()));

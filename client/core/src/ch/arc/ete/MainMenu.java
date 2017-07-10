@@ -42,14 +42,17 @@ public class MainMenu implements Screen {
 
     static int tcp = 23900, udp = 23901;
 
-    String text = "the answer is : ?";
-
     Table tableMenu;
 
     Stage stage;
 
     TextButton btnMoripon;
     TextButton btnBattleShip;
+    TextButton btnBack;
+    TextButton btnQuit;
+
+
+    boolean lostConnection;
 
     public MainMenu(final Client client, String pseudo) {
         this.client = client;
@@ -63,6 +66,7 @@ public class MainMenu implements Screen {
         this.localPlayer = localPlayer;
     }
 
+
     @Override
     public void show() {
 
@@ -71,10 +75,8 @@ public class MainMenu implements Screen {
             @Override
             public void received(Connection connection, Object object) {
                     if(object instanceof Packet){
-                        System.out.println("here");
                         if(object instanceof MiniGamePacket){
                             MiniGamePacket mp = (MiniGamePacket) object;
-                            //text = "The answer is : "+mp.answer;
                         }
                     }
 
@@ -82,7 +84,8 @@ public class MainMenu implements Screen {
 
             @Override
             public void disconnected(Connection connection) {
-
+                client.close();
+                lostConnection = true;
             }
 
         });
@@ -105,6 +108,8 @@ public class MainMenu implements Screen {
 
         btnMoripon = new TextButton("Jouer au morpion",skin);
         btnBattleShip = new TextButton("Jouer a la bataille navale", skin);
+        btnBack = new TextButton("Retour",skin);
+        btnQuit = new TextButton("Quitter",skin);
 
         btnMoripon.addListener(new ClickListener(){
             @Override
@@ -119,10 +124,29 @@ public class MainMenu implements Screen {
             }
         });
 
+        btnBack.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                client.close();
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoginScreen());
+            }
+        });
+
+        btnQuit.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                System.exit(0);
+            }
+        });
+
         tableMenu.add(new Label("Menu Principal",skin));
         tableMenu.row();
         tableMenu.add(btnMoripon);
+        tableMenu.row();
         tableMenu.add(btnBattleShip);
+        tableMenu.row();
+        tableMenu.add(btnBack);
+        tableMenu.add(btnQuit);
 
         stage.addActor(tableMenu);
 
@@ -130,13 +154,20 @@ public class MainMenu implements Screen {
 
         Gdx.input.setInputProcessor(stage);
 
+        lostConnection = false;
+
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.draw();
+        if(!lostConnection) {
+            Gdx.gl.glClearColor(1, 1, 1, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            stage.draw();
+        }
+        else{
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new LoginScreen());
+        }
     }
 
     @Override
