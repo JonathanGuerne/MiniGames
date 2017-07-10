@@ -8,8 +8,8 @@ import com.esotericsoftware.kryonet.Client;
 
 public class Draughts extends GameScreen {
 
-    public Draughts(Client client) {
-        super(client);
+    public Draughts(Client client, Player localPlayer) {
+        super(client, localPlayer);
     }
 
     @Override

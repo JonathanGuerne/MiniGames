@@ -38,6 +38,7 @@ public class MainMenu implements Screen {
     private BitmapFont font;
 
     Client client;
+    Player localPlayer;
 
     static int tcp = 23900, udp = 23901;
 
@@ -50,8 +51,16 @@ public class MainMenu implements Screen {
     TextButton btnMoripon;
     TextButton btnBattleShip;
 
-    public MainMenu(final Client client) {
+    public MainMenu(final Client client, String pseudo) {
         this.client = client;
+        this.localPlayer = new Player(this.client.getID(), pseudo);
+
+    }
+
+    public MainMenu(final Client client, Player localPlayer)
+    {
+        this.client = client;
+        this.localPlayer = localPlayer;
     }
 
     @Override
@@ -100,13 +109,13 @@ public class MainMenu implements Screen {
         btnMoripon.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new Morpion(client));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new Morpion(client, localPlayer));
             }
         });
         btnBattleShip.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new BattleShip(client));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new BattleShip(client, localPlayer));
             }
         });
 

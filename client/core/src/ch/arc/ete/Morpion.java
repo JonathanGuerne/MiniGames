@@ -34,8 +34,8 @@ public class Morpion extends GameScreen implements InputProcessor {
     int touchIndex = -1;
 
 
-    public Morpion(Client client) {
-        super(client);
+    public Morpion(Client client, Player localPlayer) {
+        super(client, localPlayer);
     }
 
     @Override
@@ -227,7 +227,7 @@ public class Morpion extends GameScreen implements InputProcessor {
             return false;
         }
         else{
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client));
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, localPlayer));
             return false;
         }
     }

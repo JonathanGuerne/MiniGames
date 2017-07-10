@@ -43,9 +43,10 @@ public abstract class GameScreen implements Screen {
     BitmapFont font;
 
 
-    public GameScreen(Client client) {
+    public GameScreen(Client client, Player localPlayer) {
         this.client = client;
-        this.localPlayer = new Player(client.getID(),"Bob");
+        //this.localPlayer = new Player(client.getID(),"Bob");
+        this.localPlayer = localPlayer;
         this.foundOpponent = false;
 
         batch = new SpriteBatch();

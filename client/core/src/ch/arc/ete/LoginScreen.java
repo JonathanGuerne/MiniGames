@@ -22,7 +22,6 @@ import java.io.IOException;
 
 import packets.LoginConfirmPacket;
 import packets.LoginPacket;
-import packets.MiniGamePacket;
 import packets.Packet;
 
 /**
@@ -31,8 +30,10 @@ import packets.Packet;
 public class LoginScreen implements Screen {
 
     Label serverLabel;
+    Label pseudoLabel;
     TextButton btnValider;
     TextField serverAdress;
+    TextField clientPseudo;
     Stage stage;
     SpriteBatch sb;
     OrthographicCamera cam;
@@ -68,6 +69,8 @@ public class LoginScreen implements Screen {
 
         serverLabel = new Label("Adresse du server : ", skin);
 
+        pseudoLabel = new Label("Pseudo : ", skin);
+
         btnValider = new TextButton("Connexion", skin);
 
         btnValider.addListener(new ClickListener() {
@@ -82,7 +85,7 @@ public class LoginScreen implements Screen {
                         System.out.println("waiting for server response");
                     }
 
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client));
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, clientPseudo.getText()));
 
 
                 } catch (IOException e) {
@@ -105,9 +108,13 @@ public class LoginScreen implements Screen {
         });
 
         serverAdress = new TextField("127.0.0.1", skin);
+        clientPseudo = new TextField("", skin);
 
         tableDisplay.add(serverLabel);
         tableDisplay.add(serverAdress).width(300);
+        tableDisplay.row();
+        tableDisplay.add(pseudoLabel);
+        tableDisplay.add(clientPseudo).width(300);
         tableDisplay.row();
         tableDisplay.add(btnValider);
         tableDisplay.row();

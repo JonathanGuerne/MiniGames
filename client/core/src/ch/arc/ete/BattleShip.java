@@ -34,8 +34,8 @@ public class BattleShip extends GameScreen implements InputProcessor {
 
     int touchIndex = -1;
 
-    public BattleShip(Client client) {
-        super(client);
+    public BattleShip(Client client, Player localPlayer) {
+        super(client, localPlayer);
     }
 
     @Override
@@ -222,7 +222,7 @@ public class BattleShip extends GameScreen implements InputProcessor {
 
         }else if(gameOver)
         {
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client));
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, this.localPlayer));
         }else
         {
 
