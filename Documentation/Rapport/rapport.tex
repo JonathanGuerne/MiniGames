@@ -3,7 +3,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
-\title{Mini Games}
+\newcommand{\projectName}{Mini Games}
+\title{\projectName}
 
 \author{M. \textsc{Friedli}, A. \textsc{Gillioz}, J. \textsc{Guerne}\\
 He-Arc Ingénierie\\
@@ -16,7 +17,7 @@ La HES d'été permet aux étudiants de deuxième année d'étude dans le domain
 la possibilité de travailler sur un projet libre dans le but d'approfondir leurs connaissances.
 
 Ce rapport décrit, explique les choix d'implémentations pris dans la réalisation de notre
-projet Mini Games.
+projet \projectName.
 
 Une planification des tâches ainsi qu'une spécification du travaille ont été réalisés dans le but
 d'organiser au mieux le temps à disposition.
@@ -24,5 +25,27 @@ d'organiser au mieux le temps à disposition.
 \tableofcontents
 
 \chapter{Introduction}
-Le but de ce projet est de créer une application multiplateforme en java. Dans ce projet nous allons créer des minis jeux, jouables sur différentes plateformes et en réseau. Les minis jeux implémentés
+\projectName  est une application offrant la possibilité de jouer à des minis jeux très classique tel
+que le morpion ou la bataille navale en réseau et en multi-platforme. C'est à dire que deux personnes
+l'une sur son téléphone android et l'autre sur son ordinateur auront la possibilité de se défier à une partie de jeu en ligne.
+Deux grands outils on été utilisé pour faciliter l'implémentation de ce projet, il sagit du framework Libgdx, qui a servit à
+deployer le même programme sur différentes platforme, et de la libraire kryonet, qui a elle facilitée les échanges réseau.
 \end{document}
+
+\chapter{Communication réseau}
+Comme dit plus haut, le programme est une collection de minis jeux auxquels les clients auront la possibilités de jouer à
+plusieurs. Le programme est décomposé en deux parties : la partie client et la partie serveur. La communication entre ces
+deux parties est facilitée par l'utilisation de Kryonet une librairie Java open source conçu pour gérer les échanges réseau.
+
+\section{Les packets}
+Les données envoyées entre le client et le serveur transitent sous la forme de Packets, les packets sont des classes présentent
+chez le client et chez le serveur enregistrer au lancement du service.
+
+Pour un client, si une connexion à été établie, il lui est possible d'envoyer par TCP ou UDP des Packets au serveur. Dans le cas complémentaire,
+pour recevoir les différents Packets émmanent du serveur le client met en place un listener qui va automatiquement gérer la réception des Packets et analyser leur contenu.
+L'implémentaion du serveur est identique à la nuance près qu'elle laisse le choit de la personne (de l'adresse) à qui sera envoyé le Packets. En effet toutes les infos, tous les Packets,
+transitent par le serveur, c'est lui ensuite qui les traitent et les renvoient aux différents clients conscernés.
+
+\section{Initialisation de la connexion}
+
+\section{communication en jeu}
