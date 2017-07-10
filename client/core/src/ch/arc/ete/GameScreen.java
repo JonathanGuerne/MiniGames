@@ -51,6 +51,9 @@ public abstract class GameScreen implements Screen {
     GlyphLayout layout;
     BitmapFont font;
 
+    protected int gameLayoutWith = Gdx.graphics.getWidth() /10 * 8;
+    protected int informationLayoutWith = Gdx.graphics.getWidth() / 10 * 2;
+
 
     public GameScreen(Client client, Player localPlayer) {
         this.client = client;

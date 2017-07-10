@@ -36,8 +36,6 @@ public class Morpion extends GameScreen implements InputProcessor {
     char charUser;
 
     int touchIndex = -1;
-    int gameLayoutWith = Gdx.graphics.getWidth() /10 * 8;
-    int informationLayoutWith = Gdx.graphics.getWidth() / 10 * 2;
 
     Label currentPlayerPseudo;
 

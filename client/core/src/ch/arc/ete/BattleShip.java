@@ -41,7 +41,7 @@ public class BattleShip extends GameScreen implements InputProcessor {
     @Override
     public void show() {
         shapeRenderer = new ShapeRenderer();
-        w = Gdx.graphics.getWidth() / NB_CASE;
+        w = gameLayoutWith / NB_CASE;
         h = Gdx.graphics.getHeight() / NB_CASE;
         shapeRenderer.setColor(Color.BLACK);
 
@@ -113,7 +113,7 @@ public class BattleShip extends GameScreen implements InputProcessor {
         for (int i = 0; i < NB_CASE; i++)
         {
             shapeRenderer.line(i * w, 0, i * w, Gdx.graphics.getHeight());
-            shapeRenderer.line(0, i * h, Gdx.graphics.getWidth(), i * h);
+            shapeRenderer.line(0, i * h, gameLayoutWith, i * h);
         }
         shapeRenderer.end();
 
@@ -161,7 +161,7 @@ public class BattleShip extends GameScreen implements InputProcessor {
     @Override
     public void resize(int width, int height)
     {
-        w = Gdx.graphics.getWidth() / NB_CASE;
+        w = gameLayoutWith / NB_CASE;
         h = Gdx.graphics.getHeight() / NB_CASE;
     }
 
@@ -210,6 +210,10 @@ public class BattleShip extends GameScreen implements InputProcessor {
                 showInit = false;
             }else
             {
+                if(screenX > gameLayoutWith)
+                {
+                    return false;
+                }
                 shipInitialized++;
                 int x = (int) (screenX / w);
                 int y = (NB_CASE * (int) (screenY / h));
