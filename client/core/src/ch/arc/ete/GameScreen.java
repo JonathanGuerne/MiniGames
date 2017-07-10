@@ -2,6 +2,7 @@ package ch.arc.ete;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -53,6 +54,7 @@ public abstract class GameScreen implements Screen,InputProcessor {
     protected Label opponentPlayerPseudo;
     protected Label playerTurn;
     protected Label vsLabel;
+    protected TextButton btnBack;
 
     boolean foundOpponent;
     boolean gameOver;
@@ -64,7 +66,7 @@ public abstract class GameScreen implements Screen,InputProcessor {
     GlyphLayout layout;
     BitmapFont font;
 
-    TextButton btnBack;
+
 
     protected int gameLayoutWith = Gdx.graphics.getWidth() /10 * 8;
     protected int informationLayoutWith = Gdx.graphics.getWidth() / 10 * 2;
@@ -103,7 +105,6 @@ public abstract class GameScreen implements Screen,InputProcessor {
         gameLoaded = false;
 
         Gdx.input.setInputProcessor(waitingStage);
-
     }
 
     @Override
@@ -111,7 +112,11 @@ public abstract class GameScreen implements Screen,InputProcessor {
         if (foundOpponent) {
             if(!initializationOver){
                 initializationOver = true;
-                Gdx.input.setInputProcessor(this);
+
+                InputMultiplexer multiplexer = new InputMultiplexer();
+                multiplexer.addProcessor(this);
+                multiplexer.addProcessor(stage);
+                Gdx.input.setInputProcessor(multiplexer);
                 initInformationTable();
             }
             update();
@@ -170,6 +175,11 @@ public abstract class GameScreen implements Screen,InputProcessor {
         playerTurn = new Label("", skin);
         playerTurn.setColor(0, 255, 0, 255);
         tableDisplay.add(playerTurn);
+        tableDisplay.row();
+
+        tableDisplay.add(btnBack);
+
+
         gameLoaded = true;
     }
 }
