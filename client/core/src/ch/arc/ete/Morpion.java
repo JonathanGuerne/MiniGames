@@ -67,8 +67,6 @@ public class Morpion extends GameScreen {
 
                         MorpionStartConfirmPacket mscp = (MorpionStartConfirmPacket) o;
 
-                        System.out.println("GAME "+mscp.gameId+" STARTED");
-
                         foundOpponent = true;
                         currentPlayerId = mscp.idPlayer1;
 
@@ -82,8 +80,6 @@ public class Morpion extends GameScreen {
 
                         gameId = mscp.gameId;
 
-                        System.out.println("End of the initialisation");
-
                     } else if (o instanceof MorpionInGameConfirmPacket) {
                         MorpionInGameConfirmPacket migcp = (MorpionInGameConfirmPacket) o;
                         touchIndex = -1;
@@ -94,7 +90,6 @@ public class Morpion extends GameScreen {
                         tabGame.put(0, megp.tabGame);
                         gameOver = true;
                         winnerId = megp.winnerId;
-                        System.out.println("My id is "+localPlayer.getId());
                     }
                 }
 
@@ -259,7 +254,6 @@ public class Morpion extends GameScreen {
             int x = (int) (screenX / w);
             int y = (3 * (int) (screenY / h));
             touchIndex = x + y;
-            System.out.println(touchIndex);
             return false;
         }
         else{

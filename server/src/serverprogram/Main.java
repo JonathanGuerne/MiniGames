@@ -75,11 +75,9 @@ public class Main {
             public void received(Connection connection, Object object) {
 
                 if (object instanceof Packet) {
-                    System.out.println("recu un packet");
                     Packet p = (Packet) object;
                     if (p instanceof MiniGamePacket) {
                         MiniGamePacket miniGamePacket = (MiniGamePacket) p;
-                        System.out.println("Client à envoyé : " + miniGamePacket.answer);
 
                     }
                     if (p instanceof LoginPacket) {
@@ -90,7 +88,6 @@ public class Main {
                     //BEGIN BATTLE SHIP
                     if(p instanceof BattleShipStartPacket)
                     {
-                        System.out.println("Bonjour, j'ai un packet pour vous. ID : " + connection.getID());
                         if(clientIDWaitingPerGame[BATTLESHIP_INDEX] == -1)
                         {
                             clientIDWaitingPerGame[BATTLESHIP_INDEX] = connection.getID();
@@ -107,13 +104,11 @@ public class Main {
                             listGames.add(battleShip);
 
                             bsscp.gameId = battleShip.getId();
-                            System.out.println("p1 " + bsscp.idPlayer1 + " p2 " + bsscp.idPlayer2);
                             server.sendToTCP(bsscp.idPlayer1, bsscp);
                             server.sendToTCP(bsscp.idPlayer2, bsscp);
                         }
                     }else if(p instanceof BattleShipStartInitGamePacket)
                     {
-                        System.out.println("Je commence la synchro");
                         BattleShipStartInitGamePacket bssigp = (BattleShipStartInitGamePacket) p;
                         if(initializedGame.containsKey(bssigp.idOpponent))
                         {
@@ -149,7 +144,6 @@ public class Main {
                     if (p instanceof MorpionStartPacket) {
                        if(clientIDWaitingPerGame[MORPION_INEX] == -1){
                            clientIDWaitingPerGame[MORPION_INEX] = connection.getID();
-                           System.out.println("change user waiting id to "+connection.getID());
                        }
                        else{
                            MorpionStartConfirmPacket mscp = new MorpionStartConfirmPacket();
@@ -180,20 +174,15 @@ public class Main {
 
                             if(winnerChar.getInfoChar() == selectGameFromId(migp.gameId).getCharPlayer1()){
                                 //player 1 win
-                                System.out.println("PLAYER 1 WIN");
                                 megp.winnerId = selectGameFromId(migp.gameId).getIdPlayer1();
                             }
                             else if(winnerChar.getInfoChar() == selectGameFromId(migp.gameId).getCharPlayer2()){
                                 //player 2 win
-                                System.out.println("PLAYER 2 WIN");
                                 megp.winnerId = selectGameFromId(migp.gameId).getIdPlayer2();
                             }
                             else{
-                                System.out.println("DRAW");
                                 megp.winnerId = -1;
                             }
-
-                            System.out.println("Winner id = "+megp.winnerId);
 
                             megp.gameId = migp.gameId;
                             megp.tabGame = migp.tabGame;
@@ -226,8 +215,6 @@ public class Main {
 
             @Override
             public void disconnected(Connection connection) {
-
-                System.out.println("Client Leaving :ID : " + connection.getID());
                 for(int i=0;i<clientIDWaitingPerGame.length;i++){
                     if(clientIDWaitingPerGame[i] == connection.getID()){
                         clientIDWaitingPerGame[i] = -1;
@@ -238,7 +225,6 @@ public class Main {
 
             @Override
             public void connected(Connection connection) {
-                System.out.println(" new Client : ID : " + connection.getID());
                 MiniGamePacket mp = new MiniGamePacket();
                 mp.answer = 42;
 

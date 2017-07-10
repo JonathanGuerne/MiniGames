@@ -112,7 +112,7 @@ public abstract class GameScreen implements Screen,InputProcessor {
             if(!initializationOver){
                 initializationOver = true;
                 Gdx.input.setInputProcessor(this);
-                initInformationTable(opponentPlayer.getPseudo());
+                initInformationTable();
             }
             update();
             display();
@@ -142,7 +142,7 @@ public abstract class GameScreen implements Screen,InputProcessor {
         layout.setText(font, text, Color.BLACK, Gdx.graphics.getWidth(), Align.center, true);
     }
 
-    protected void initInformationTable(String oppenentPseudo)
+    protected void initInformationTable()
     {
         tableDisplay = new Table();
         tableDisplay.setPosition(gameLayoutWith, 0);
@@ -152,30 +152,24 @@ public abstract class GameScreen implements Screen,InputProcessor {
 
         stage.addActor(tableDisplay);
 
-        System.out.println("Step init ok");
-
         currentPlayerPseudo = new Label(localPlayer.getPseudo(), skin);
         currentPlayerPseudo.setColor(0, 255, 0, 255);
         tableDisplay.add(currentPlayerPseudo);
         tableDisplay.row();
-        System.out.println("Step currentPlayer ok");
 
         vsLabel = new Label("VS", skin);
         vsLabel.setColor(0, 255, 0, 255);
         tableDisplay.add(vsLabel);
         tableDisplay.row();
-        System.out.println("Step vs ok");
 
-        opponentPlayerPseudo = new Label(oppenentPseudo, skin);
+        opponentPlayerPseudo = new Label(opponentPlayer.getPseudo(), skin);
         opponentPlayerPseudo.setColor(0, 255, 0, 255);
         tableDisplay.add(opponentPlayerPseudo);
         tableDisplay.row();
-        System.out.println("Step opponentPlayer ok");
 
         playerTurn = new Label("", skin);
         playerTurn.setColor(0, 255, 0, 255);
         tableDisplay.add(playerTurn);
-        System.out.println("Step turn ok");
         gameLoaded = true;
     }
 }
