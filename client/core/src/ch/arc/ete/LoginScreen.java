@@ -31,6 +31,7 @@ public class LoginScreen implements Screen {
 
     Label serverLabel;
     Label pseudoLabel;
+    Label errorLabel;
     TextButton btnValider;
     TextField serverAdress;
     TextField clientPseudo;
@@ -71,11 +72,19 @@ public class LoginScreen implements Screen {
 
         pseudoLabel = new Label("Pseudo : ", skin);
 
+        errorLabel = new Label("", skin);
+        errorLabel.setColor(255, 0, 0, 255);
+
         btnValider = new TextButton("Connexion", skin);
 
         btnValider.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                if(clientPseudo.getText().equals(""))
+                {
+                    errorLabel.setText("Veuillez choisir un pseudo");
+                    return;
+                }
                 try {
                     client.connect(5000,serverAdress.getText(),tcp,udp);
                     LoginPacket lp = new LoginPacket();
@@ -89,6 +98,7 @@ public class LoginScreen implements Screen {
 
 
                 } catch (IOException e) {
+                    errorLabel.setText("Serveur inconnu");
                     e.printStackTrace();
                 }
             }
@@ -116,7 +126,9 @@ public class LoginScreen implements Screen {
         tableDisplay.add(pseudoLabel);
         tableDisplay.add(clientPseudo).width(300);
         tableDisplay.row();
-        tableDisplay.add(btnValider);
+        tableDisplay.add(errorLabel).colspan(2);
+        tableDisplay.row();
+        tableDisplay.add(btnValider).colspan(2);
         tableDisplay.row();
 
         stage.addActor(tableDisplay);
