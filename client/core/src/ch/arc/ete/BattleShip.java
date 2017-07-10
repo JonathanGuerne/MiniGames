@@ -13,24 +13,28 @@ import com.esotericsoftware.kryonet.Listener;
 import java.util.HashMap;
 
 import packets.BattleShip.BattleShipInGamePacket;
-import packets.BattleShip.BattleShipInitGamePacket;
 import packets.BattleShip.BattleShipStartConfirmPacket;
+import packets.BattleShip.BattleShipStartInitGamePacket;
 import packets.BattleShip.BattleShipStartPacket;
+import packets.Packet;
 
 /**
  * Created by jonathan.guerne on 01.05.2017.
  */
 
-public class BattleShip extends GameScreen implements InputProcessor {
+public class BattleShip extends GameScreen implements InputProcessor
+{
+    final int TAB_PLAYER = 0;
+    final int TAB_OPPONENT = 1;
 
     ShapeRenderer shapeRenderer;
     float w, h;
     char charUser;
     final int NB_CASE = 8;
-    final int NB_SHIP = 10;
+    final int NB_SHIP = 3;
     boolean showInit;
+    boolean showMessage = false;
     int shipInitialized;
-    char[] opponentTab;
 
     int touchIndex = -1;
 
@@ -46,47 +50,58 @@ public class BattleShip extends GameScreen implements InputProcessor {
         shapeRenderer.setColor(Color.BLACK);
 
         tabGame = new HashMap<Integer, char[]>();
-        tabGame.put(0, new char[NB_CASE * NB_CASE]);
+        tabGame.put(TAB_PLAYER, new char[NB_CASE * NB_CASE]);
+        tabGame.put(TAB_OPPONENT, new char[0]);
 
         Gdx.input.setInputProcessor(this);
 
         BattleShipStartPacket bssp = new BattleShipStartPacket();
-        /*J regarde la
-        *
-        *
-        *
-        * est ce que j'utilise client.getID ou localPlayer ????
-        * */
         bssp.idPlayer = localPlayer.getId();
 
         client.sendTCP(bssp);
 
-        client.addListener(new Listener(){
+        client.addListener(new Listener() {
             @Override
             public void received(Connection connection, Object o) {
-                if(o instanceof BattleShipStartConfirmPacket) {
-                    BattleShipStartConfirmPacket bsscp = (BattleShipStartConfirmPacket) o;
-                    foundOpponent = true;
-                    currentPlayerID = bsscp.idPlayer1;
+                if (o instanceof Packet) {
+                    if (o instanceof BattleShipStartConfirmPacket) {
+                        BattleShipStartConfirmPacket bsscp = (BattleShipStartConfirmPacket) o;
+                        foundOpponent = true;
+                        currentPlayerId = bsscp.idPlayer1;
 
-                    if (localPlayer.getId() == bsscp.idPlayer1) {
-                        charUser = bsscp.charPlayer1;
-                        opponentPlayer = new Player(bsscp.idPlayer2, "Jules");
-                    } else {
-                        charUser = bsscp.charPlayer2;
-                        opponentPlayer = new Player(bsscp.idPlayer1, "Jules");
+                        if (localPlayer.getId() == bsscp.idPlayer1) {
+                            charUser = bsscp.charPlayer1;
+                            opponentPlayer = new Player(bsscp.idPlayer2, "Jules");
+                        } else {
+                            charUser = bsscp.charPlayer2;
+                            opponentPlayer = new Player(bsscp.idPlayer1, "Jules");
+                        }
+                        System.out.println("oposant " + bsscp.idPlayer2 + " " + bsscp.idPlayer1);
+                        gameId = bsscp.gameId;
+
+                        initGame = true;
+                        showInit = true;
+                        showMessage = true;
+                        shipInitialized = 0;
+                        System.out.println("J'ai recu un packet de confirm");
+                    } else if (o instanceof BattleShipInGamePacket)
+                    {
+                        String text;
+                        BattleShipInGamePacket bsigp = (BattleShipInGamePacket) o;
+                        currentPlayerId = bsigp.currentPlayerId;
+                        if(localPlayer.getId() == currentPlayerId)
+                        {
+                            text = "C'est votre tour";
+                            tabGame.put(TAB_PLAYER, bsigp.currentPlayerTab);
+                            tabGame.put(TAB_OPPONENT, bsigp.opponentPlayerTab);
+                            text += tabGame.get(TAB_OPPONENT).length;
+                        }else
+                        {
+                            text = "C'est le tour de votre adversaire";
+                        }
+                        setCenterText(text);
+                        showMessage = true;
                     }
-
-                    gameId = bsscp.gameId;
-
-                    opponentTab = new char[NB_CASE * NB_CASE];
-                    initGame = true;
-                    showInit = true;
-                    shipInitialized = 0;
-                    System.out.println("J'ai recu un packet de confirm");
-                }else if(o instanceof BattleShipInitGamePacket)
-                {
-
                 }
             }
         });
@@ -99,68 +114,75 @@ public class BattleShip extends GameScreen implements InputProcessor {
 
         shapeRenderer.setColor(Color.GREEN);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (int i = 0; i < tabGame.get(0).length; i++) {
-            if (tabGame.get(0)[i] == charUser) {
+        for (int i = 0; i < tabGame.get(TAB_PLAYER).length; i++) {
+            if (tabGame.get(TAB_PLAYER)[i] == charUser) {
                 int x = i % NB_CASE;
                 int y = 7 - (i / NB_CASE);
-                shapeRenderer.rect(x*w, y*h, w, h);
+                shapeRenderer.rect(x * w, y * h, w, h);
             }
         }
         shapeRenderer.end();
 
+        if(tabGame.get(TAB_OPPONENT).length != 0)
+        {
+            shapeRenderer.setColor(Color.RED);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            for (int i = 0; i < tabGame.get(TAB_OPPONENT).length; i++) {
+                if (tabGame.get(TAB_OPPONENT)[i] == charUser) {
+                    int x = i % NB_CASE;
+                    int y = 7 - (i / NB_CASE);
+                    shapeRenderer.rect(x * w, y * h, w, h);
+                }
+                System.out.println("je m'appele toto");
+            }
+            shapeRenderer.end();
+        }
+
         shapeRenderer.setColor(Color.BLACK);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        for (int i = 0; i < NB_CASE; i++)
-        {
+        for (int i = 0; i < NB_CASE; i++) {
             shapeRenderer.line(i * w, 0, i * w, Gdx.graphics.getHeight());
             shapeRenderer.line(0, i * h, gameLayoutWith, i * h);
         }
         shapeRenderer.end();
 
-        if(initGame)
-        {
-            if(showInit)
-            {
-                setCenterText("Init de la partie");
+        if (initGame) {
+            setCenterText("Init de la partie");
 
-            }
-            if(shipInitialized >= NB_SHIP)
-            {
+            if (shipInitialized >= NB_SHIP) {
                 System.out.println("Tu as dépasser le bord des limites " + charUser);
             }
         }
-        float x = 0;
-        float y = Gdx.graphics.getHeight()/2 + layout.height/2;
 
-        batch.begin();
-        font.draw(batch,layout,x,y);
-        batch.end();
-    }
-
-    @Override
-    public void update()
-    {
-        if(initGame && shipInitialized == NB_SHIP)
-        {
-
-            BattleShipInGamePacket bsigp = new BattleShipInGamePacket();
-            bsigp.currentPlayerId = localPlayer.getId();
-            bsigp.opponentPlayerId = opponentPlayer.getId();
-            bsigp.currentPlayerTab = tabGame.get(0);
-            bsigp.opponentPlayerTab = opponentTab;
-            bsigp.gameId = gameId;
-
-            client.sendTCP(bsigp);
-
-            initGame = false;
-
-            setCenterText("Attente de l'autre joueur");
+        if (showMessage) {
+            float x = 0;
+            float y = Gdx.graphics.getHeight() / 2 + layout.height / 2;
+            batch.begin();
+            font.draw(batch, layout, x, y);
+            batch.end();
         }
     }
 
     @Override
-    public void resize(int width, int height)
-    {
+    public void update() {
+        if (initGame && shipInitialized == NB_SHIP) {
+            BattleShipStartInitGamePacket bssigp = new BattleShipStartInitGamePacket();
+            bssigp.idPlayer = localPlayer.getId();
+            System.out.println("opponent " + opponentPlayer.getId());
+            bssigp.idOpponent = opponentPlayer.getId();
+            bssigp.tabGame = tabGame.get(TAB_PLAYER);
+            bssigp.gameId = gameId;
+
+            client.sendTCP(bssigp);
+            initGame = false;
+
+            setCenterText("Attente de l'autre joueur...");
+            showMessage = true;
+        }
+    }
+
+    @Override
+    public void resize(int width, int height) {
         w = gameLayoutWith / NB_CASE;
         h = Gdx.graphics.getHeight() / NB_CASE;
     }
@@ -181,8 +203,7 @@ public class BattleShip extends GameScreen implements InputProcessor {
     }
 
     @Override
-    public void dispose()
-    {
+    public void dispose() {
         shapeRenderer.dispose();
     }
 
@@ -203,35 +224,32 @@ public class BattleShip extends GameScreen implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if(initGame)
-        {
-            if(showInit)
-            {
-                showInit = false;
-            }else
-            {
-                if(screenX > gameLayoutWith)
-                {
-                    return false;
-                }
-                shipInitialized++;
-                int x = (int) (screenX / w);
-                int y = (NB_CASE * (int) (screenY / h));
-                touchIndex = x + y;
-                tabGame.get(0)[touchIndex] = charUser;
-                System.out.println(touchIndex);
+
+        if (initGame && !showMessage) {
+
+            if (screenX > gameLayoutWith) {
+                return false;
             }
+            shipInitialized++;
+            int x = (int) (screenX / w);
+            int y = (NB_CASE * (int) (screenY / h));
+            touchIndex = x + y;
+            tabGame.get(TAB_PLAYER)[touchIndex] = charUser;
+            System.out.println(touchIndex);
+
 
             //System.out.println("J'ai toucher " + screenX);
 
-        }else if(gameOver)
-        {
+        } else if (gameOver) {
             ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, this.localPlayer));
-        }else
-        {
+        } else {
 
         }
 
+        if (showMessage) {
+            showMessage = false;
+            setCenterText("");
+        }
         return false;
     }
 

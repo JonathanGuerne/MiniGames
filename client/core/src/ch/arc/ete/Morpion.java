@@ -3,10 +3,8 @@ package ch.arc.ete;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -17,7 +15,6 @@ import com.esotericsoftware.kryonet.Listener;
 
 import java.util.HashMap;
 
-import packets.LoginConfirmPacket;
 import packets.MorpionEndGamePacket;
 import packets.MorpionInGameConfirmPacket;
 import packets.MorpionInGamePacket;
@@ -70,7 +67,7 @@ public class Morpion extends GameScreen implements InputProcessor {
                     if (o instanceof MorpionStartConfirmPacket) {
                         MorpionStartConfirmPacket mscp = (MorpionStartConfirmPacket) o;
                         foundOpponent = true;
-                        currentPlayerID = mscp.idPlayer1;
+                        currentPlayerId = mscp.idPlayer1;
 
                         if (localPlayer.getId() == mscp.idPlayer1) {
                             charUser = mscp.charPlayer1;
@@ -86,7 +83,7 @@ public class Morpion extends GameScreen implements InputProcessor {
                         MorpionInGameConfirmPacket migcp = (MorpionInGameConfirmPacket) o;
                         touchIndex = -1;
                         tabGame.put(0, migcp.tabGame);
-                        currentPlayerID = migcp.currentPlayerID;
+                        currentPlayerId = migcp.currentPlayerID;
                     } else if (o instanceof MorpionEndGamePacket) {
                         MorpionEndGamePacket megp = (MorpionEndGamePacket) o;
                         tabGame.put(0, megp.tabGame);
@@ -136,7 +133,7 @@ public class Morpion extends GameScreen implements InputProcessor {
         font.draw(batch, localPlayer.getPseudo(), gameLayoutWith + 20, 100);
         font.draw(batch, "VS", gameLayoutWith + 20, 150);
         font.draw(batch, opponentPlayer.getPseudo(), gameLayoutWith + 20, 200);
-        playerTurn = (currentPlayerID == localPlayer.getId()) ? "A vous de jouer " : "Votre adversaire est en train de jouer";
+        playerTurn = (currentPlayerId == localPlayer.getId()) ? "A vous de jouer " : "Votre adversaire est en train de jouer";
         font.draw(batch, playerTurn, gameLayoutWith + 20, 250);
         batch.end();*/
 
@@ -197,7 +194,7 @@ public class Morpion extends GameScreen implements InputProcessor {
     @Override
     public void update() {
         if(!gameOver) {
-            if (currentPlayerID == localPlayer.getId()) {
+            if (currentPlayerId == localPlayer.getId()) {
                 //if touchIndex is a value >= 0 and tab[touchIndex] is null
                 if (touchIndex != -1 && tabGame.get(0)[touchIndex] == '\0') {
                     tabGame.get(0)[touchIndex] = charUser;

@@ -1,10 +1,11 @@
 package packets.BattleShip;
+import packets.Packet;
 
 /**
  * Created by anthony.gillioz on 03.07.2017.
  */
 
-public class BattleShipStartConfirmPacket {
+public class BattleShipStartConfirmPacket extends Packet {
     public int gameId;
     public int idPlayer1;
     public char charPlayer1 = 'x';

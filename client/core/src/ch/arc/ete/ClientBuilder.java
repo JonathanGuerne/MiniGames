@@ -4,6 +4,7 @@ import com.esotericsoftware.kryonet.Client;
 
 import packets.BattleShip.BattleShipInGamePacket;
 import packets.BattleShip.BattleShipStartConfirmPacket;
+import packets.BattleShip.BattleShipStartInitGamePacket;
 import packets.BattleShip.BattleShipStartPacket;
 import packets.LoginConfirmPacket;
 import packets.LoginPacket;
@@ -36,6 +37,7 @@ public class ClientBuilder {
         client.getKryo().register(BattleShipStartPacket.class, 2001);
         client.getKryo().register(BattleShipStartConfirmPacket.class, 2010);
         client.getKryo().register(BattleShipInGamePacket.class, 2020);
+        client.getKryo().register(BattleShipStartInitGamePacket.class, 2030);
         return client;
     }
 

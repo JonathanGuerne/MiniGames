@@ -32,7 +32,7 @@ public abstract class GameScreen implements Screen {
 
     protected int tabSize;
 
-    protected int currentPlayerID;
+    protected int currentPlayerId;
 
     protected Player localPlayer;
     protected Player opponentPlayer;

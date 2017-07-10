@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import packets.battleship.BattleShipConfirmInitGame;
 import packets.battleship.BattleShipInGamePacket;
 import packets.battleship.BattleShipStartConfirmPacket;
 import packets.battleship.BattleShipStartInitGamePacket;
@@ -60,6 +59,7 @@ public class Main {
         server.getKryo().register(BattleShipStartPacket.class, 2001);
         server.getKryo().register(BattleShipStartConfirmPacket.class, 2010);
         server.getKryo().register(BattleShipInGamePacket.class, 2020);
+        server.getKryo().register(BattleShipStartInitGamePacket.class, 2030);
 
         server.start();
 
@@ -102,6 +102,7 @@ public class Main {
                             listGames.add(battleShip);
 
                             bsscp.gameId = battleShip.getId();
+                            System.out.println("p1 " + bsscp.idPlayer1 + " p2 " + bsscp.idPlayer2);
                             server.sendToTCP(bsscp.idPlayer1, bsscp);
                             server.sendToTCP(bsscp.idPlayer2, bsscp);
                         }
@@ -111,6 +112,7 @@ public class Main {
                         BattleShipStartInitGamePacket bssigp = (BattleShipStartInitGamePacket) p;
                         if(initializedGame.containsKey(bssigp.idOpponent))
                         {
+                            System.out.println("j'ai copain");
                             int idPlayer = bssigp.idPlayer;
                             int idOpponent = bssigp.idOpponent;
                             char[] tabPlayer = bssigp.tabGame;
@@ -123,7 +125,7 @@ public class Main {
                                 tabOpponent = bssigp.tabGame;
                             }
 
-                            BattleShipConfirmInitGame bscig = new BattleShipConfirmInitGame();
+                            BattleShipInGamePacket bscig = new BattleShipInGamePacket();
                             bscig.currentPlayerId = idPlayer;
                             bscig.opponentPlayerId = idOpponent;
                             bscig.currentPlayerTab = tabPlayer;
@@ -132,6 +134,10 @@ public class Main {
 
                             server.sendToTCP(bscig.currentPlayerId, bscig);
                             server.sendToTCP(bscig.opponentPlayerId, bscig);
+                        }else
+                        {
+                            System.out.println("Je suis tout seul " + bssigp.idPlayer + " " + bssigp.idOpponent);
+                            initializedGame.put(bssigp.idPlayer, bssigp.tabGame);
                         }
                     }
                     //BEGIN MORPION
