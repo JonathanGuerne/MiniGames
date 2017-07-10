@@ -26,7 +26,7 @@ import packets.Packet;
  * Created by jonathan.guerne on 01.05.2017.
  */
 
-public class Morpion extends GameScreen implements InputProcessor {
+public class Morpion extends GameScreen {
 
     ShapeRenderer shapeRenderer;
     float w, h;
@@ -53,8 +53,6 @@ public class Morpion extends GameScreen implements InputProcessor {
 
         tabGame.put(0,new char[9]);
 
-        Gdx.input.setInputProcessor(this);
-
         MorpionStartPacket msp = new MorpionStartPacket();
         msp.idPlayer = localPlayer.getId();
 
@@ -79,6 +77,9 @@ public class Morpion extends GameScreen implements InputProcessor {
 
                         gameId = mscp.gameId;
 
+                        initInformationTable(opponentPlayer.getPseudo());
+                        System.out.println("End of the initialisation");
+
                     } else if (o instanceof MorpionInGameConfirmPacket) {
                         MorpionInGameConfirmPacket migcp = (MorpionInGameConfirmPacket) o;
                         touchIndex = -1;
@@ -96,21 +97,15 @@ public class Morpion extends GameScreen implements InputProcessor {
             }
         });
 
-        tableDisplay = new Table();
+    }
 
-        tableDisplay.setPosition(gameLayoutWith, 0);
 
-        tableDisplay.setWidth(informationLayoutWith);
-        tableDisplay.setHeight(Gdx.graphics.getHeight());
-
-        tableDisplay.center();
-
-        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
-
-        stage.addActor(tableDisplay);
-
-        currentPlayerPseudo = new Label (localPlayer.getPseudo(), skin);
-        tableDisplay.add(currentPlayerPseudo);
+    /**
+     * method call when the player choose to left
+     * todo: tell the server
+     */
+    @Override
+    public void playerLeft() {
 
     }
 
@@ -119,24 +114,16 @@ public class Morpion extends GameScreen implements InputProcessor {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        if(playerTurn != null) {
+            String playerPlaying = (currentPlayerID == localPlayer.getId()) ? "Votre tour " : "Tour de l'adversaire";
+            playerTurn.setText(playerPlaying);
+        }
 
-        stage.act();
-
-        stage.draw();
-
-
-
-
-        /*batch.begin();
-        String playerTurn;
-        font.setColor(255, 255, 0, 255);
-        font.draw(batch, localPlayer.getPseudo(), gameLayoutWith + 20, 100);
-        font.draw(batch, "VS", gameLayoutWith + 20, 150);
-        font.draw(batch, opponentPlayer.getPseudo(), gameLayoutWith + 20, 200);
-        playerTurn = (currentPlayerId == localPlayer.getId()) ? "A vous de jouer " : "Votre adversaire est en train de jouer";
-        font.draw(batch, playerTurn, gameLayoutWith + 20, 250);
-        batch.end();*/
-
+        if(gameLoaded)
+        {
+            stage.act();
+            stage.draw();
+        }
 
         shapeRenderer.setColor(Color.GREEN);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);

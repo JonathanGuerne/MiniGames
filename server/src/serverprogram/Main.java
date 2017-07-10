@@ -34,6 +34,9 @@ public class Main {
     
     public static int clientIDWaitingPerGame[] = {-1,-1};
 
+    public final static int MORPION_INEX = 0;
+    public final static int BATTLESHIP_INDEX = 1;
+
     static ArrayList<Game> listGames = new ArrayList<>();
 
     public static HashMap<Integer, char[]> initializedGame = new HashMap<>();
@@ -86,15 +89,15 @@ public class Main {
                     if(p instanceof BattleShipStartPacket)
                     {
                         System.out.println("Bonjour, j'ai un packet pour vous. ID : " + connection.getID());
-                        if(clientIDWaitingPerGame[0] == -1)
+                        if(clientIDWaitingPerGame[BATTLESHIP_INDEX] == -1)
                         {
-                            clientIDWaitingPerGame[0] = connection.getID();
+                            clientIDWaitingPerGame[BATTLESHIP_INDEX] = connection.getID();
                         }else
                         {
                             BattleShipStartConfirmPacket bsscp = new BattleShipStartConfirmPacket();
-                            bsscp.idPlayer1 = clientIDWaitingPerGame[0];
+                            bsscp.idPlayer1 = clientIDWaitingPerGame[BATTLESHIP_INDEX];
                             bsscp.idPlayer2 = connection.getID();
-                            clientIDWaitingPerGame[0] = -1;
+                            clientIDWaitingPerGame[BATTLESHIP_INDEX] = -1;
 
                             Game battleShip = new Game(GameType.BATTLESHIP, bsscp.idPlayer1, bsscp.idPlayer2, currentGameId++);
                             battleShip.setCharPlayer1(bsscp.charPlayer1);
@@ -142,15 +145,15 @@ public class Main {
                     }
                     //BEGIN MORPION
                     if (p instanceof MorpionStartPacket) {
-                       if(clientIDWaitingPerGame[0] == -1){
-                           clientIDWaitingPerGame[0] = connection.getID();
+                       if(clientIDWaitingPerGame[MORPION_INEX] == -1){
+                           clientIDWaitingPerGame[MORPION_INEX] = connection.getID();
                            System.out.println("change user waiting id to "+connection.getID());
                        }
                        else{
                            MorpionStartConfirmPacket mscp = new MorpionStartConfirmPacket();
-                           mscp.idPlayer1 = clientIDWaitingPerGame[0];
+                           mscp.idPlayer1 = clientIDWaitingPerGame[MORPION_INEX];
                            mscp.idPlayer2 = connection.getID();
-                           clientIDWaitingPerGame[0] = -1;
+                           clientIDWaitingPerGame[MORPION_INEX] = -1;
                            System.out.println(mscp.idPlayer1+" and "+mscp.idPlayer2+" will play");
 
                            Game morpion =new Game(GameType.MORPION,mscp.idPlayer1,mscp.idPlayer2,currentGameId++);

@@ -22,11 +22,11 @@ import packets.Packet;
  * Created by jonathan.guerne on 01.05.2017.
  */
 
-public class BattleShip extends GameScreen implements InputProcessor
-{
+public class BattleShip extends GameScreen {
+    
+
     final int TAB_PLAYER = 0;
     final int TAB_OPPONENT = 1;
-
     ShapeRenderer shapeRenderer;
     float w, h;
     char charUser;
@@ -35,6 +35,7 @@ public class BattleShip extends GameScreen implements InputProcessor
     boolean showInit;
     boolean showMessage = false;
     int shipInitialized;
+    boolean initGame;
 
     int touchIndex = -1;
 
@@ -53,7 +54,7 @@ public class BattleShip extends GameScreen implements InputProcessor
         tabGame.put(TAB_PLAYER, new char[NB_CASE * NB_CASE]);
         tabGame.put(TAB_OPPONENT, new char[0]);
 
-        Gdx.input.setInputProcessor(this);
+       // Gdx.input.setInputProcessor(this);
 
         BattleShipStartPacket bssp = new BattleShipStartPacket();
         bssp.idPlayer = localPlayer.getId();
@@ -251,6 +252,15 @@ public class BattleShip extends GameScreen implements InputProcessor
             setCenterText("");
         }
         return false;
+    }
+
+    /**
+     * method called when the player choose to left the game
+     * TODO : notify the server
+     */
+    @Override
+    public void playerLeft() {
+
     }
 
     @Override
