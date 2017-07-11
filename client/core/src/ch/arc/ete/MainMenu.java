@@ -139,7 +139,7 @@ public class MainMenu implements Screen {
                 System.exit(0);
             }
         });
-
+        
         tableMenu.add(new Label("Bienvenue " + localPlayer.getPseudo(), skin,"title",Color.WHITE)).colspan(2);
         tableMenu.row();
         tableMenu.row();
