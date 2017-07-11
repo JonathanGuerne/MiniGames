@@ -233,19 +233,21 @@ public class Morpion extends GameScreen {
             {
                 return false;
             }
-            screenY -= informationLayoutHeight;
-            int x = (int) (screenX / w);
-            int y = (3 * (int) (screenY / h));
+            if(!showMessage) {
+                screenY -= informationLayoutHeight;
+                int x = (int) (screenX / w);
+                int y = (3 * (int) (screenY / h));
                 touchIndex = x + y;
+            }
+            else
+            {
+                showMessage = false;
+                setCenterText("");
+            }
         } else {
             ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, localPlayer));
         }
 
-        if(showMessage)
-        {
-            showMessage = false;
-            setCenterText("");
-        }
         return false;
     }
 
