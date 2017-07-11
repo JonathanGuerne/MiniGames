@@ -140,12 +140,12 @@ public class MainMenu implements Screen {
             }
         });
 
-        tableMenu.add(new Label("Bienvenue " + localPlayer.getPseudo(), skin));
+        tableMenu.add(new Label("Bienvenue " + localPlayer.getPseudo(), skin,"title",Color.BLACK)).colspan(2);
         tableMenu.row();
         tableMenu.row();
-        tableMenu.add(btnMoripon);
+        tableMenu.add(btnMoripon).colspan(2);
         tableMenu.row();
-        tableMenu.add(btnBattleShip);
+        tableMenu.add(btnBattleShip).colspan(2);
         tableMenu.row();
         tableMenu.add(btnBack);
         tableMenu.add(btnQuit);

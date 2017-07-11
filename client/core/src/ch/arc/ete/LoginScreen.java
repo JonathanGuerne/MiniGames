@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -84,7 +85,7 @@ public class LoginScreen implements Screen {
 
 //        serversListLabel = new Label("Liste des serveurs : ",skin);
 
-        serversListLabel = new Label("Liste des serveurs : ", skin , "big");
+        serversListLabel = new Label("Liste des serveurs : ", skin);
 
         serverLabel = new Label("Adresse du server : ", skin);
 
@@ -191,20 +192,22 @@ public class LoginScreen implements Screen {
         serverAdress = new TextField("127.0.0.1", skin);
         clientPseudo = new TextField("", skin);
 
-        tableDisplay.add(serverLabel);
+        tableDisplay.add(new Label("MINI GAMES",skin,"title",Color.BLACK)).colspan(3);
+        tableDisplay.row();
+        tableDisplay.add(serverLabel).align(Align.left);
         tableDisplay.add(serverAdress).width(200);
         tableDisplay.row();
-        tableDisplay.add(pseudoLabel);
+        tableDisplay.add(pseudoLabel).align(Align.left);
         tableDisplay.add(clientPseudo).width(200);
         tableDisplay.row();
         tableDisplay.row();
-        tableDisplay.add(serversListLabel);
+        tableDisplay.add(serversListLabel).align(Align.left);
         tableDisplay.add(serversAdresses).width(200);
         tableDisplay.add(btnRefreshServersList);
         tableDisplay.row();
-        tableDisplay.add(errorLabel).colspan(2);
+        tableDisplay.add(errorLabel).colspan(3);
         tableDisplay.row();
-        tableDisplay.add(btnValider).width(250);
+        tableDisplay.add(btnValider).width(250).colspan(3);
         tableDisplay.row();
 
         stage.addActor(tableDisplay);

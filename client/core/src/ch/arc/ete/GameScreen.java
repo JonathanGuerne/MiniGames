@@ -84,7 +84,7 @@ public abstract class GameScreen implements Screen,InputProcessor {
         batch = new SpriteBatch();
         font = Util.createFont(48);
         layout = new GlyphLayout();
-        final String text = "Waiting for an other player...";
+        final String text = "Attente d'un autre joueur...";
         setCenterText(text);
 
         skin = ApplicationSkin.getInstance().getSkin();
