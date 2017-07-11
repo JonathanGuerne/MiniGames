@@ -6,6 +6,11 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -37,7 +42,6 @@ public class BattleShip extends GameScreen {
     char charUser;
 
     boolean showInit;
-    boolean showMessage = false;
     boolean inGame = false;
     int shipInitialized;
     boolean initGame;
@@ -275,6 +279,20 @@ public class BattleShip extends GameScreen {
     }
 
     @Override
+    protected void setGameMenu() {
+        TextButton btnInvert = new TextButton("Inverser",skin);
+
+        btnInvert.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                //todo : handle button invert clicked
+            }
+        });
+
+        tableDisplay.add(btnInvert);
+    }
+
+    @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         return false;
     }
@@ -294,4 +312,3 @@ public class BattleShip extends GameScreen {
     public boolean scrolled(int amount) {
         return false;
     }
-}

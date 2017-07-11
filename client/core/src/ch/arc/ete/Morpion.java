@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.sun.org.apache.xpath.internal.SourceTree;
 
 import java.util.HashMap;
 
@@ -42,8 +43,6 @@ public class Morpion extends GameScreen {
     char charUser;
 
     int touchIndex = -1;
-
-    Label currentPlayerPseudo;
 
 
     public Morpion(Client client, Player localPlayer) {
@@ -80,12 +79,12 @@ public class Morpion extends GameScreen {
 
                         if (localPlayer.getId() == mscp.idPlayer1) {
                             charUser = mscp.charPlayer1;
-                            opponentPlayer = new Player(mscp.idPlayer2, "Jules");
+                            opponentPlayer = new Player(mscp.idPlayer2, mscp.player2Name);
                         } else {
                             charUser = mscp.charPlayer2;
-                            opponentPlayer = new Player(mscp.idPlayer1, "Jules");
+                            opponentPlayer = new Player(mscp.idPlayer1, mscp.player1Name);
                         }
-
+                        displayCurrentPlayer(opponentPlayer.getPseudo());
                         gameId = mscp.gameId;
 
                     } else if (o instanceof MorpionInGameConfirmPacket) {
@@ -93,6 +92,8 @@ public class Morpion extends GameScreen {
                         touchIndex = -1;
                         tabGame.put(0, migcp.tabGame);
                         currentPlayerId = migcp.currentPlayerID;
+                        displayCurrentPlayer(opponentPlayer.getPseudo());
+
                     } else if (o instanceof MorpionEndGamePacket) {
                         MorpionEndGamePacket megp = (MorpionEndGamePacket) o;
                         tabGame.put(0, megp.tabGame);
@@ -120,21 +121,16 @@ public class Morpion extends GameScreen {
     }
 
     @Override
+    protected void setGameMenu() {
+
+    }
+
+    @Override
     public void display() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         ApplicationSkin.getInstance().showBackground();
-
-        if(playerTurn != null) {
-            String playerPlaying = (currentPlayerId == localPlayer.getId()) ? "Votre tour " : "Tour de l'adversaire";
-            playerTurn.setText(playerPlaying);
-        }
-
-        if (gameLoaded) {
-            stage.act();
-            stage.draw();
-        }
 
 
 //        shapeRenderer.setColor(Color.GREEN);
@@ -178,6 +174,14 @@ public class Morpion extends GameScreen {
         }
 
         batch.end();
+
+        if (showMessage) {
+            float x = 0;
+            float y = Gdx.graphics.getHeight() / 2 + layout.height / 2;
+            batch.begin();
+            font.draw(batch, layout, x, y);
+            batch.end();
+        }
 
     }
 
@@ -265,23 +269,25 @@ public class Morpion extends GameScreen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        System.out.println("X : " + screenX + ". Y : " + screenY);
         if(!gameOver) {
             if(screenY < informationLayoutHeight)
             {
                 return false;
             }
+            screenY -= informationLayoutHeight;
             int x = (int) (screenX / w);
             int y = (3 * (int) (screenY / h));
-            //Fix round problem
-            if(x + y >= 0 && x + y < tabGame.get(0).length) {
                 touchIndex = x + y;
-            }
-            return false;
         } else {
             ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, localPlayer));
-            return false;
         }
+
+        if(showMessage)
+        {
+            showMessage = false;
+            setCenterText("");
+        }
+        return false;
     }
 
     @Override

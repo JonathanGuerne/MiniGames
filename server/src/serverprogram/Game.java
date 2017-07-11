@@ -6,6 +6,7 @@ package serverprogram;
 
 public class Game {
     private int id;
+
     private int idPlayer1;
     private int idPlayer2;
 

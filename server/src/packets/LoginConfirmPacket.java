@@ -5,5 +5,5 @@ package packets;
  */
 
 public class LoginConfirmPacket extends Packet {
-    public String msg;
+    public String namePlayer;
 }

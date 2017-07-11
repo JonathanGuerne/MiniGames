@@ -39,6 +39,7 @@ public class Main {
     public final static int NB_CASE = 8;
 
     static ArrayList<Game> listGames = new ArrayList<>();
+    static PlayerList listPlayer = new PlayerList();
 
     public static HashMap<Integer, char[]> initializedGame = new HashMap<>();
 
@@ -78,8 +79,13 @@ public class Main {
 
                     }
                     if (p instanceof LoginPacket) {
+
+                        LoginPacket lp = (LoginPacket) object;
+
+                        listPlayer.add(new Player(connection.getID(),lp.namePlayer));
+
                         LoginConfirmPacket lcp = new LoginConfirmPacket();
-                        lcp.msg = "connected";
+                        lcp.namePlayer =lp.namePlayer;
                         server.sendToTCP(connection.getID(), lcp);
                     }
                     //BEGIN BATTLE SHIP
@@ -151,9 +157,12 @@ public class Main {
                        }
                        else{
                            MorpionStartConfirmPacket mscp = new MorpionStartConfirmPacket();
-                           mscp.idPlayer1 = clientIDWaitingPerGame[MORPION_INDEX];
+                           mscp.idPlayer1 = clientIDWaitingPerGame[MORPION_INEX];
+                           mscp.player1Name = listPlayer.getPlayerById(mscp.idPlayer1).getNamePlayer();
                            mscp.idPlayer2 = connection.getID();
-                           clientIDWaitingPerGame[MORPION_INDEX] = -1;
+                           mscp.player2Name = listPlayer.getPlayerById(mscp.idPlayer2).getNamePlayer();
+
+                           clientIDWaitingPerGame[MORPION_INEX] = -1;
                            System.out.println(mscp.idPlayer1+" and "+mscp.idPlayer2+" will play");
 
                            Game morpion =new Game(GameType.MORPION,mscp.idPlayer1,mscp.idPlayer2,currentGameId++);

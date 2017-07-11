@@ -59,6 +59,7 @@ public abstract class GameScreen implements Screen,InputProcessor {
     boolean initGame;
     boolean gameLoaded;
     boolean initializationOver;
+    boolean showMessage = false;
 
     SpriteBatch batch;
     GlyphLayout layout;
@@ -70,7 +71,7 @@ public abstract class GameScreen implements Screen,InputProcessor {
     protected int informationLayoutWith = Gdx.graphics.getWidth() / 10 * 2;
 
     protected int gameLayoutHeight = Gdx.graphics.getHeight() /10 * 9;
-    protected int informationLayoutHeight = Gdx.graphics.getHeight() / 10 * 1;
+    protected int informationLayoutHeight = Gdx.graphics.getHeight() - gameLayoutHeight;
 
 
 
@@ -123,6 +124,11 @@ public abstract class GameScreen implements Screen,InputProcessor {
             update();
             display();
 
+            if (gameLoaded) {
+                stage.act();
+                stage.draw();
+            }
+
             if(gameOver){
                 float x = 0;
                 float y = Gdx.graphics.getHeight()/2 + layout.height/2;
@@ -155,6 +161,8 @@ public abstract class GameScreen implements Screen,InputProcessor {
 
     public abstract void playerLeft();
 
+    protected abstract void setGameMenu();
+
     public void setCenterText(String text){
         layout.setText(font, text, Color.BLACK, Gdx.graphics.getWidth(), Align.center, true);
     }
@@ -169,15 +177,22 @@ public abstract class GameScreen implements Screen,InputProcessor {
 
         stage.addActor(tableDisplay);
 
-
-
         lblInfo = new Label(localPlayer.getPseudo()+" VS "+opponentPlayer.getPseudo(),skin);
         tableDisplay.add(lblInfo);
         tableDisplay.row();
+
+        setGameMenu();
 
         tableDisplay.add(btnBack).width(300);
 
 
         gameLoaded = true;
+    }
+
+    protected void displayCurrentPlayer(String opponentName)
+    {
+        String text = (currentPlayerId == localPlayer.getId()) ? "C'est votre tour." : "C'est le tour de " + opponentName;
+        setCenterText(text);
+        showMessage = true;
     }
 }
