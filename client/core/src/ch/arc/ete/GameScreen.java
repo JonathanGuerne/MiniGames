@@ -87,7 +87,7 @@ public abstract class GameScreen implements Screen,InputProcessor {
         final String text = "Waiting for an other player...";
         setCenterText(text);
 
-        skin = new Skin(Gdx.files.internal("skin/comic-ui.json"));
+        skin = ApplicationSkin.getInstance().getSkin();
 
         btnBack = new TextButton("Retour",skin);
 

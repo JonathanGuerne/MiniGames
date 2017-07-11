@@ -10,8 +10,12 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
  */
 
 public class Util {
+
+
+    public static final String skinName = "skin/comic/comic-ui.json" ;
+
     public static BitmapFont createFont(int dp) {
-        FreeTypeFontGenerator ftfg = new FreeTypeFontGenerator(Gdx.files.internal("fonts/04B_19__.ttf"));
+        FreeTypeFontGenerator ftfg = new FreeTypeFontGenerator(Gdx.files.internal("fonts/animeace2_reg.ttf"));
         FreeTypeFontParameter parameter = new FreeTypeFontParameter();
         parameter.size = dp;
         return ftfg.generateFont(parameter);

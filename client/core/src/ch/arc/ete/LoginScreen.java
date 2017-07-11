@@ -3,6 +3,7 @@ package ch.arc.ete;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -29,7 +29,6 @@ import com.esotericsoftware.kryonet.Listener;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
 
 import packets.LoginConfirmPacket;
 import packets.LoginPacket;
@@ -81,10 +80,11 @@ public class LoginScreen implements Screen {
         tableDisplay.center();
 
 
-        Skin skin = new Skin(Gdx.files.internal("skin/comic-ui.json"));
+        Skin skin = ApplicationSkin.getInstance().getSkin();
 
+//        serversListLabel = new Label("Liste des serveurs : ",skin);
 
-        serversListLabel = new Label("Liste des serveurs : ",skin);
+        serversListLabel = new Label("Liste des serveurs : ", skin , "big");
 
         serverLabel = new Label("Adresse du server : ", skin);
 

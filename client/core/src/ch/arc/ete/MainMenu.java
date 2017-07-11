@@ -105,7 +105,7 @@ public class MainMenu implements Screen {
 
         tableMenu.center();
 
-        Skin skin = new Skin(Gdx.files.internal("skin/comic-ui.json"));
+        Skin skin = ApplicationSkin.getInstance().getSkin();
 
         btnMoripon = new TextButton("Jouer au morpion",skin);
         btnBattleShip = new TextButton("Jouer a la bataille navale", skin);
