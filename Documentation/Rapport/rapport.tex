@@ -21,8 +21,8 @@ la possibilité de travailler sur un projet libre dans le but d'approfondir leur
 Ce rapport décrit, explique les choix d'implémentations pris dans la réalisation de notre
 projet \projectName.
 
-Une planification des tâches ainsi qu'une spécification du travaille ont été réalisés dans le but
 \end{abstract}
+d'organiser au mieux le temps à disposition.
 
 \tableofcontents
 
@@ -36,19 +36,18 @@ deployer le même programme sur différentes platforme, et de la libraire kryone
 \chapter{Planification}
 
 \chapter{Conventions}
-
 Le jeu possède un style fortement inspiré de l'univers des comic book (bande dessinée principalement américaine)
 ce choix d'inspiration est principalement lié à l'utilisation d'un très bon thème graphique pour les éléments
 d'interface de LigGDX. Le thème nous plaisant nous avons choisi d'associer notre jeu à cet univers en adaptant l'interface, les
 textes et les images. C'est de plus un choix qui sort de l'ordinaire car il est plutôt rare de voir des jeux
 reprenant ce sytle graphique ce qui est à notre avis un point positif pour notre projet.
-\chapter{Identité graphique}
 
+\chapter{Identité graphique}
 Dès le lancemment du projet, nous nous sommes orienté vers libGDX qui est un
 framework Java gratuit et open source permettant la conception de jeux vidéo.
 Nous avons fait le choix de travailler avec ce framework en particulier, car
 nous avions découvert son existence quelque temps auparavant et, en apprenant à le connaître,
-Nous avons fait le choix de travailler avec ce framework en particulier, car nous avions découvert son existence quelque temps auparavant et, en apprenant à le connaître,
+Dès le lancemment du projet, nous nous sommes orienté vers libGDX qui est un framework Java gratuit et open source permettant la conception de jeux vidéo.
 LibGDX nous a permis de gagner en temps précieux au niveau de l’implémentation
 puisqu’il propose nativement des fonctionnalités comme la gestion de stages ou
 de cameras qui sinon aurait dû être créés à la main.
@@ -56,12 +55,11 @@ de cameras qui sinon aurait dû être créés à la main.
 renseignements ou de l’aide concernant sa façon de fonctionner. Nous n’avions
 aucune expérience dans son utilisation pourtant il ne nous a fallu que très peu
  de temps avant de commencer à d’obtenir de bons résultats.
-Étant un framework connu et grandement utilisé, il est simple de trouver des renseignements ou de l’aide concernant sa façon de fonctionner. Nous n’avions aucune expérience dans son utilisation pourtant il ne nous a fallu que très peu de temps avant de commencer à d’obtenir de bons résultats.
 
 \chapter{Kryonet}
 Ayant travaillé cette année sur des échanges réseau en Java sans utiliser de libraire externe nous avons pu réaliser que la tâche était fastidieuse, c'est donc naturellement que nous
 nous sommes tourné vers Kryonet qui est une librairie open source permettant de faciliter la communication entre différents clients. Un des points essentiel du projet était de pouvoir
-garentir que LibGDX et Kryonet pouvaient cohabiter, après quelques tests et recherches nous avons pu réaliser que c'était bel et bien ée cas ( du moins pour le déploiment sur ordiateur et android).
+garentir que LibGDX et Kryonet pouvaient cohabiter, après quelques tests et recherches nous avons pu réaliser que c'était bel et bien le cas ( du moins pour le déploiment sur ordiateur et android).
 
 \chapter{Architecture logicielle}
 
@@ -72,35 +70,32 @@ deux parties est facilitée par l'utilisation de Kryonet une librairie Java open
 
 \section{Les packets}
 Les données envoyées entre le client et le serveur transitent sous la forme de Packets, les packets sont des classes présentent
-chez le client et chez le serveur enregistrer au lancement du service.
 Pour un client, si une connexion à été établie, il lui est possible d'envoyer par
 TCP ou UDP des Packets au serveur. Dans le cas complémentaire,
 pour recevoir les différents Packets émmanent du serveur le client met en place
 un listener qui va automatiquement gérer la réception des Packets et analyser leur contenu.
-L'implémentaion du serveur est identique à la nuance près qu'elle laisse le choit
-de la personne (de l'adresse) à qui sera envoyé le Packets. En effet toutes les infos, tous les Packets,
-L'implémentaion du serveur est identique à la nuance près qu'elle laisse le choit de la personne (de l'adresse) à qui sera envoyé le Packets. En effet toutes les infos, tous les Packets,
-transitent par le serveur, c'est lui ensuite qui les traitent et les renvoient aux différents clients conscernés.
 
+L'implémentaion du serveur est identique à la nuance près qu'elle laisse le choix
+de la personne (de l'adresse) à qui sera envoyé le Packets. En effet toutes les infos, tous les Packets,
+transitent par le serveur, c'est lui ensuite qui les traitent et les renvoient aux différents clients conscernés.
 A l'ouverture du programme le client est invité à entrer une adresse de serveur
 et un pseudo pour tenter ensuite de se connecter. Afin de faciliter l'entrée de l'adresse du serveur la fonction de
 découverte des hôtes fournie par Kryonet a été utilisée, elle va fournir une
 liste d'adresse qui seront ensuite présentées à l'utilisateur sous la forme d'une liste déroulante
-découverte des hôtes fournie par Kryonet a été utilisée, elle va fournir une liste d'adresse qui seront ensuite présentées à l'utilisateur sous la forme d'une liste déroulante
-si l'utilisateur sélectionne un élément de la liste l'adresse est automatiquement copié dans le champs de l'adresse du serveur.
 Une fois que le serveur à reçu un Packet de login (une tentative de connexion a
 été envoyée) le serveur stocke le nouveau joueur dans une liste, il comfirmera ensuite le
 bon déroulement des opération au client en lui envoyant un Packet de confirmation.
 Ce Packet de confirmation le client l'utilise comme signal pour changer d'écran
 et afficher le menu de sélection des jeux.
+si l'utilisateur sélectionne un élément de la liste l'adresse est automatiquement copié dans le champs de l'adresse du serveur.
 
 
 \section{Communication en jeu}
-
 Dans ce chapitre seront présentés les différents minis jeux mis en place dans
 ce projet aisni que leur implémentation.
 Le serveur garde un historique des jeux sous la forme d'une liste d'objets
 contenant les informations sur les différents joueurs opposés durant la partie.
+\chapter{Minis jeux}
 Dans ce chapitre seront présentés les différents minis jeux mis en place dans ce projet aisni que leur implémentation.
 
 \section{Morpion}
@@ -109,25 +104,24 @@ tour à tour ils vont devoir placer ces cartacères dans le plateau de jeu dans 
 Si la partie se finit sans qu'aucun joueur n'est réussit à remplir une ligne/ une diagonale c'est un match nul.
 
 \section{Bataille navale}
-
 Ce chapitre propose une vue d'ensemble récapitulative sur le travaille effectué. Les probématiques encore présentent dans le programme à ce jour ainsi que les
 différentes idées d'améliorations future seront exposées et détaillées.
-\chapter{Conclusion}
 
+\chapter{Conclusion}
 Une des problématique rencontrée a été la mise en place d'un serveur sur android. En effet, LibGDX "facile" le portage de l'application client vers les
 périphériques android mais le serveur à lui été dévelopé sans libgdx. Une ébauche d'application android oppérant de la même manière que le serveur Java classique a
 été mise en place, l'implémentation c'est avérée très lourdes et peu fructueuse dans le sens où lorsqu'un client se connectait à un serveur android celui-ci crashait
 immédiatement.
-\section{Problematique}
 
+\section{Problematique}
 La communication entre pc et android est fonctionnelle mais, comme expliqué plus haut, notre shouaite était d'étendre notre proramme à encore deux autres
 plate-formes : IOS et HTML5 (navigateur web). Certain problème d'implpémentation pourrait survenir (utilisation d'outil non supportés sur certaines plate-formes, etc.)
 mais avec du temps l'application pourrait être totalement multi-plateforme.
+
 \section{Améliorations}
 
-
-\chapter{Bibliographie}
-\href{http://www.flaticon.com/free-icon/pirate-ship_361245#term=pirate%20ship&page=1&position=6}{Lien de l'image}
+\chapter{Bibliothèque}
+http://www.flaticon.com/free-icon/pirate-ship_361245#term=pirate%20ship&page=1&position=6
 
 
 \end{document}
