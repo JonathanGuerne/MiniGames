@@ -50,8 +50,8 @@ public class BattleShip extends GameScreen {
     @Override
     public void show() {
         shapeRenderer = new ShapeRenderer();
-        w = gameLayoutWith / NB_CASE;
-        h = Gdx.graphics.getHeight() / NB_CASE;
+        w = Gdx.graphics.getWidth() / NB_CASE;
+        h = gameLayoutHeight / NB_CASE;
         shapeRenderer.setColor(Color.BLACK);
 
         tabGame = new HashMap<Integer, char[]>();
@@ -148,8 +148,8 @@ public class BattleShip extends GameScreen {
         shapeRenderer.setColor(Color.BLACK);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         for (int i = 0; i < NB_CASE; i++) {
-            shapeRenderer.line(i * w, 0, i * w, Gdx.graphics.getHeight());
-            shapeRenderer.line(0, i * h, gameLayoutWith, i * h);
+            shapeRenderer.line(i * w, 0, i * w, gameLayoutHeight);
+            shapeRenderer.line(0, i * h, Gdx.graphics.getWidth(), i * h);
         }
         shapeRenderer.end();
 
@@ -190,8 +190,8 @@ public class BattleShip extends GameScreen {
 
     @Override
     public void resize(int width, int height) {
-        w = gameLayoutWith / NB_CASE;
-        h = Gdx.graphics.getHeight() / NB_CASE;
+        w = Gdx.graphics.getWidth() / NB_CASE;
+        h = gameLayoutHeight / NB_CASE;
     }
 
     @Override
@@ -234,9 +234,10 @@ public class BattleShip extends GameScreen {
 
         if (initGame && !showMessage) {
 
-            if (screenX > gameLayoutWith) {
+            if (screenY < informationLayoutHeight) {
                 return false;
             }
+            screenY -= informationLayoutHeight;
             shipInitialized++;
             int x = (int) (screenX / w);
             int y = (NB_CASE * (int) (screenY / h));
