@@ -6,8 +6,6 @@ import com.esotericsoftware.kryonet.Server;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import packets.MorpionPlayerLeaving;
 import packets.battleship.BattleShipInGamePacket;
@@ -35,8 +33,10 @@ public class Main {
     
     public static int clientIDWaitingPerGame[] = {-1,-1};
 
-    public final static int MORPION_INEX = 0;
+    public final static int MORPION_INDEX = 0;
     public final static int BATTLESHIP_INDEX = 1;
+
+    public final static int NB_CASE = 8;
 
     static ArrayList<Game> listGames = new ArrayList<>();
 
@@ -45,9 +45,6 @@ public class Main {
     private static int currentGameId = 1;
 
     public static void main(String args[]) throws IOException {
-       
-        
-        
         Server server = new Server();
 
         server.getKryo().register(Packet.class, 100);
@@ -129,7 +126,10 @@ public class Main {
                             bscig.currentPlayerId = idPlayer;
                             bscig.opponentPlayerId = idOpponent;
                             bscig.currentPlayerTab = tabPlayer;
+                            bscig.currentPlayerTabTouched = new char[NB_CASE * NB_CASE];
+                            bscig.opponentPlayerTabTouched = new char[NB_CASE * NB_CASE];
                             bscig.opponentPlayerTab = tabOpponent;
+
                             bscig.gameId = bssigp.gameId;
 
                             server.sendToTCP(bscig.currentPlayerId, bscig);
@@ -146,14 +146,14 @@ public class Main {
                     }
                     //BEGIN MORPION
                     if (p instanceof MorpionStartPacket) {
-                       if(clientIDWaitingPerGame[MORPION_INEX] == -1){
-                           clientIDWaitingPerGame[MORPION_INEX] = connection.getID();
+                       if(clientIDWaitingPerGame[MORPION_INDEX] == -1){
+                           clientIDWaitingPerGame[MORPION_INDEX] = connection.getID();
                        }
                        else{
                            MorpionStartConfirmPacket mscp = new MorpionStartConfirmPacket();
-                           mscp.idPlayer1 = clientIDWaitingPerGame[MORPION_INEX];
+                           mscp.idPlayer1 = clientIDWaitingPerGame[MORPION_INDEX];
                            mscp.idPlayer2 = connection.getID();
-                           clientIDWaitingPerGame[MORPION_INEX] = -1;
+                           clientIDWaitingPerGame[MORPION_INDEX] = -1;
                            System.out.println(mscp.idPlayer1+" and "+mscp.idPlayer2+" will play");
 
                            Game morpion =new Game(GameType.MORPION,mscp.idPlayer1,mscp.idPlayer2,currentGameId++);

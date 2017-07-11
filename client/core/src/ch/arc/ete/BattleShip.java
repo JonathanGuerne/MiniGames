@@ -27,6 +27,7 @@ public class BattleShip extends GameScreen {
     final int TAB_PLAYER = 0;
     final int TAB_OPPONENT = 1;
     final int TAB_TOUCHED = 2;
+    final int TAB_TOUCHED_OPPONENT = 3;
     final int NB_CASE = 8;
     final int NB_SHIP = 3;
 
@@ -57,7 +58,6 @@ public class BattleShip extends GameScreen {
         tabGame = new HashMap<Integer, char[]>();
         tabGame.put(TAB_PLAYER, new char[NB_CASE * NB_CASE]);
         tabGame.put(TAB_OPPONENT, new char[0]);
-        tabGame.put(TAB_TOUCHED, new char[0]);
 
        // Gdx.input.setInputProcessor(this);
 
@@ -98,14 +98,17 @@ public class BattleShip extends GameScreen {
                         if(localPlayer.getId() == currentPlayerId)
                         {
                             text = "C'est votre tour";
-                            tabGame.put(TAB_PLAYER, bsigp.currentPlayerTab);
-                            tabGame.put(TAB_OPPONENT, bsigp.opponentPlayerTab);
-                            text += tabGame.get(TAB_OPPONENT).length;
                             inGame = true;
                         }else
                         {
                             text = "C'est le tour de votre adversaire";
                         }
+
+                        tabGame.put(TAB_PLAYER, bsigp.currentPlayerTab);
+                        tabGame.put(TAB_OPPONENT, bsigp.opponentPlayerTab);
+                        tabGame.put(TAB_TOUCHED, bsigp.currentPlayerTabTouched);
+                        tabGame.put(TAB_TOUCHED_OPPONENT, bsigp.opponentPlayerTabTouched);
+
                         setCenterText(text);
                         showMessage = true;
                     }
@@ -155,15 +158,13 @@ public class BattleShip extends GameScreen {
         }
         shapeRenderer.end();
 
-        if (initGame) {
+        if (initGame)
+        {
             setCenterText("Init de la partie");
-
-            if (shipInitialized >= NB_SHIP) {
-                System.out.println("Tu as dépasser le bord des limites " + charUser);
-            }
         }
 
-        if (showMessage) {
+        if (showMessage)
+        {
             float x = 0;
             float y = Gdx.graphics.getHeight() / 2 + layout.height / 2;
             batch.begin();
@@ -189,7 +190,7 @@ public class BattleShip extends GameScreen {
             showMessage = true;
         }else if(inGame)
         {
-
+            System.out.println("J'ai jouer!!");
         }
     }
 
@@ -254,7 +255,7 @@ public class BattleShip extends GameScreen {
             int x = (int) (screenX / w);
             int y = (NB_CASE * (int) (screenY / h));
             touchIndex = x + y;
-            tabGame.get(TAB_PLAYER)[touchIndex] = charUser;
+            tabGame.get(TAB_TOUCHED)[touchIndex] = charUser;
         }
 
         if (showMessage) {

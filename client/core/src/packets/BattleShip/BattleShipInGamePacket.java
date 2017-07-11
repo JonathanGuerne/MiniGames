@@ -11,6 +11,8 @@ public class BattleShipInGamePacket extends Packet
     public int currentPlayerId;
     public int opponentPlayerId;
     public char[] currentPlayerTab;
+    public char[] currentPlayerTabTouched;
     public char[] opponentPlayerTab;
+    public char[] opponentPlayerTabTouched;
     public int gameId;
 }
