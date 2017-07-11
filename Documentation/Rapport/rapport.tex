@@ -36,13 +36,6 @@ deployer le même programme sur différentes platforme, et de la libraire kryone
 
 \chapter{Conventions}
 
-\chapter{Identité graphique}
-Le jeu possède un style fortement inspiré de l'univers des comic book (bande dessinée principalement américaine)
-ce choix d'inspiration est principalement lié à l'utilisation d'un très bon thème graphique pour les éléments
-d'interface de LigGDX. Le thème nous plaisant nous avons choisi d'associer notre jeu à cet univers en adaptant l'interface, les
-textes et les images. C'est de plus un choix qui sort de l'ordinaire car il est plutôt rare de voir des jeux
-reprenant ce sytle graphique ce qui est à notre avis un point positif pour notre projet.
-
 \chapter{LibGDX}
 Dès le lancemment du projet, nous nous sommes orienté vers libGDX qui est un
 framework Java gratuit et open source permettant la conception de jeux vidéo.
@@ -96,6 +89,23 @@ et afficher le menu de sélection des jeux.
 
 \section{Communication en jeu}
 
+Quand un joueur décide de lancer une nouvelle partie d'un jeu il transmet un Packet au serveur donnant comme information son ID et le jeu
+auquel il shouaite jouer. Le serveur va, une fois le Packet reçu, verifier si quelqu'un est déjà en train d'attendre de démarrer un partie de ce jeu
+ou non. Comme ce projet n'implémente que des jeux à deux joueurs la "salle d'attente" pour jouer à un jeu ne sera jamais composée de plus d'une personne,
+ce joueur (ou plutôt son ID) est stocké dans un variable faisant office de salle d'attente du jeu désiré.
+
+Quand un second joueur se connecte la pertie peu commencer ! le serveur prépare donc un Packet de création de partie contenant l'ID et le nom de tous les
+joueurs de la partie, mais également le numéro (également appelé ID) de la partie en elle même (utile plus tard).
+
+Tour à tour les joueurs envoient des informations aux serveurs propre au jeu auquel ils sont en train de jouer, le serveur va ensuite lui se charger de
+tester si la partie est terminée ou non et enverra les bons Packets en conscéquence.
+
+Quand une partie est finie un message s'affiche chez les joueurs leur idiquant s'ils ont gagné, perdu ou encore fait un match nul (morpion). Ils sont
+ensuite invité à cliquer sur l'écran pour revenir à la sélection des minis jeux.
+
+Si un joueur quitte la partie alors qu'elle n'est pas terminé le serveur en est informé. Il récupère ensuite les informations de la partie que
+ce joueur était en train de faire et contact son adversaire pour lui signaler l'abandon de son adversaire.
+
 \chapter{Minis jeux}
 Dans ce chapitre seront présentés les différents minis jeux mis en place dans
 ce projet aisni que leur implémentation.
@@ -108,6 +118,18 @@ tour à tour ils vont devoir placer ces cartacères dans le plateau de jeu dans 
 Si la partie se finit sans qu'aucun joueur n'est réussit à remplir une ligne/ une diagonale c'est un match nul.
 
 \section{Bataille navale}
+
+
+\chapter{Identité graphique}
+Le jeu possède un style fortement inspiré de l'univers des comic book (bande dessinée principalement américaine)
+ce choix d'inspiration est principalement lié à l'utilisation d'un très bon thème graphique pour les éléments
+d'interface de LigGDX. Le thème nous plaisant nous avons choisi d'associer notre jeu à cet univers en adaptant l'interface, les
+textes et les images. C'est de plus un choix qui sort de l'ordinaire car il est plutôt rare de voir des jeux
+reprenant ce sytle graphique ce qui est à notre avis un point positif pour notre projet.
+
+\section{Interface}
+L'interface du programme est découpé en trois parties principales : l'écran de login, le menu de sélection des minis jeux et finalement le jeu en lui-même.
+
 
 \chapter{Conclusion}
 Ce chapitre propose une vue d'ensemble récapitulative sur le travaille effectué. Les probématiques encore présentent dans le programme à ce jour ainsi que les
