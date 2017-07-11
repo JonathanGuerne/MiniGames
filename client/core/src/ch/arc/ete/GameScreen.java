@@ -181,4 +181,11 @@ public abstract class GameScreen implements Screen,InputProcessor {
 
         gameLoaded = true;
     }
+
+    protected void displayCurrentPlayer(String opponentName)
+    {
+        String text = (currentPlayerId == localPlayer.getId()) ? "C'est votre tour." : "C'est le tour de " + opponentName;
+        setCenterText(text);
+        showMessage = true;
+    }
 }

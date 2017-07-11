@@ -84,7 +84,7 @@ public class Morpion extends GameScreen {
                             charUser = mscp.charPlayer2;
                             opponentPlayer = new Player(mscp.idPlayer1, mscp.player1Name);
                         }
-
+                        displayCurrentPlayer(opponentPlayer.getPseudo());
                         gameId = mscp.gameId;
 
                     } else if (o instanceof MorpionInGameConfirmPacket) {
@@ -92,9 +92,8 @@ public class Morpion extends GameScreen {
                         touchIndex = -1;
                         tabGame.put(0, migcp.tabGame);
                         currentPlayerId = migcp.currentPlayerID;
-                        String text = (currentPlayerId == localPlayer.getId()) ? "C'est votre tour" : "C'est le tour de votre adversaire";
-                        setCenterText(text);
-                        showMessage = true;
+                        displayCurrentPlayer(opponentPlayer.getPseudo());
+
                     } else if (o instanceof MorpionEndGamePacket) {
                         MorpionEndGamePacket megp = (MorpionEndGamePacket) o;
                         tabGame.put(0, megp.tabGame);
