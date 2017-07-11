@@ -45,8 +45,8 @@ public class Morpion extends GameScreen {
     @Override
     public void show() {
         shapeRenderer = new ShapeRenderer();
-        w =  gameLayoutWith / 3;
-        h = Gdx.graphics.getHeight() / 3;
+        w =  Gdx.graphics.getWidth() / 3;
+        h = gameLayoutHeight / 3;
         shapeRenderer.setColor(Color.BLACK);
 
 
@@ -155,8 +155,8 @@ public class Morpion extends GameScreen {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
         for (int i = 0; i < 4; i++) {
-            shapeRenderer.line(i * w, 0, i * w, Gdx.graphics.getHeight());
-            shapeRenderer.line(0, i * h, gameLayoutWith, i * h);
+            shapeRenderer.line(i * w, 0, i * w, gameLayoutHeight);
+            shapeRenderer.line(0, i * h, Gdx.graphics.getWidth(), i * h);
         }
 
         shapeRenderer.end();
@@ -185,8 +185,6 @@ public class Morpion extends GameScreen {
     @Override
     public void update() {
         if(!gameOver) {
-
-
             if (currentPlayerId == localPlayer.getId()) {
                 //if touchIndex is a value >= 0 and tab[touchIndex] is null
                 if (touchIndex != -1 && tabGame.get(0)[touchIndex] == '\0') {
@@ -206,8 +204,8 @@ public class Morpion extends GameScreen {
 
     @Override
     public void resize(int width, int height) {
-        w = gameLayoutWith / 3;
-        h = Gdx.graphics.getHeight() / 3;
+        w = Gdx.graphics.getWidth() / 3;
+        h = gameLayoutHeight / 3;
     }
 
     @Override
@@ -247,15 +245,19 @@ public class Morpion extends GameScreen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
+        System.out.println("X : " + screenX + ". Y : " + screenY);
         if(!gameOver) {
-            if(screenX > gameLayoutWith)
+            if(screenY < informationLayoutHeight)
             {
+                System.out.println("En dehors !");
                 return false;
             }
             int x = (int) (screenX / w);
             int y = (3 * (int) (screenY / h));
-            touchIndex = x + y;
+            //Fix round problem
+            if(x + y >= 0 && x + y < tabGame.get(0).length) {
+                touchIndex = x + y;
+            }
             return false;
         }
         else{

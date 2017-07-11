@@ -71,6 +71,9 @@ public abstract class GameScreen implements Screen,InputProcessor {
     protected int gameLayoutWith = Gdx.graphics.getWidth() /10 * 8;
     protected int informationLayoutWith = Gdx.graphics.getWidth() / 10 * 2;
 
+    protected int gameLayoutHeight = Gdx.graphics.getHeight() /10 * 9;
+    protected int informationLayoutHeight = Gdx.graphics.getHeight() / 10 * 1;
+
 
 
     public GameScreen(final Client client, final Player localPlayer) {
@@ -152,34 +155,34 @@ public abstract class GameScreen implements Screen,InputProcessor {
     protected void initInformationTable()
     {
         tableDisplay = new Table();
-        tableDisplay.setPosition(gameLayoutWith, 0);
-        tableDisplay.setWidth(informationLayoutWith);
-        tableDisplay.setHeight(Gdx.graphics.getHeight());
+        tableDisplay.setPosition(0, gameLayoutHeight);
+        tableDisplay.setWidth(Gdx.graphics.getWidth());
+        tableDisplay.setHeight(informationLayoutHeight);
         tableDisplay.center();
 
         stage.addActor(tableDisplay);
 
         currentPlayerPseudo = new Label(localPlayer.getPseudo(), skin);
         currentPlayerPseudo.setColor(0, 255, 0, 255);
-        tableDisplay.add(currentPlayerPseudo);
-        tableDisplay.row();
+        tableDisplay.add(currentPlayerPseudo).colspan(1);
+        //tableDisplay.row();
 
         vsLabel = new Label("VS", skin);
         vsLabel.setColor(0, 255, 0, 255);
-        tableDisplay.add(vsLabel);
-        tableDisplay.row();
+        tableDisplay.add(vsLabel).colspan(2);
+        //tableDisplay.row();
 
         opponentPlayerPseudo = new Label(opponentPlayer.getPseudo(), skin);
         opponentPlayerPseudo.setColor(0, 255, 0, 255);
-        tableDisplay.add(opponentPlayerPseudo);
-        tableDisplay.row();
+        tableDisplay.add(opponentPlayerPseudo).colspan(3);
+        //tableDisplay.row();
 
-        playerTurn = new Label("", skin);
+        /*playerTurn = new Label("", skin);
         playerTurn.setColor(0, 255, 0, 255);
         tableDisplay.add(playerTurn);
-        tableDisplay.row();
+        tableDisplay.row();*/
 
-        tableDisplay.add(btnBack);
+        tableDisplay.add(btnBack).colspan(5);
 
 
         gameLoaded = true;
