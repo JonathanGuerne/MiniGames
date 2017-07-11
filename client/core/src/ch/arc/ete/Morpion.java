@@ -19,6 +19,8 @@ import com.sun.org.apache.xpath.internal.SourceTree;
 
 import java.util.HashMap;
 
+import javax.swing.JLabel;
+
 import packets.MorpionEndGamePacket;
 import packets.MorpionInGameConfirmPacket;
 import packets.MorpionInGamePacket;
