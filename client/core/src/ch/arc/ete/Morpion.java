@@ -18,6 +18,8 @@ import com.esotericsoftware.kryonet.Listener;
 
 import java.util.HashMap;
 
+import javax.swing.JLabel;
+
 import packets.MorpionEndGamePacket;
 import packets.MorpionInGameConfirmPacket;
 import packets.MorpionInGamePacket;
