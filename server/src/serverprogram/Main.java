@@ -6,10 +6,8 @@ import com.esotericsoftware.kryonet.Server;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import packets.MorpionPlayerLeaving;
+import packets.GamePlayerLeavingPacket;
 import packets.battleship.BattleShipInGamePacket;
 import packets.battleship.BattleShipStartConfirmPacket;
 import packets.battleship.BattleShipStartInitGamePacket;
@@ -61,7 +59,7 @@ public class Main {
         server.getKryo().register(MorpionInGamePacket.class,1020);
         server.getKryo().register(MorpionInGameConfirmPacket.class,1030);
         server.getKryo().register(MorpionEndGamePacket.class,1050);
-        server.getKryo().register(MorpionPlayerLeaving.class,1110);
+        server.getKryo().register(GamePlayerLeavingPacket.class,1110);
         server.getKryo().register(BattleShipStartPacket.class, 2001);
         server.getKryo().register(BattleShipStartConfirmPacket.class, 2010);
         server.getKryo().register(BattleShipInGamePacket.class, 2020);
@@ -202,6 +200,9 @@ public class Main {
                             megp.gameId = migp.gameId;
                             megp.tabGame = migp.tabGame;
 
+                            listPlayer.getPlayerById(migp.currentPlayerID).setPlaying(false);
+                            listPlayer.getPlayerById(migp.opponentPlayerID).setPlaying(false);
+
                             server.sendToTCP(migp.currentPlayerID,megp);
                             server.sendToTCP(migp.opponentPlayerID,megp);
 
@@ -216,8 +217,10 @@ public class Main {
                             server.sendToTCP(migp.opponentPlayerID, migcp);
                         }
                     }
-                    if(p instanceof MorpionPlayerLeaving){
-                        MorpionPlayerLeaving mpl = (MorpionPlayerLeaving) p;
+                    if(p instanceof GamePlayerLeavingPacket){
+                        GamePlayerLeavingPacket mpl = (GamePlayerLeavingPacket) p;
+
+                        System.out.println("Player leaving");
 
                         if(clientIDWaitingPerGame[MORPION_INEX] == mpl.playerid){
                             clientIDWaitingPerGame[MORPION_INEX] = -1;
@@ -228,8 +231,11 @@ public class Main {
                                 server.sendToTCP(game.getIdPlayer1(),mpl);
                             }
                             else{
-                                server.sendToTCP(game.getIdPlayer1(),mpl);
+                                server.sendToTCP(game.getIdPlayer2(),mpl);
                             }
+
+                            listPlayer.getPlayerById(game.getIdPlayer1()).setPlaying(false);
+                            listPlayer.getPlayerById(game.getIdPlayer2()).setPlaying(false);
                         }
 
                     }
@@ -245,14 +251,27 @@ public class Main {
                     }
                 }
 
+                if(listPlayer.getPlayerById(connection.getID()).isPlaying()){
+                    Game game = selectGameFromId(listPlayer.getPlayerById(connection.getID()).getCurrentGameId());
+
+                    GamePlayerLeavingPacket gplp = new GamePlayerLeavingPacket();
+
+                    gplp.playerid = connection.getID();
+                    gplp.playerName = listPlayer.getPlayerById(connection.getID()).getNamePlayer();
+
+                    if(game.getIdPlayer1() != connection.getID()){
+                        server.sendToTCP(game.getIdPlayer1(),gplp);
+                    }
+                    else{
+                        server.sendToTCP(game.getIdPlayer2(),gplp);
+                    }
+                }
+
             }
 
             @Override
             public void connected(Connection connection) {
-//                MiniGamePacket mp = new MiniGamePacket();
-//                mp.answer = 42;
-//
-//                server.sendToTCP(connection.getID(), mp);
+
             }
 
         });

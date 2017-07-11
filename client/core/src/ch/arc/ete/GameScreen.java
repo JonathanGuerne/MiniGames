@@ -22,15 +22,21 @@ import com.esotericsoftware.kryonet.Client;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import packets.GamePlayerLeavingPacket;
+import packets.MorpionStartConfirmPacket;
+import packets.Packet;
 
 /**
  * Created by jonathan.guerne on 01.05.2017.
  */
 
-public abstract class GameScreen implements Screen,InputProcessor {
+public abstract class GameScreen implements Screen, InputProcessor {
 
     protected Client client;
 
@@ -46,7 +52,7 @@ public abstract class GameScreen implements Screen,InputProcessor {
 
     protected int gameId;
 
-    protected  Skin skin;
+    protected Skin skin;
     protected Table tableDisplay;
     protected Stage stage;
     protected Stage waitingStage;
@@ -65,14 +71,11 @@ public abstract class GameScreen implements Screen,InputProcessor {
     GlyphLayout layout;
     BitmapFont font;
 
-
-
-    protected int gameLayoutWith = Gdx.graphics.getWidth() /10 * 8;
+    protected int gameLayoutWith = Gdx.graphics.getWidth() / 10 * 8;
     protected int informationLayoutWith = Gdx.graphics.getWidth() / 10 * 2;
 
-    protected int gameLayoutHeight = Gdx.graphics.getHeight() /10 * 9;
+    protected int gameLayoutHeight = Gdx.graphics.getHeight() / 10 * 9;
     protected int informationLayoutHeight = Gdx.graphics.getHeight() - gameLayoutHeight;
-
 
 
     public GameScreen(final Client client, final Player localPlayer) {
@@ -91,20 +94,35 @@ public abstract class GameScreen implements Screen,InputProcessor {
 
         skin = ApplicationSkin.getInstance().getSkin();
 
-        btnBack = new TextButton("Retour",skin);
+        btnBack = new TextButton("Retour", skin);
 
         waitingStage.addActor(btnBack);
 
-        btnBack.addListener(new ClickListener(){
+        btnBack.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 playerLeft();
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client,localPlayer));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, localPlayer));
             }
         });
 
         gameOver = false;
         gameLoaded = false;
+
+        client.addListener(new Listener() {
+            @Override
+            public void received(Connection connection, Object o) {
+                if (o instanceof Packet) {
+                    if (o instanceof GamePlayerLeavingPacket) {
+                        GamePlayerLeavingPacket gplp = (GamePlayerLeavingPacket) o;
+                        setCenterText("L'adversaire à quitté la partie...");
+                        gameOver = true;
+                        winnerId = -10;
+                    }
+
+                }
+            }
+        });
 
         Gdx.input.setInputProcessor(waitingStage);
     }
@@ -112,7 +130,7 @@ public abstract class GameScreen implements Screen,InputProcessor {
     @Override
     public void render(float delta) {
         if (foundOpponent) {
-            if(!initializationOver){
+            if (!initializationOver) {
                 initializationOver = true;
 
                 InputMultiplexer multiplexer = new InputMultiplexer();
@@ -129,12 +147,12 @@ public abstract class GameScreen implements Screen,InputProcessor {
                 stage.draw();
             }
 
-            if(gameOver){
+            if (gameOver) {
                 float x = 0;
-                float y = Gdx.graphics.getHeight()/2 + layout.height/2;
+                float y = Gdx.graphics.getHeight() / 2 + layout.height / 2;
 
                 batch.begin();
-                font.draw(batch,layout,x,y);
+                font.draw(batch, layout, x, y);
                 batch.end();
             }
         } else {
@@ -144,10 +162,10 @@ public abstract class GameScreen implements Screen,InputProcessor {
             ApplicationSkin.getInstance().showBackground();
 
             float x = 0;
-            float y = Gdx.graphics.getHeight()/2 + layout.height/2;
+            float y = Gdx.graphics.getHeight() / 2 + layout.height / 2;
 
             batch.begin();
-            font.draw(batch,layout,x,y);
+            font.draw(batch, layout, x, y);
             batch.end();
 
             waitingStage.act();
@@ -159,16 +177,22 @@ public abstract class GameScreen implements Screen,InputProcessor {
 
     public abstract void update();
 
-    public abstract void playerLeft();
+    public void playerLeft() {
+        GamePlayerLeavingPacket gplp = new GamePlayerLeavingPacket();
+        gplp.playerid = localPlayer.getId();
+        gplp.playerName = localPlayer.getPseudo();
+        client.sendTCP(gplp);
+    }
+
+    ;
 
     protected abstract void setGameMenu();
 
-    public void setCenterText(String text){
+    public void setCenterText(String text) {
         layout.setText(font, text, Color.BLACK, Gdx.graphics.getWidth(), Align.center, true);
     }
 
-    protected void initInformationTable()
-    {
+    protected void initInformationTable() {
         tableDisplay = new Table();
         tableDisplay.setPosition(0, gameLayoutHeight);
         tableDisplay.setWidth(Gdx.graphics.getWidth());
@@ -177,7 +201,7 @@ public abstract class GameScreen implements Screen,InputProcessor {
 
         stage.addActor(tableDisplay);
 
-        lblInfo = new Label(localPlayer.getPseudo()+" VS "+opponentPlayer.getPseudo(),skin);
+        lblInfo = new Label(localPlayer.getPseudo() + " VS " + opponentPlayer.getPseudo(), skin);
         tableDisplay.add(lblInfo);
         tableDisplay.row();
 
@@ -189,8 +213,7 @@ public abstract class GameScreen implements Screen,InputProcessor {
         gameLoaded = true;
     }
 
-    protected void displayCurrentPlayer(String opponentName)
-    {
+    protected void displayCurrentPlayer(String opponentName) {
         String text = (currentPlayerId == localPlayer.getId()) ? "C'est votre tour." : "C'est le tour de " + opponentName;
         setCenterText(text);
         showMessage = true;

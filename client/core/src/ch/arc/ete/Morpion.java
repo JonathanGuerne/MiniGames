@@ -2,29 +2,21 @@ package ch.arc.ete;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.sun.org.apache.xpath.internal.SourceTree;
 
 import java.util.HashMap;
-
-import javax.swing.JLabel;
 
 import packets.MorpionEndGamePacket;
 import packets.MorpionInGameConfirmPacket;
 import packets.MorpionInGamePacket;
-import packets.MorpionPlayerLeaving;
+import packets.GamePlayerLeavingPacket;
 import packets.MorpionStartConfirmPacket;
 import packets.MorpionStartPacket;
 import packets.Packet;
@@ -100,12 +92,6 @@ public class Morpion extends GameScreen {
                         gameOver = true;
                         winnerId = megp.winnerId;
                     }
-                    else if(o instanceof MorpionPlayerLeaving){
-                        MorpionPlayerLeaving mpl =(MorpionPlayerLeaving) o;
-                        setCenterText("L'adversaire à quitté la partie...");
-                        gameOver = true;
-                        winnerId = -10;
-                    }
                 }
 
             }
@@ -113,18 +99,6 @@ public class Morpion extends GameScreen {
 
     }
 
-
-    /**
-     * method call when the player choose to left
-     * todo: tell the server
-     */
-    @Override
-    public void playerLeft() {
-        MorpionPlayerLeaving mpl = new MorpionPlayerLeaving();
-        mpl.playerid = localPlayer.getId();
-        mpl.playerName = localPlayer.getPseudo();
-        client.sendTCP(mpl);
-    }
 
     @Override
     protected void setGameMenu() {
@@ -138,27 +112,6 @@ public class Morpion extends GameScreen {
 
         ApplicationSkin.getInstance().showBackground();
 
-
-//        shapeRenderer.setColor(Color.GREEN);
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//        for (int i = 0; i < tabGame.get(0).length; i++) {
-//            if (tabGame.get(0)[i] == 'x') {
-//                int x = i%3;
-//                int y = 2-(i/3);
-//                shapeRenderer.rect(x*w, y*h,w,h);
-//            }
-//        }
-//        shapeRenderer.end();
-//        shapeRenderer.setColor(Color.RED);
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//        for (int i = 0; i < tabGame.get(0).length; i++) {
-//            if (tabGame.get(0)[i] == 'o') {
-//                int x = i%3;
-//                int y = 2-(i/3);
-//                shapeRenderer.rect(x*w, y*h,w,h);
-//            }
-//        }
-//        shapeRenderer.end();
 
         shapeRenderer.setColor(Color.BLACK);
 

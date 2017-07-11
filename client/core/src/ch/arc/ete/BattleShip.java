@@ -260,14 +260,6 @@ public class BattleShip extends GameScreen {
         return false;
     }
 
-    /**
-     * method called when the player choose to left the game
-     * TODO : notify the server
-     */
-    @Override
-    public void playerLeft() {
-
-    }
 
     @Override
     protected void setGameMenu() {
