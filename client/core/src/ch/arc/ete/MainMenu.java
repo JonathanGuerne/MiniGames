@@ -105,7 +105,7 @@ public class MainMenu implements Screen {
 
         tableMenu.center();
 
-        Skin skin = new Skin(Gdx.files.internal("skin/comic-ui.json"));
+        Skin skin = ApplicationSkin.getInstance().getSkin();
 
         btnMoripon = new TextButton("Jouer au morpion",skin);
         btnBattleShip = new TextButton("Jouer a la bataille navale", skin);
@@ -140,12 +140,12 @@ public class MainMenu implements Screen {
             }
         });
 
-        tableMenu.add(new Label("Bienvenue " + localPlayer.getPseudo(), skin));
+        tableMenu.add(new Label("Bienvenue " + localPlayer.getPseudo(), skin,"title",Color.WHITE)).colspan(2);
         tableMenu.row();
         tableMenu.row();
-        tableMenu.add(btnMoripon);
+        tableMenu.add(btnMoripon).colspan(2);
         tableMenu.row();
-        tableMenu.add(btnBattleShip);
+        tableMenu.add(btnBattleShip).colspan(2);
         tableMenu.row();
         tableMenu.add(btnBack);
         tableMenu.add(btnQuit);
@@ -165,6 +165,7 @@ public class MainMenu implements Screen {
         if(!lostConnection) {
             Gdx.gl.glClearColor(1, 1, 1, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            ApplicationSkin.getInstance().showBackground();
             stage.draw();
         }
         else{

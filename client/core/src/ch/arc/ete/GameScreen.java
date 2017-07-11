@@ -84,10 +84,10 @@ public abstract class GameScreen implements Screen,InputProcessor {
         batch = new SpriteBatch();
         font = Util.createFont(48);
         layout = new GlyphLayout();
-        final String text = "Waiting for an other player...";
+        final String text = "Attente d'un autre joueur...";
         setCenterText(text);
 
-        skin = new Skin(Gdx.files.internal("skin/comic-ui.json"));
+        skin = ApplicationSkin.getInstance().getSkin();
 
         btnBack = new TextButton("Retour",skin);
 
@@ -124,6 +124,8 @@ public abstract class GameScreen implements Screen,InputProcessor {
         } else {
             Gdx.gl.glClearColor(1, 1, 1, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+            ApplicationSkin.getInstance().showBackground();
 
             float x = 0;
             float y = Gdx.graphics.getHeight()/2 + layout.height/2;

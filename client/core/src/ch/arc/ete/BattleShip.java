@@ -112,6 +112,8 @@ public class BattleShip extends GameScreen {
     public void display() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        
+        ApplicationSkin.getInstance().showBackground();
 
         shapeRenderer.setColor(Color.GREEN);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
