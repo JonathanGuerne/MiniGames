@@ -201,7 +201,7 @@ public class LoginScreen implements Screen {
         serverAdress = new TextField("127.0.0.1", skin);
         clientPseudo = new TextField("", skin);
 
-        tableDisplay.add(new Label("MINI GAMES",skin,"title",Color.BLACK)).colspan(3);
+        tableDisplay.add(new Label("MINI GAMES",skin,"title",Color.WHITE)).colspan(3);
         tableDisplay.row();
         tableDisplay.add(serverLabel).align(Align.left);
         tableDisplay.add(serverAdress).width(200);
@@ -234,8 +234,9 @@ public class LoginScreen implements Screen {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        stage.act();
+        ApplicationSkin.getInstance().showBackground();
 
+        stage.act();
         stage.draw();
     }
 

@@ -139,8 +139,8 @@ public class MainMenu implements Screen {
                 System.exit(0);
             }
         });
-
-        tableMenu.add(new Label("Bienvenue " + localPlayer.getPseudo(), skin,"title",Color.BLACK)).colspan(2);
+        
+        tableMenu.add(new Label("Bienvenue " + localPlayer.getPseudo(), skin,"title",Color.WHITE)).colspan(2);
         tableMenu.row();
         tableMenu.row();
         tableMenu.add(btnMoripon).colspan(2);
@@ -165,6 +165,7 @@ public class MainMenu implements Screen {
         if(!lostConnection) {
             Gdx.gl.glClearColor(1, 1, 1, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            ApplicationSkin.getInstance().showBackground();
             stage.draw();
         }
         else{
