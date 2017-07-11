@@ -61,6 +61,7 @@ public abstract class GameScreen implements Screen,InputProcessor {
     boolean initGame;
     boolean gameLoaded;
     boolean initializationOver;
+    boolean showMessage = false;
 
     SpriteBatch batch;
     GlyphLayout layout;
@@ -72,7 +73,7 @@ public abstract class GameScreen implements Screen,InputProcessor {
     protected int informationLayoutWith = Gdx.graphics.getWidth() / 10 * 2;
 
     protected int gameLayoutHeight = Gdx.graphics.getHeight() /10 * 9;
-    protected int informationLayoutHeight = Gdx.graphics.getHeight() / 10 * 1;
+    protected int informationLayoutHeight = Gdx.graphics.getHeight() - gameLayoutHeight;
 
 
 

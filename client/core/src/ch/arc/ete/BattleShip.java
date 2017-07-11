@@ -33,7 +33,6 @@ public class BattleShip extends GameScreen {
     final int NB_CASE = 8;
     final int NB_SHIP = 3;
     boolean showInit;
-    boolean showMessage = false;
     int shipInitialized;
     boolean initGame;
 
