@@ -23,17 +23,21 @@ import packets.Packet;
  */
 
 public class BattleShip extends GameScreen {
-    
 
     final int TAB_PLAYER = 0;
     final int TAB_OPPONENT = 1;
+    final int TAB_TOUCHED = 2;
+    final int NB_CASE = 8;
+    final int NB_SHIP = 3;
+
+
     ShapeRenderer shapeRenderer;
     float w, h;
     char charUser;
-    final int NB_CASE = 8;
-    final int NB_SHIP = 3;
+
     boolean showInit;
     boolean showMessage = false;
+    boolean inGame = false;
     int shipInitialized;
     boolean initGame;
 
@@ -53,6 +57,7 @@ public class BattleShip extends GameScreen {
         tabGame = new HashMap<Integer, char[]>();
         tabGame.put(TAB_PLAYER, new char[NB_CASE * NB_CASE]);
         tabGame.put(TAB_OPPONENT, new char[0]);
+        tabGame.put(TAB_TOUCHED, new char[0]);
 
        // Gdx.input.setInputProcessor(this);
 
@@ -96,6 +101,7 @@ public class BattleShip extends GameScreen {
                             tabGame.put(TAB_PLAYER, bsigp.currentPlayerTab);
                             tabGame.put(TAB_OPPONENT, bsigp.opponentPlayerTab);
                             text += tabGame.get(TAB_OPPONENT).length;
+                            inGame = true;
                         }else
                         {
                             text = "C'est le tour de votre adversaire";
@@ -129,12 +135,12 @@ public class BattleShip extends GameScreen {
             shapeRenderer.setColor(Color.RED);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             for (int i = 0; i < tabGame.get(TAB_OPPONENT).length; i++) {
-                if (tabGame.get(TAB_OPPONENT)[i] == charUser) {
+                if (tabGame.get(TAB_OPPONENT)[i] == 'x') {
                     int x = i % NB_CASE;
                     int y = 7 - (i / NB_CASE);
                     shapeRenderer.rect(x * w, y * h, w, h);
                 }
-                System.out.println("je m'appele toto");
+                //System.out.println("je m'appele toto");
             }
             shapeRenderer.end();
         }
@@ -179,6 +185,9 @@ public class BattleShip extends GameScreen {
 
             setCenterText("Attente de l'autre joueur...");
             showMessage = true;
+        }else if(inGame)
+        {
+
         }
     }
 
@@ -236,15 +245,14 @@ public class BattleShip extends GameScreen {
             int y = (NB_CASE * (int) (screenY / h));
             touchIndex = x + y;
             tabGame.get(TAB_PLAYER)[touchIndex] = charUser;
-            System.out.println(touchIndex);
-
-
-            //System.out.println("J'ai toucher " + screenX);
 
         } else if (gameOver) {
             ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, this.localPlayer));
-        } else {
-
+        } else if(inGame){
+            int x = (int) (screenX / w);
+            int y = (NB_CASE * (int) (screenY / h));
+            touchIndex = x + y;
+            tabGame.get(TAB_PLAYER)[touchIndex] = charUser;
         }
 
         if (showMessage) {

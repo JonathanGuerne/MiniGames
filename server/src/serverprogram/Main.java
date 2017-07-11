@@ -139,6 +139,10 @@ public class Main {
                             System.out.println("Je suis tout seul " + bssigp.idPlayer + " " + bssigp.idOpponent);
                             initializedGame.put(bssigp.idPlayer, bssigp.tabGame);
                         }
+                    }else if(p instanceof BattleShipInGamePacket)
+                    {
+                        BattleShipInGamePacket bsigp = (BattleShipInGamePacket) p;
+
                     }
                     //BEGIN MORPION
                     if (p instanceof MorpionStartPacket) {

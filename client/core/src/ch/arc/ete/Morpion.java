@@ -183,8 +183,6 @@ public class Morpion extends GameScreen {
     @Override
     public void update() {
         if(!gameOver) {
-
-
             if (currentPlayerId == localPlayer.getId()) {
                 //if touchIndex is a value >= 0 and tab[touchIndex] is null
                 if (touchIndex != -1 && tabGame.get(0)[touchIndex] == '\0') {
