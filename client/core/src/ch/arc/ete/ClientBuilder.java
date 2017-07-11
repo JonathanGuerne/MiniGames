@@ -2,6 +2,7 @@ package ch.arc.ete;
 
 import com.esotericsoftware.kryonet.Client;
 
+import packets.BattleShip.BattleShipEndGamePacket;
 import packets.BattleShip.BattleShipInGamePacket;
 import packets.BattleShip.BattleShipStartConfirmPacket;
 import packets.BattleShip.BattleShipStartInitGamePacket;
@@ -40,6 +41,8 @@ public class ClientBuilder {
         client.getKryo().register(BattleShipStartConfirmPacket.class, 2010);
         client.getKryo().register(BattleShipInGamePacket.class, 2020);
         client.getKryo().register(BattleShipStartInitGamePacket.class, 2030);
+        client.getKryo().register(BattleShipEndGamePacket.class, 2040);
+
         return client;
     }
 

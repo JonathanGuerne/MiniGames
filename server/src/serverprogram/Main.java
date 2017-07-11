@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import packets.MorpionPlayerLeaving;
+import packets.battleship.BattleShipEndGamePacket;
 import packets.battleship.BattleShipInGamePacket;
 import packets.battleship.BattleShipStartConfirmPacket;
 import packets.battleship.BattleShipStartInitGamePacket;
@@ -37,6 +38,7 @@ public class Main {
     public final static int BATTLESHIP_INDEX = 1;
 
     public final static int NB_CASE = 8;
+    public final static int NB_SHIP = 3;
 
     static ArrayList<Game> listGames = new ArrayList<>();
     static PlayerList listPlayer = new PlayerList();
@@ -63,6 +65,7 @@ public class Main {
         server.getKryo().register(BattleShipStartConfirmPacket.class, 2010);
         server.getKryo().register(BattleShipInGamePacket.class, 2020);
         server.getKryo().register(BattleShipStartInitGamePacket.class, 2030);
+        server.getKryo().register(BattleShipEndGamePacket.class, 2040);
 
         server.start();
 
@@ -74,9 +77,9 @@ public class Main {
 
                 if (object instanceof Packet) {
                     Packet p = (Packet) object;
-                    if (p instanceof MiniGamePacket) {
+                    if (p instanceof MiniGamePacket)
+                    {
                         MiniGamePacket miniGamePacket = (MiniGamePacket) p;
-
                     }
                     if (p instanceof LoginPacket) {
 
@@ -103,7 +106,7 @@ public class Main {
 
                             Game battleShip = new Game(GameType.BATTLESHIP, bsscp.idPlayer1, bsscp.idPlayer2, currentGameId++);
                             battleShip.setCharPlayer1(bsscp.charPlayer1);
-                            battleShip.setCharPlayer2(bsscp.charPlayer2);
+                            battleShip.setCharPlayer2(bsscp.charPlayer1);
                             listGames.add(battleShip);
 
                             bsscp.gameId = battleShip.getId();
@@ -148,6 +151,38 @@ public class Main {
                     }else if(p instanceof BattleShipInGamePacket)
                     {
                         BattleShipInGamePacket bsigp = (BattleShipInGamePacket) p;
+                        int counterTouched = 0;
+
+                        for(int i = 0; i < bsigp.currentPlayerTab.length; i++)
+                        {
+                            if(bsigp.currentPlayerTabTouched[i] == bsigp.opponentPlayerTab[i] && bsigp.currentPlayerTabTouched[i] != '\0')
+                            {
+                                counterTouched++;
+                            }
+                        }
+                        //If the number of counterTouched is egual to the NB_SHIP this is the end of the game
+                        if(counterTouched == NB_SHIP)
+                        {
+                            BattleShipEndGamePacket bsegp = new BattleShipEndGamePacket();
+                            bsegp.idWinner = bsigp.currentPlayerId;
+                            server.sendToTCP(bsigp.currentPlayerId, bsegp);
+                            server.sendToTCP(bsigp.opponentPlayerId, bsegp);
+                            System.out.println("fin de la partie");
+                        }else
+                        {
+                            //Read the packet and inverse the currentPlayer and the opponent
+                            BattleShipInGamePacket sendBsigp = new BattleShipInGamePacket();
+                            sendBsigp.currentPlayerId = bsigp.opponentPlayerId;
+                            sendBsigp.opponentPlayerId = bsigp.currentPlayerId;
+                            sendBsigp.currentPlayerTab = bsigp.opponentPlayerTab;
+                            sendBsigp.opponentPlayerTab = bsigp.currentPlayerTab;
+                            sendBsigp.currentPlayerTabTouched = bsigp.opponentPlayerTabTouched;
+                            sendBsigp.opponentPlayerTabTouched = bsigp.currentPlayerTabTouched;
+                            sendBsigp.gameId = bsigp.gameId;
+
+                            server.sendToTCP(sendBsigp.currentPlayerId, sendBsigp);
+                            server.sendToTCP(sendBsigp.opponentPlayerId, sendBsigp);
+                        }
 
                     }
                     //BEGIN MORPION
@@ -157,12 +192,12 @@ public class Main {
                        }
                        else{
                            MorpionStartConfirmPacket mscp = new MorpionStartConfirmPacket();
-                           mscp.idPlayer1 = clientIDWaitingPerGame[MORPION_INEX];
+                           mscp.idPlayer1 = clientIDWaitingPerGame[MORPION_INDEX];
                            mscp.player1Name = listPlayer.getPlayerById(mscp.idPlayer1).getNamePlayer();
                            mscp.idPlayer2 = connection.getID();
                            mscp.player2Name = listPlayer.getPlayerById(mscp.idPlayer2).getNamePlayer();
 
-                           clientIDWaitingPerGame[MORPION_INEX] = -1;
+                           clientIDWaitingPerGame[MORPION_INDEX] = -1;
                            System.out.println(mscp.idPlayer1+" and "+mscp.idPlayer2+" will play");
 
                            Game morpion =new Game(GameType.MORPION,mscp.idPlayer1,mscp.idPlayer2,currentGameId++);
