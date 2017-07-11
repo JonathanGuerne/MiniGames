@@ -44,24 +44,24 @@ import packets.Packet;
  */
 public class LoginScreen implements Screen {
 
-    Label serverLabel;
-    Label pseudoLabel;
-    Label errorLabel;
-    Label serversListLabel;
-    TextButton btnValider;
-    TextField serverAdress;
-    TextField clientPseudo;
-    SelectBox<String> serversAdresses;
-    ImageButton btnRefreshServersList;
+    private Label serverLabel;
+    private Label pseudoLabel;
+    private Label errorLabel;
+    private Label serversListLabel;
+    private TextButton btnValider;
+    private TextField serverAdress;
+    private TextField clientPseudo;
+    private SelectBox<String> serversAdresses;
+    private ImageButton btnRefreshServersList;
 
-    Stage stage;
-    SpriteBatch sb;
-    OrthographicCamera cam;
-    Client client;
+    private Stage stage;
+    private SpriteBatch sb;
+    private OrthographicCamera cam;
+    private Client client;
 
     static int tcp = 23900, udp = 23901;
 
-    boolean connectionOk = false;
+    private boolean connectionOk = false;
 //    boolean serverDiscoveringFinish = false;
 
 
@@ -234,7 +234,7 @@ public class LoginScreen implements Screen {
 
     }
 
-    public void tryConnection(){
+    private void tryConnection(){
                 try {
                     if (clientPseudo.getText().equals("")) {
                         throw new LoginException("Veuillez choisir un pseudo");

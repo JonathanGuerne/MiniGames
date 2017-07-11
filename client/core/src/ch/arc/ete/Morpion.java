@@ -27,14 +27,13 @@ import packets.Packet;
 
 public class Morpion extends GameScreen {
 
-    ShapeRenderer shapeRenderer;
+    private ShapeRenderer shapeRenderer;
 
-    Sprite imageArray[] = new Sprite[9];
+    private Sprite imageArray[] = new Sprite[9];
 
-    float w, h;
-    char charUser;
+    private char charUser;
 
-    int touchIndex = -1;
+    private int touchIndex = -1;
 
 
     public Morpion(Client client, Player localPlayer) {
@@ -126,7 +125,7 @@ public class Morpion extends GameScreen {
 
         batch.begin();
 
-        for (int i = 0; i < imageArray.length; i++) {
+        for(int i = 0; i < imageArray.length; i++) {
             if (imageArray[i] != null) {
                 imageArray[i].draw(batch);
             }

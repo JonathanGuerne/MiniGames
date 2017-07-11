@@ -50,6 +50,8 @@ public abstract class GameScreen implements Screen, InputProcessor {
     protected Player localPlayer;
     protected Player opponentPlayer;
 
+    protected float w, h;
+
     protected int gameId;
 
     protected Skin skin;
@@ -60,16 +62,16 @@ public abstract class GameScreen implements Screen, InputProcessor {
     protected Label playerTurn;
     protected TextButton btnBack;
 
-    boolean foundOpponent;
-    boolean gameOver;
-    boolean initGame;
-    boolean gameLoaded;
-    boolean initializationOver;
-    boolean showMessage = false;
+    protected boolean foundOpponent;
+    protected boolean gameOver;
+    protected boolean initGame;
+    protected boolean gameLoaded;
+    protected boolean initializationOver;
+    protected boolean showMessage = false;
 
-    SpriteBatch batch;
-    GlyphLayout layout;
-    BitmapFont font;
+    protected SpriteBatch batch;
+    protected GlyphLayout layout;
+    protected BitmapFont font;
 
     protected int gameLayoutWith = Gdx.graphics.getWidth() / 10 * 8;
     protected int informationLayoutWith = Gdx.graphics.getWidth() / 10 * 2;
@@ -177,7 +179,7 @@ public abstract class GameScreen implements Screen, InputProcessor {
 
     public abstract void update();
 
-    public void playerLeft() {
+    protected void playerLeft() {
         GamePlayerLeavingPacket gplp = new GamePlayerLeavingPacket();
         gplp.playerid = localPlayer.getId();
         gplp.playerName = localPlayer.getPseudo();
@@ -188,7 +190,7 @@ public abstract class GameScreen implements Screen, InputProcessor {
 
     protected abstract void setGameMenu();
 
-    public void setCenterText(String text) {
+    protected void setCenterText(String text) {
         layout.setText(font, text, Color.BLACK, Gdx.graphics.getWidth(), Align.center, true);
     }
 

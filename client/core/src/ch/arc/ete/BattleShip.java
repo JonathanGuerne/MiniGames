@@ -28,18 +28,17 @@ import packets.Packet;
  */
 
 public class BattleShip extends GameScreen {
-    
 
-    final int TAB_PLAYER = 0;
-    final int TAB_OPPONENT = 1;
-    ShapeRenderer shapeRenderer;
-    float w, h;
-    char charUser;
-    final int NB_CASE = 8;
-    final int NB_SHIP = 3;
-    boolean showInit;
-    int shipInitialized;
-    boolean initGame;
+
+    private final int TAB_PLAYER = 0;
+    private final int TAB_OPPONENT = 1;
+    private ShapeRenderer shapeRenderer;
+    private char charUser;
+    private final int NB_CASE = 8;
+    private final int NB_SHIP = 3;
+    private boolean showInit;
+    private int shipInitialized;
+    private boolean initGame;
 
     int touchIndex = -1;
 
