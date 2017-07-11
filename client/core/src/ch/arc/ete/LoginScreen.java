@@ -152,11 +152,13 @@ public class LoginScreen implements Screen {
                 try {
                     client.connect(5000, serverAdress.getText(), tcp, udp);
                     LoginPacket lp = new LoginPacket();
+                    lp.namePlayer = clientPseudo.getText();
                     client.sendTCP(lp);
 
                     while (!connectionOk) {
-//                        System.out.println("waiting for server response");
+                        System.out.println("waiting for server response");
                     }
+
 
                     ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, clientPseudo.getText()));
 
@@ -173,13 +175,13 @@ public class LoginScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
 //                if (serverDiscoveringFinish) {
-                    serverAdress.setText(serversAdresses.getSelected());
+                serverAdress.setText(serversAdresses.getSelected());
 //                }
             }
         });
 
 
-        btnRefreshServersList.addListener(new ClickListener(){
+        btnRefreshServersList.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 new Thread(new DiscoverHostThread()).start();
@@ -192,6 +194,7 @@ public class LoginScreen implements Screen {
                 if (o instanceof Packet) {
                     if (o instanceof LoginConfirmPacket) {
                         LoginConfirmPacket lcp = (LoginConfirmPacket) o;
+                        clientPseudo.setText(lcp.namePlayer);
                         connectionOk = true;
                     }
                 }
@@ -201,7 +204,7 @@ public class LoginScreen implements Screen {
         serverAdress = new TextField("127.0.0.1", skin);
         clientPseudo = new TextField("", skin);
 
-        tableDisplay.add(new Label("MINI GAMES",skin,"title",Color.WHITE)).colspan(3);
+        tableDisplay.add(new Label("MINI GAMES", skin, "title", Color.WHITE)).colspan(3);
         tableDisplay.row();
         tableDisplay.add(serverLabel).align(Align.left);
         tableDisplay.add(serverAdress).width(200);

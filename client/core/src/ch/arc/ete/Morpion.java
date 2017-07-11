@@ -79,10 +79,10 @@ public class Morpion extends GameScreen {
 
                         if (localPlayer.getId() == mscp.idPlayer1) {
                             charUser = mscp.charPlayer1;
-                            opponentPlayer = new Player(mscp.idPlayer2, "Jules");
+                            opponentPlayer = new Player(mscp.idPlayer2, mscp.player2Name);
                         } else {
                             charUser = mscp.charPlayer2;
-                            opponentPlayer = new Player(mscp.idPlayer1, "Jules");
+                            opponentPlayer = new Player(mscp.idPlayer1, mscp.player1Name);
                         }
 
                         gameId = mscp.gameId;
