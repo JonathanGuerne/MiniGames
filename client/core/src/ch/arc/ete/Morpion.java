@@ -100,6 +100,12 @@ public class Morpion extends GameScreen {
                         gameOver = true;
                         winnerId = megp.winnerId;
                     }
+                    else if(o instanceof MorpionPlayerLeaving){
+                        MorpionPlayerLeaving mpl =(MorpionPlayerLeaving) o;
+                        setCenterText("L'adversaire à quitté la partie...");
+                        gameOver = true;
+                        winnerId = -10;
+                    }
                 }
 
             }
@@ -220,7 +226,7 @@ public class Morpion extends GameScreen {
                 setCenterText("Vous avez gagne");
             } else if (winnerId == -1) {
                 setCenterText("egalite");
-            } else {
+            } else if(winnerId == opponentPlayer.getId()){
                 setCenterText("Vous avez perdu");
             }
         }

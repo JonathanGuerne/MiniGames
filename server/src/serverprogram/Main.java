@@ -155,8 +155,11 @@ public class Main {
                            MorpionStartConfirmPacket mscp = new MorpionStartConfirmPacket();
                            mscp.idPlayer1 = clientIDWaitingPerGame[MORPION_INEX];
                            mscp.player1Name = listPlayer.getPlayerById(mscp.idPlayer1).getNamePlayer();
+                           listPlayer.getPlayerById(mscp.idPlayer1).setPlaying(true);
                            mscp.idPlayer2 = connection.getID();
                            mscp.player2Name = listPlayer.getPlayerById(mscp.idPlayer2).getNamePlayer();
+                           listPlayer.getPlayerById(mscp.idPlayer2).setPlaying(true);
+
 
                            clientIDWaitingPerGame[MORPION_INEX] = -1;
                            System.out.println(mscp.idPlayer1+" and "+mscp.idPlayer2+" will play");
@@ -165,6 +168,9 @@ public class Main {
                            morpion.setCharPlayer1(mscp.charPlayer1);
                            morpion.setCharPlayer2(mscp.charPlayer2);
                            listGames.add(morpion);
+
+                           listPlayer.getPlayerById(mscp.idPlayer1).setCurrentGameId(morpion.getId());
+                           listPlayer.getPlayerById(mscp.idPlayer2).setCurrentGameId(morpion.getId());
 
                            mscp.gameId = morpion.getId();
 
@@ -212,11 +218,20 @@ public class Main {
                     }
                     if(p instanceof MorpionPlayerLeaving){
                         MorpionPlayerLeaving mpl = (MorpionPlayerLeaving) p;
-                        for(int i=0;i<clientIDWaitingPerGame.length;i++){
-                            if(clientIDWaitingPerGame[i]==mpl.playerid){
-                                clientIDWaitingPerGame[i] = -1;
+
+                        if(clientIDWaitingPerGame[MORPION_INEX] == mpl.playerid){
+                            clientIDWaitingPerGame[MORPION_INEX] = -1;
+                        }
+                        else if(listPlayer.getPlayerById(mpl.playerid).isPlaying()){
+                            Game game = selectGameFromId(listPlayer.getPlayerById(mpl.playerid).getCurrentGameId());
+                            if(game.getIdPlayer1() != mpl.playerid){
+                                server.sendToTCP(game.getIdPlayer1(),mpl);
+                            }
+                            else{
+                                server.sendToTCP(game.getIdPlayer1(),mpl);
                             }
                         }
+
                     }
                     //END MORPION
                 }
@@ -234,10 +249,10 @@ public class Main {
 
             @Override
             public void connected(Connection connection) {
-                MiniGamePacket mp = new MiniGamePacket();
-                mp.answer = 42;
-
-                server.sendToTCP(connection.getID(), mp);
+//                MiniGamePacket mp = new MiniGamePacket();
+//                mp.answer = 42;
+//
+//                server.sendToTCP(connection.getID(), mp);
             }
 
         });
