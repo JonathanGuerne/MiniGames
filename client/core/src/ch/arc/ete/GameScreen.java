@@ -50,10 +50,8 @@ public abstract class GameScreen implements Screen,InputProcessor {
     protected Table tableDisplay;
     protected Stage stage;
     protected Stage waitingStage;
-    protected Label currentPlayerPseudo;
-    protected Label opponentPlayerPseudo;
+    protected Label lblInfo;
     protected Label playerTurn;
-    protected Label vsLabel;
     protected TextButton btnBack;
 
     boolean foundOpponent;
@@ -71,6 +69,9 @@ public abstract class GameScreen implements Screen,InputProcessor {
     protected int gameLayoutWith = Gdx.graphics.getWidth() /10 * 8;
     protected int informationLayoutWith = Gdx.graphics.getWidth() / 10 * 2;
 
+    protected int gameLayoutHeight = Gdx.graphics.getHeight() /10 * 9;
+    protected int informationLayoutHeight = Gdx.graphics.getHeight() / 10 * 1;
+
 
 
     public GameScreen(final Client client, final Player localPlayer) {
@@ -84,10 +85,10 @@ public abstract class GameScreen implements Screen,InputProcessor {
         batch = new SpriteBatch();
         font = Util.createFont(48);
         layout = new GlyphLayout();
-        final String text = "Waiting for an other player...";
+        final String text = "Attente d'un autre joueur...";
         setCenterText(text);
 
-        skin = new Skin(Gdx.files.internal("skin/comic-ui.json"));
+        skin = ApplicationSkin.getInstance().getSkin();
 
         btnBack = new TextButton("Retour",skin);
 
@@ -121,9 +122,20 @@ public abstract class GameScreen implements Screen,InputProcessor {
             }
             update();
             display();
+
+            if(gameOver){
+                float x = 0;
+                float y = Gdx.graphics.getHeight()/2 + layout.height/2;
+
+                batch.begin();
+                font.draw(batch,layout,x,y);
+                batch.end();
+            }
         } else {
             Gdx.gl.glClearColor(1, 1, 1, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+            ApplicationSkin.getInstance().showBackground();
 
             float x = 0;
             float y = Gdx.graphics.getHeight()/2 + layout.height/2;
@@ -150,34 +162,20 @@ public abstract class GameScreen implements Screen,InputProcessor {
     protected void initInformationTable()
     {
         tableDisplay = new Table();
-        tableDisplay.setPosition(gameLayoutWith, 0);
-        tableDisplay.setWidth(informationLayoutWith);
-        tableDisplay.setHeight(Gdx.graphics.getHeight());
+        tableDisplay.setPosition(0, gameLayoutHeight);
+        tableDisplay.setWidth(Gdx.graphics.getWidth());
+        tableDisplay.setHeight(informationLayoutHeight);
         tableDisplay.center();
 
         stage.addActor(tableDisplay);
 
-        currentPlayerPseudo = new Label(localPlayer.getPseudo(), skin);
-        currentPlayerPseudo.setColor(0, 255, 0, 255);
-        tableDisplay.add(currentPlayerPseudo);
+
+
+        lblInfo = new Label(localPlayer.getPseudo()+" VS "+opponentPlayer.getPseudo(),skin);
+        tableDisplay.add(lblInfo);
         tableDisplay.row();
 
-        vsLabel = new Label("VS", skin);
-        vsLabel.setColor(0, 255, 0, 255);
-        tableDisplay.add(vsLabel);
-        tableDisplay.row();
-
-        opponentPlayerPseudo = new Label(opponentPlayer.getPseudo(), skin);
-        opponentPlayerPseudo.setColor(0, 255, 0, 255);
-        tableDisplay.add(opponentPlayerPseudo);
-        tableDisplay.row();
-
-        playerTurn = new Label("", skin);
-        playerTurn.setColor(0, 255, 0, 255);
-        tableDisplay.add(playerTurn);
-        tableDisplay.row();
-
-        tableDisplay.add(btnBack);
+        tableDisplay.add(btnBack).width(300);
 
 
         gameLoaded = true;

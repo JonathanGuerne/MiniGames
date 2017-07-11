@@ -71,11 +71,11 @@ com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	default: {
-		font: font
+		font: button
 		fontColor: black
 	}
 	narration: {
-		font: font
+		font: button
 		fontColor: black
 		background: narration-box
 	}
@@ -84,11 +84,11 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 		fontColor: black
 	}
 	title: {
-		font: title
+		font: button
 		fontColor: white
 	}
 	alt: {
-		font: font
+		font: button
 		fontColor: black
 		background: window
 	}
@@ -143,7 +143,7 @@ com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
 	default: {
-		font: font
+		font: button
 		fontColor: black
 		background: select-box
 		scrollStyle: default
@@ -180,7 +180,7 @@ com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
 	default: {
-		font: font
+		font: button
 		fontColor: black
 		background: text-field
 		cursor: cursor

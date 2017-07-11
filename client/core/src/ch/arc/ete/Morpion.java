@@ -5,6 +5,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -14,6 +17,8 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
 import java.util.HashMap;
+
+import javax.swing.JLabel;
 
 import packets.MorpionEndGamePacket;
 import packets.MorpionInGameConfirmPacket;
@@ -30,6 +35,9 @@ import packets.Packet;
 public class Morpion extends GameScreen {
 
     ShapeRenderer shapeRenderer;
+
+    Sprite imageArray[] = new Sprite[9];
+
     float w, h;
     char charUser;
 
@@ -45,24 +53,24 @@ public class Morpion extends GameScreen {
     @Override
     public void show() {
         shapeRenderer = new ShapeRenderer();
-        w =  gameLayoutWith / 3;
-        h = Gdx.graphics.getHeight() / 3;
+        w =  Gdx.graphics.getWidth() / 3;
+        h = gameLayoutHeight / 3;
         shapeRenderer.setColor(Color.BLACK);
 
 
         tabGame = new HashMap<Integer, char[]>();
 
-        tabGame.put(0,new char[9]);
+        tabGame.put(0, new char[9]);
 
         MorpionStartPacket msp = new MorpionStartPacket();
         msp.idPlayer = localPlayer.getId();
 
         client.sendTCP(msp);
 
-        client.addListener(new Listener(){
+        client.addListener(new Listener() {
             @Override
             public void received(Connection connection, Object o) {
-                if(o instanceof Packet) {
+                if (o instanceof Packet) {
                     if (o instanceof MorpionStartConfirmPacket && !foundOpponent) {
 
                         MorpionStartConfirmPacket mscp = (MorpionStartConfirmPacket) o;
@@ -116,73 +124,79 @@ public class Morpion extends GameScreen {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        ApplicationSkin.getInstance().showBackground();
+
         if(playerTurn != null) {
             String playerPlaying = (currentPlayerId == localPlayer.getId()) ? "Votre tour " : "Tour de l'adversaire";
             playerTurn.setText(playerPlaying);
         }
 
-        if(gameLoaded)
-        {
+        if (gameLoaded) {
             stage.act();
             stage.draw();
         }
 
-        shapeRenderer.setColor(Color.GREEN);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (int i = 0; i < tabGame.get(0).length; i++) {
-            if (tabGame.get(0)[i] == 'x') {
-                int x = i%3;
-                int y = 2-(i/3);
-                shapeRenderer.rect(x*w, y*h,w,h);
-            }
-        }
-        shapeRenderer.end();
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (int i = 0; i < tabGame.get(0).length; i++) {
-            if (tabGame.get(0)[i] == 'o') {
-                int x = i%3;
-                int y = 2-(i/3);
-                shapeRenderer.rect(x*w, y*h,w,h);
-            }
-        }
-        shapeRenderer.end();
+
+//        shapeRenderer.setColor(Color.GREEN);
+//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+//        for (int i = 0; i < tabGame.get(0).length; i++) {
+//            if (tabGame.get(0)[i] == 'x') {
+//                int x = i%3;
+//                int y = 2-(i/3);
+//                shapeRenderer.rect(x*w, y*h,w,h);
+//            }
+//        }
+//        shapeRenderer.end();
+//        shapeRenderer.setColor(Color.RED);
+//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+//        for (int i = 0; i < tabGame.get(0).length; i++) {
+//            if (tabGame.get(0)[i] == 'o') {
+//                int x = i%3;
+//                int y = 2-(i/3);
+//                shapeRenderer.rect(x*w, y*h,w,h);
+//            }
+//        }
+//        shapeRenderer.end();
 
         shapeRenderer.setColor(Color.BLACK);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
         for (int i = 0; i < 4; i++) {
-            shapeRenderer.line(i * w, 0, i * w, Gdx.graphics.getHeight());
-            shapeRenderer.line(0, i * h, gameLayoutWith, i * h);
+            shapeRenderer.line(i * w, 0, i * w, gameLayoutHeight);
+            shapeRenderer.line(0, i * h, Gdx.graphics.getWidth(), i * h);
         }
 
         shapeRenderer.end();
 
-        if(gameOver){
-            if(winnerId == localPlayer.getId()){
-                setCenterText("Vous avez gagne");
-            }
-            else if(winnerId == -1){
-                setCenterText("egalite");
-            }
-            else{
-                setCenterText("Vous avez perdu");
-            }
+        batch.begin();
 
-            float x = 0;
-            float y = Gdx.graphics.getHeight()/2 + layout.height/2;
-
-            batch.begin();
-            font.draw(batch,layout,x,y);
-            batch.end();
+        for (int i = 0; i < imageArray.length; i++) {
+            if (imageArray[i] != null) {
+                imageArray[i].draw(batch);
+            }
         }
+
+        batch.end();
 
     }
 
     @Override
     public void update() {
-        if(!gameOver) {
+
+        for (int i = 0; i < imageArray.length; i++) {
+            if (imageArray[i] == null && tabGame.get(0)[i] != '\0') {
+                int x = i % 3;
+                int y = 2 - (i / 3);
+                Texture tex = new Texture(Gdx.files.internal("morpion/" + tabGame.get(0)[i] + ".png"));
+                imageArray[i] = new Sprite(tex);
+                imageArray[i].setX(x*w);
+                imageArray[i].setY(y*h);
+                imageArray[i].setSize(w,h);
+            }
+        }
+
+        if (!gameOver) {
             if (currentPlayerId == localPlayer.getId()) {
                 //if touchIndex is a value >= 0 and tab[touchIndex] is null
                 if (touchIndex != -1 && tabGame.get(0)[touchIndex] == '\0') {
@@ -197,13 +211,21 @@ public class Morpion extends GameScreen {
                     client.sendTCP(migp);
                 }
             }
+        } else {
+            if (winnerId == localPlayer.getId()) {
+                setCenterText("Vous avez gagne");
+            } else if (winnerId == -1) {
+                setCenterText("egalite");
+            } else {
+                setCenterText("Vous avez perdu");
+            }
         }
     }
 
     @Override
     public void resize(int width, int height) {
-        w = gameLayoutWith / 3;
-        h = Gdx.graphics.getHeight() / 3;
+        w = Gdx.graphics.getWidth() / 3;
+        h = gameLayoutHeight / 3;
     }
 
     @Override
@@ -243,18 +265,20 @@ public class Morpion extends GameScreen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
+        System.out.println("X : " + screenX + ". Y : " + screenY);
         if(!gameOver) {
-            if(screenX > gameLayoutWith)
+            if(screenY < informationLayoutHeight)
             {
                 return false;
             }
             int x = (int) (screenX / w);
             int y = (3 * (int) (screenY / h));
-            touchIndex = x + y;
+            //Fix round problem
+            if(x + y >= 0 && x + y < tabGame.get(0).length) {
+                touchIndex = x + y;
+            }
             return false;
-        }
-        else{
+        } else {
             ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, localPlayer));
             return false;
         }

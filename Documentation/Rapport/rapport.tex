@@ -30,7 +30,27 @@ que le morpion ou la bataille navale en réseau et en multi-platforme. C'est à 
 l'une sur son téléphone android et l'autre sur son ordinateur auront la possibilité de se défier à une partie de jeu en ligne.
 Deux grands outils on été utilisé pour faciliter l'implémentation de ce projet, il sagit du framework Libgdx, qui a servit à
 deployer le même programme sur différentes platforme, et de la libraire kryonet, qui a elle facilitée les échanges réseau.
-\end{document}
+
+\chapter{Planification}
+
+\chapter{Conventions}
+
+\chapter{Identité graphique}
+
+
+\chapter{LibGDX}
+Dès le lancemment du projet, nous nous sommes orienté vers libGDX qui est un framework Java gratuit et open source permettant la conception de jeux vidéo.
+Nous avons fait le choix de travailler avec ce framework en particulier, car nous avions découvert son existence quelque temps auparavant et, en apprenant à le connaître,
+nous avons découvert à quel point il facilite le déploiement multi-platforme.
+LibGDX nous a permis de gagner en temps précieux au niveau de l’implémentation puisqu’il propose nativement des fonctionnalités comme la gestion de stages ou de cameras qui sinon aurait dû être créés à la main.
+Étant un framework connu et grandement utilisé, il est simple de trouver des renseignements ou de l’aide concernant sa façon de fonctionner. Nous n’avions aucune expérience dans son utilisation pourtant il ne nous a fallu que très peu de temps avant de commencer à d’obtenir de bons résultats.
+
+\chapter{Kryonet}
+Ayant travaillé cette année sur des échanges réseau en Java sans utiliser de libraire externe nous avons pu réaliser que la tâche était fastidieuse, c'est donc naturellement que nous
+nous sommes tourné vers Kryonet qui est une librairie open source permettant de faciliter la communication entre différents clients. Un des points essentiel du projet était de pouvoir
+garentir que LibGDX et Kryonet pouvaient cohabiter, après quelques tests et recherches nous avons pu réaliser que c'était bel et bien ée cas ( du moins pour le déploiment sur ordiateur et android).
+
+\chapter{Architecture logicielle}
 
 \chapter{Communication réseau}
 Comme dit plus haut, le programme est une collection de minis jeux auxquels les clients auront la possibilités de jouer à
@@ -47,5 +67,31 @@ L'implémentaion du serveur est identique à la nuance près qu'elle laisse le c
 transitent par le serveur, c'est lui ensuite qui les traitent et les renvoient aux différents clients conscernés.
 
 \section{Initialisation de la connexion}
+A l'ouverture du programme le client est invité à entrer une adresse de serveur et un pseudo pour tenter ensuite de se connecter. Afin de faciliter l'entrée de l'adresse du serveur la fonction de
+découverte des hôtes fournie par Kryonet a été utilisée, elle va fournir une liste d'adresse qui seront ensuite présentées à l'utilisateur sous la forme d'une liste déroulante
+si l'utilisateur sélectionne un élément de la liste l'adresse est automatiquement copié dans le champs de l'adresse du serveur.
 
-\section{communication en jeu}
+\section{Communication en jeu}
+
+\chapter{Minis jeux}
+Dans ce chapitre seront présentés les différents minis jeux mis en place dans ce projet aisni que leur implémentation.
+
+Le serveur garde un historique des jeux sous la forme d'une liste d'objets contenant les informations sur les différents joueurs opposés durant la partie.
+
+\section{Morpion}
+Le morpion est un jeu très simple dans lequel deux joueurs s'affronte sur un plateau de 3 x 3 cases. Chaque joueur possède des caractère (joueur 1 'x' et joueur 2 'o')
+tour à tour ils vont devoir placer ces cartacères dans le plateau de jeu dans le but de faire une ligne horizontale,verticale ou encore une diagonale.
+Si la partie se finit sans qu'aucun joueur n'est réussit à remplir une ligne/ une diagonale c'est un match nul.
+
+\section{Bataille navale}
+
+
+\chapter{Conclusion}
+
+\section{Problematique}
+
+\section{Améliorations}
+
+\chapter{Bibliographie}
+
+\end{document}

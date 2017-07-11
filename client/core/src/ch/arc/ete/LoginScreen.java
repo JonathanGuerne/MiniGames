@@ -3,6 +3,7 @@ package ch.arc.ete;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -29,7 +30,6 @@ import com.esotericsoftware.kryonet.Listener;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
 
 import packets.LoginConfirmPacket;
 import packets.LoginPacket;
@@ -81,10 +81,11 @@ public class LoginScreen implements Screen {
         tableDisplay.center();
 
 
-        Skin skin = new Skin(Gdx.files.internal("skin/comic-ui.json"));
+        Skin skin = ApplicationSkin.getInstance().getSkin();
 
+//        serversListLabel = new Label("Liste des serveurs : ",skin);
 
-        serversListLabel = new Label("Liste des serveurs : ",skin);
+        serversListLabel = new Label("Liste des serveurs : ", skin);
 
         serverLabel = new Label("Adresse du server : ", skin);
 
@@ -113,12 +114,21 @@ public class LoginScreen implements Screen {
             public void run() {
 
                 Array<String> listAddressesString = new Array<String>();
-                java.util.List<InetAddress> listAddresses = client.discoverHosts(udp, 3000);
+                java.util.List<InetAddress> listAddresses;
+
+                listAddresses = client.discoverHosts(tcp, 3000);
                 for (InetAddress adr : listAddresses) {
                     if (!listAddressesString.contains(adr.getHostAddress(), false)) {
                         listAddressesString.add(adr.getHostAddress());
                     }
                 }
+                listAddresses = client.discoverHosts(udp, 2000);
+                for (InetAddress adr : listAddresses) {
+                    if (!listAddressesString.contains(adr.getHostAddress(), false)) {
+                        listAddressesString.add(adr.getHostAddress());
+                    }
+                }
+
                 if (listAddressesString.size == 0) {
 
                 } else {
@@ -191,20 +201,22 @@ public class LoginScreen implements Screen {
         serverAdress = new TextField("127.0.0.1", skin);
         clientPseudo = new TextField("", skin);
 
-        tableDisplay.add(serverLabel);
+        tableDisplay.add(new Label("MINI GAMES",skin,"title",Color.WHITE)).colspan(3);
+        tableDisplay.row();
+        tableDisplay.add(serverLabel).align(Align.left);
         tableDisplay.add(serverAdress).width(200);
         tableDisplay.row();
-        tableDisplay.add(pseudoLabel);
+        tableDisplay.add(pseudoLabel).align(Align.left);
         tableDisplay.add(clientPseudo).width(200);
         tableDisplay.row();
         tableDisplay.row();
-        tableDisplay.add(serversListLabel);
+        tableDisplay.add(serversListLabel).align(Align.left);
         tableDisplay.add(serversAdresses).width(200);
         tableDisplay.add(btnRefreshServersList);
         tableDisplay.row();
-        tableDisplay.add(errorLabel).colspan(2);
+        tableDisplay.add(errorLabel).colspan(3);
         tableDisplay.row();
-        tableDisplay.add(btnValider).width(250);
+        tableDisplay.add(btnValider).width(250).colspan(3);
         tableDisplay.row();
 
         stage.addActor(tableDisplay);
@@ -222,8 +234,9 @@ public class LoginScreen implements Screen {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        stage.act();
+        ApplicationSkin.getInstance().showBackground();
 
+        stage.act();
         stage.draw();
     }
 
