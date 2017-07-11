@@ -124,6 +124,11 @@ public abstract class GameScreen implements Screen,InputProcessor {
             update();
             display();
 
+            if (gameLoaded) {
+                stage.act();
+                stage.draw();
+            }
+
             if(gameOver){
                 float x = 0;
                 float y = Gdx.graphics.getHeight()/2 + layout.height/2;
@@ -156,6 +161,8 @@ public abstract class GameScreen implements Screen,InputProcessor {
 
     public abstract void playerLeft();
 
+    protected abstract void setGameMenu();
+
     public void setCenterText(String text){
         layout.setText(font, text, Color.BLACK, Gdx.graphics.getWidth(), Align.center, true);
     }
@@ -170,11 +177,11 @@ public abstract class GameScreen implements Screen,InputProcessor {
 
         stage.addActor(tableDisplay);
 
-
-
         lblInfo = new Label(localPlayer.getPseudo()+" VS "+opponentPlayer.getPseudo(),skin);
         tableDisplay.add(lblInfo);
         tableDisplay.row();
+
+        setGameMenu();
 
         tableDisplay.add(btnBack).width(300);
 

@@ -121,16 +121,16 @@ public class Morpion extends GameScreen {
     }
 
     @Override
+    protected void setGameMenu() {
+
+    }
+
+    @Override
     public void display() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         ApplicationSkin.getInstance().showBackground();
-
-        if (gameLoaded) {
-            stage.act();
-            stage.draw();
-        }
 
 
 //        shapeRenderer.setColor(Color.GREEN);

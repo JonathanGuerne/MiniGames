@@ -1,5 +1,6 @@
 package ch.arc.ete;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.esotericsoftware.kryonet.Client;
 
 /**
@@ -14,6 +15,11 @@ public class Draughts extends GameScreen {
 
     @Override
     public void playerLeft() {
+
+    }
+
+    @Override
+    protected void setGameMenu() {
 
     }
 
