@@ -124,6 +124,15 @@ public abstract class GameScreen implements Screen,InputProcessor {
             }
             update();
             display();
+
+            if(gameOver){
+                float x = 0;
+                float y = Gdx.graphics.getHeight()/2 + layout.height/2;
+
+                batch.begin();
+                font.draw(batch,layout,x,y);
+                batch.end();
+            }
         } else {
             Gdx.gl.glClearColor(1, 1, 1, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

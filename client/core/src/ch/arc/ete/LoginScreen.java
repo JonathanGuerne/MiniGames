@@ -114,12 +114,21 @@ public class LoginScreen implements Screen {
             public void run() {
 
                 Array<String> listAddressesString = new Array<String>();
-                java.util.List<InetAddress> listAddresses = client.discoverHosts(udp, 3000);
+                java.util.List<InetAddress> listAddresses;
+
+                listAddresses = client.discoverHosts(tcp, 3000);
                 for (InetAddress adr : listAddresses) {
                     if (!listAddressesString.contains(adr.getHostAddress(), false)) {
                         listAddressesString.add(adr.getHostAddress());
                     }
                 }
+                listAddresses = client.discoverHosts(udp, 2000);
+                for (InetAddress adr : listAddresses) {
+                    if (!listAddressesString.contains(adr.getHostAddress(), false)) {
+                        listAddressesString.add(adr.getHostAddress());
+                    }
+                }
+
                 if (listAddressesString.size == 0) {
 
                 } else {
