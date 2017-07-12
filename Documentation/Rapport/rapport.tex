@@ -149,21 +149,101 @@ reprenant ce sytle graphique ce qui est à notre avis un point positif pour notr
 \section{Interface}
 L'interface du programme est découpé en trois parties principales : l'écran de login, le menu de sélection des minis jeux et finalement le jeu en lui-même.
 
+\chapter{Tests}
+Ce chapitre présente les différents tests qui ont été effectué sur le programme.
+\section{Client}
+\subsection{Login}
+\begin{itemize}
+  \item Le programme se lance correctement
+  \item L'utilisateur à le focus sur l'entré du pseudo
+  \item La touche "Enter" du clavier lance la tentative de connexion
+  \item Le bouton "connexion" lance la tentative de connexion
+  \item Message d'erreur s'il l'adresse de  serveur n'est pas correcte
+  \item Message d'erreur s'il n'y a pas de pseudo
+  \item Découvrte des serveur dans le réseau local
+  \item Changement de l'adresse du serveur lors de la sélection d'un des éléments de la liste des serveur
+  \item Le bouton "refresh" relance la recherche de serveur
+  \item
+  \item Bonne disposition des éléments graphique dans la fenêtre
 
-\chapter{Conclusion}
-Ce chapitre propose une vue d'ensemble récapitulative sur le travaille effectué. Les probématiques encore présentent dans le programme à ce jour ainsi que les
-différentes idées d'améliorations future seront exposées et détaillées.
+\end{itemize}
 
-\section{Problematique}
+\subsection{Menu des minis jeux}
+\begin{itemize}
+  \item Affichage du nom du joueur
+  \item Bonne disposition des éléments graphique de la fenêtre
+  \item Le bouton "retour" renvoie le client à la page de connexion
+  \item Le bouton "quitter" quitte le programme
+  \item Le bouton "jouer au morpion" lance une partie de morpion
+  \item Le bouton "jouer à la bataille navale" lance une partie de bataille navale
+\end{itemize}
+
+\subsection{Morpion}
+\begin{itemize}
+  \item Le joueur est mis en attente s'il est seul à vouloir jouer
+  \item Le texte "Attente d'un autre joueur" s'affiche pendant l'attente d'une adversaire
+  \item Le bouton "retour" renvoie à au menu de sélection des jeux
+  \item La partie se lance quand deux joueurs lance partie sur le même serveur
+  \item Un text indique lequel des deux joueurs doit jouer
+  \item Si c'est n'est pas le tour du joueur cliquer dans l'air de jeu ne fait rien
+  \item Si c'est le tour du joueur cliquer dans l'air de jeu informe le serveur du choix de case
+  \item Les joueurs recoivent le plateau de jeu mis à jour par le serveur
+  \item Si un joueur a gagne les deux joueurs recoivent des infos du serveur signifiant la fin de la partie
+  \item Le text "vous avez gagné" s'affiche chez le gagnant
+  \item Le text "vous avez perdu" s'affiche chez le perdant
+  \item Le text "égalié" s'affiche en cas d'égalité
+  \item Quand la partie est terminé si les joueurs clique sur l'écran ils retourent au menu de sélection des minis jeux
+  \item Le text "votre adversaire a quitter la partie" s'affiche si l'adversaire du joueur a quitter la partie
+\end{itemize}
+
+\subsection{Bataille navale}
+
+\section{Serveur}
+
+\subsection{Initialisation}
+\begin{itemize}
+  \item Le serveur se lance correctement
+  \item Des clients peuvent se connecter au serveur
+  \item le seveur peut recevoir des Packets des clients
+  \item le serveur peut envoyer des Packets aux clients
+  \item Les joueurs sont sauvegardés dans une liste
+  \item Les Games (les jeux) sont sauvegardés dans une liste
+\end{itemize}
+
+\subsection{Morpion}
+\begin{itemize}
+  \item Si personne n'est en attente sur ce jeu le joueur est mis en attente
+  \item Si un joueur est déjà en attente une partie est lancée
+  \item Si un joueur quitte la partie quand il est en attente il n'est plus en attente
+  \item Le serveur reçoit des Packets donnant des informations sur le plateau de jeu de la part des joueurs
+  \item Le serveur test si la partie est gagnée ou non
+  \item Le serveur renvoie de nouvelle infos sur la partie aux deux joueurs
+  \item Si un joueur se déconnecte ou s'il appuie sur le bouton retoure le serveur est notifié
+  \item Le serveur envoie un Packet à au joueur dont l'adversaire a quitter la partie
+\end{itemize}
+
+
+
+
+\chapter{Problematique}
 Une des problématique rencontrée a été la mise en place d'un serveur sur android. En effet, LibGDX "facile" le portage de l'application client vers les
 périphériques android mais le serveur à lui été dévelopé sans libgdx. Une ébauche d'application android oppérant de la même manière que le serveur Java classique a
 été mise en place, l'implémentation c'est avérée très lourdes et peu fructueuse dans le sens où lorsqu'un client se connectait à un serveur android celui-ci crashait
 immédiatement.
 
-\section{Améliorations}
+\chapter{Améliorations}
 La communication entre pc et android est fonctionnelle mais, comme expliqué plus haut, notre shouaite était d'étendre notre proramme à encore deux autres
 plate-formes : IOS et HTML5 (navigateur web). Certain problème d'implpémentation pourrait survenir (utilisation d'outil non supportés sur certaines plate-formes, etc.)
 mais avec du temps l'application pourrait être totalement multi-plateforme.
+De nouveaux jeux pourraient aussi être rajoutés tels que ,comme décrit dans notre cahier des charges comme objectif bonus,
+un jeu de dame ou encore bien d'autre jeux. Un système de point pourrait être attribuer les joueus les récompansant d'avoir gagnés une
+partie par exmple. Les points pourraient être utilisés pour mettre en place un classement des meilleurs joueurs du serveur.
+
+\chapter{Conclusion}
+Nous avons pu réaliser les objectifs primaire que nous nous étions fixés dans le cahier des charges, nous
+sommes donc satisfait du résultat. Une de nos plus grosses attente était de pouvoir continuer d'apprendre à
+utiliser des outils tel que LibGDX ou Kryonet et nous avons été agréblement surpis de la faciliter de mise
+en place de ces deux outils dans un même environnement.
 
 \chapter{Bibliographie}
 
