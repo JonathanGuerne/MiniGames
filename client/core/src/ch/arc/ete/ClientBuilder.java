@@ -10,12 +10,12 @@ import packets.BattleShip.BattleShipStartPacket;
 import packets.LoginConfirmPacket;
 import packets.LoginPacket;
 import packets.MiniGamePacket;
-import packets.MorpionEndGamePacket;
-import packets.MorpionInGameConfirmPacket;
-import packets.MorpionInGamePacket;
-import packets.MorpionPlayerLeaving;
-import packets.MorpionStartConfirmPacket;
-import packets.MorpionStartPacket;
+import packets.morpion.MorpionEndGamePacket;
+import packets.morpion.MorpionInGameConfirmPacket;
+import packets.morpion.MorpionInGamePacket;
+import packets.GamePlayerLeavingPacket;
+import packets.morpion.MorpionStartConfirmPacket;
+import packets.morpion.MorpionStartPacket;
 import packets.Packet;
 
 /**
@@ -36,7 +36,7 @@ public class ClientBuilder {
         client.getKryo().register(MorpionInGamePacket.class,1020);
         client.getKryo().register(MorpionInGameConfirmPacket.class,1030);
         client.getKryo().register(MorpionEndGamePacket.class,1050);
-        client.getKryo().register(MorpionPlayerLeaving.class,1110);
+        client.getKryo().register(GamePlayerLeavingPacket.class,1110);
         client.getKryo().register(BattleShipStartPacket.class, 2001);
         client.getKryo().register(BattleShipStartConfirmPacket.class, 2010);
         client.getKryo().register(BattleShipInGamePacket.class, 2020);

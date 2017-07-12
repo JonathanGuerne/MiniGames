@@ -30,6 +30,7 @@ import packets.Packet;
 
 public class BattleShip extends GameScreen {
 
+<<<<<<< HEAD
     final int TAB_PLAYER = 0;
     final int TAB_OPPONENT = 1;
     final int TAB_TOUCHED = 2;
@@ -46,6 +47,18 @@ public class BattleShip extends GameScreen {
     boolean showMyTab = true;
     int shipInitialized;
     boolean initGame;
+=======
+
+    private final int TAB_PLAYER = 0;
+    private final int TAB_OPPONENT = 1;
+    private ShapeRenderer shapeRenderer;
+    private char charUser;
+    private final int NB_CASE = 8;
+    private final int NB_SHIP = 3;
+    private boolean showInit;
+    private int shipInitialized;
+    private boolean initGame;
+>>>>>>> origin/master
 
     int touchIndex = -1;
 
@@ -56,8 +69,8 @@ public class BattleShip extends GameScreen {
     @Override
     public void show() {
         shapeRenderer = new ShapeRenderer();
-        w = gameLayoutWith / NB_CASE;
-        h = Gdx.graphics.getHeight() / NB_CASE;
+        w = Gdx.graphics.getWidth() / NB_CASE;
+        h = gameLayoutHeight / NB_CASE;
         shapeRenderer.setColor(Color.BLACK);
 
         tabGame = new HashMap<Integer, char[]>();
@@ -165,10 +178,22 @@ public class BattleShip extends GameScreen {
                 }
             }
             shapeRenderer.end();
+<<<<<<< HEAD
         }else
         {
             if(tabGame.get(TAB_TOUCHED).length != 0)
             {
+=======
+        }
+
+        shapeRenderer.setColor(Color.BLACK);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        for (int i = 0; i < NB_CASE; i++) {
+            shapeRenderer.line(i * w, 0, i * w, gameLayoutHeight);
+            shapeRenderer.line(0, i * h, Gdx.graphics.getWidth(), i * h);
+        }
+        shapeRenderer.end();
+>>>>>>> origin/master
 
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                 for (int i = 0; i < tabGame.get(TAB_TOUCHED).length; i++) {
@@ -232,8 +257,8 @@ public class BattleShip extends GameScreen {
 
     @Override
     public void resize(int width, int height) {
-        w = gameLayoutWith / NB_CASE;
-        h = Gdx.graphics.getHeight() / NB_CASE;
+        w = Gdx.graphics.getWidth() / NB_CASE;
+        h = gameLayoutHeight / NB_CASE;
     }
 
     @Override
@@ -276,10 +301,10 @@ public class BattleShip extends GameScreen {
 
         if (initGame && !showMessage) {
 
-            if (screenX > gameLayoutWith) {
+            if (screenY < informationLayoutHeight) {
                 return false;
             }
-
+            screenY -= informationLayoutHeight;
             int x = (int) (screenX / w);
             int y = (NB_CASE * (int) (screenY / h));
             touchIndex = x + y;
@@ -320,14 +345,6 @@ public class BattleShip extends GameScreen {
         return false;
     }
 
-    /**
-     * method called when the player choose to left the game
-     * TODO : notify the server
-     */
-    @Override
-    public void playerLeft() {
-
-    }
 
     @Override
     protected void setGameMenu() {

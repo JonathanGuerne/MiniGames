@@ -34,25 +34,25 @@ import packets.Packet;
 
 
 public class MainMenu implements Screen {
-    SpriteBatch batch;
-    private BitmapFont font;
+    private SpriteBatch batch;
+//    private BitmapFont font;
 
-    Client client;
-    Player localPlayer;
+    private Client client;
+    private Player localPlayer;
 
     static int tcp = 23900, udp = 23901;
 
-    Table tableMenu;
+    private Table tableMenu;
 
-    Stage stage;
+    private Stage stage;
 
-    TextButton btnMoripon;
-    TextButton btnBattleShip;
-    TextButton btnBack;
-    TextButton btnQuit;
+    private TextButton btnMoripon;
+    private TextButton btnBattleShip;
+    private TextButton btnBack;
+    private TextButton btnQuit;
 
 
-    boolean lostConnection;
+    private boolean lostConnection;
 
     public MainMenu(final Client client, String pseudo) {
         this.client = client;
@@ -93,8 +93,8 @@ public class MainMenu implements Screen {
 
 
         batch = new SpriteBatch();
-        font = Util.createFont(72);
-        font.setColor(Color.RED);
+//        font = Util.createFont(72);
+//        font.setColor(Color.RED);
 
         tableMenu = new Table();
         stage = new Stage();
@@ -196,6 +196,6 @@ public class MainMenu implements Screen {
     @Override
     public void dispose() {
         batch.dispose();
-        font.dispose();
+//        font.dispose();
     }
 }

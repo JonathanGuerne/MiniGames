@@ -2,31 +2,22 @@ package ch.arc.ete;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.sun.org.apache.xpath.internal.SourceTree;
 
 import java.util.HashMap;
 
-import javax.swing.JLabel;
-
-import packets.MorpionEndGamePacket;
-import packets.MorpionInGameConfirmPacket;
-import packets.MorpionInGamePacket;
-import packets.MorpionPlayerLeaving;
-import packets.MorpionStartConfirmPacket;
-import packets.MorpionStartPacket;
+import packets.morpion.MorpionEndGamePacket;
+import packets.morpion.MorpionInGameConfirmPacket;
+import packets.morpion.MorpionInGamePacket;
+import packets.morpion.MorpionStartConfirmPacket;
+import packets.morpion.MorpionStartPacket;
 import packets.Packet;
 
 /**
@@ -35,14 +26,13 @@ import packets.Packet;
 
 public class Morpion extends GameScreen {
 
-    ShapeRenderer shapeRenderer;
+    private ShapeRenderer shapeRenderer;
 
-    Sprite imageArray[] = new Sprite[9];
+    private Sprite imageArray[] = new Sprite[9];
 
-    float w, h;
-    char charUser;
+    private char charUser;
 
-    int touchIndex = -1;
+    private int touchIndex = -1;
 
 
     public Morpion(Client client, Player localPlayer) {
@@ -108,18 +98,6 @@ public class Morpion extends GameScreen {
     }
 
 
-    /**
-     * method call when the player choose to left
-     * todo: tell the server
-     */
-    @Override
-    public void playerLeft() {
-        MorpionPlayerLeaving mpl = new MorpionPlayerLeaving();
-        mpl.playerid = localPlayer.getId();
-        mpl.playerName = localPlayer.getPseudo();
-        client.sendTCP(mpl);
-    }
-
     @Override
     protected void setGameMenu() {
 
@@ -133,41 +111,22 @@ public class Morpion extends GameScreen {
         ApplicationSkin.getInstance().showBackground();
 
 
-//        shapeRenderer.setColor(Color.GREEN);
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//        for (int i = 0; i < tabGame.get(0).length; i++) {
-//            if (tabGame.get(0)[i] == 'x') {
-//                int x = i%3;
-//                int y = 2-(i/3);
-//                shapeRenderer.rect(x*w, y*h,w,h);
-//            }
-//        }
-//        shapeRenderer.end();
-//        shapeRenderer.setColor(Color.RED);
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//        for (int i = 0; i < tabGame.get(0).length; i++) {
-//            if (tabGame.get(0)[i] == 'o') {
-//                int x = i%3;
-//                int y = 2-(i/3);
-//                shapeRenderer.rect(x*w, y*h,w,h);
-//            }
-//        }
-//        shapeRenderer.end();
-
         shapeRenderer.setColor(Color.BLACK);
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
         for (int i = 0; i < 4; i++) {
-            shapeRenderer.line(i * w, 0, i * w, gameLayoutHeight);
-            shapeRenderer.line(0, i * h, Gdx.graphics.getWidth(), i * h);
+
+
+            shapeRenderer.rectLine(i * w, 0, i * w, gameLayoutHeight,3);
+            shapeRenderer.rectLine(0, i * h, Gdx.graphics.getWidth(), i * h,3);
         }
 
         shapeRenderer.end();
 
         batch.begin();
 
-        for (int i = 0; i < imageArray.length; i++) {
+        for(int i = 0; i < imageArray.length; i++) {
             if (imageArray[i] != null) {
                 imageArray[i].draw(batch);
             }
@@ -220,7 +179,7 @@ public class Morpion extends GameScreen {
                 setCenterText("Vous avez gagne");
             } else if (winnerId == -1) {
                 setCenterText("egalite");
-            } else {
+            } else if(winnerId == opponentPlayer.getId()){
                 setCenterText("Vous avez perdu");
             }
         }
@@ -274,19 +233,21 @@ public class Morpion extends GameScreen {
             {
                 return false;
             }
-            screenY -= informationLayoutHeight;
-            int x = (int) (screenX / w);
-            int y = (3 * (int) (screenY / h));
+            if(!showMessage) {
+                screenY -= informationLayoutHeight;
+                int x = (int) (screenX / w);
+                int y = (3 * (int) (screenY / h));
                 touchIndex = x + y;
+            }
+            else
+            {
+                showMessage = false;
+                setCenterText("");
+            }
         } else {
             ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, localPlayer));
         }
 
-        if(showMessage)
-        {
-            showMessage = false;
-            setCenterText("");
-        }
         return false;
     }
 

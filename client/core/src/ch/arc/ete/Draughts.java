@@ -14,11 +14,6 @@ public class Draughts extends GameScreen {
     }
 
     @Override
-    public void playerLeft() {
-
-    }
-
-    @Override
     protected void setGameMenu() {
 
     }

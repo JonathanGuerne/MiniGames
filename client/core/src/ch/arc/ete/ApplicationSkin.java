@@ -10,9 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
  */
 public class ApplicationSkin {
 
-    Skin skin;
-    Texture texture;
-    SpriteBatch batch;
+    private Skin skin;
+    private Texture texture;
+    private SpriteBatch batch;
 
     private static ApplicationSkin ourInstance;
 

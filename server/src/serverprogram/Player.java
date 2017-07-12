@@ -7,14 +7,32 @@ package serverprogram;
 public class Player {
     private int idPlayer;
     private String namePlayer;
+    private boolean isPlaying = false;
+    private int currentGameId;
 
     public Player(int idPlayer, String namePlayer) {
         this.idPlayer = idPlayer;
         this.namePlayer = namePlayer;
     }
 
+    public int getCurrentGameId() {
+        return currentGameId;
+    }
+
+    public void setCurrentGameId(int currentGameId) {
+        this.currentGameId = currentGameId;
+    }
+
     public int getIdPlayer() {
         return idPlayer;
+    }
+
+    public boolean isPlaying() {
+        return isPlaying;
+    }
+
+    public void setPlaying(boolean playing) {
+        isPlaying = playing;
     }
 
     public void setIdPlayer(int idPlayer) {

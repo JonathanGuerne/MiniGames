@@ -2,6 +2,7 @@ package ch.arc.ete;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -28,6 +30,8 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.net.InetAddress;
 
@@ -40,24 +44,24 @@ import packets.Packet;
  */
 public class LoginScreen implements Screen {
 
-    Label serverLabel;
-    Label pseudoLabel;
-    Label errorLabel;
-    Label serversListLabel;
-    TextButton btnValider;
-    TextField serverAdress;
-    TextField clientPseudo;
-    SelectBox<String> serversAdresses;
-    ImageButton btnRefreshServersList;
+    private Label serverLabel;
+    private Label pseudoLabel;
+    private Label errorLabel;
+    private Label serversListLabel;
+    private TextButton btnValider;
+    private TextField serverAdress;
+    private TextField clientPseudo;
+    private SelectBox<String> serversAdresses;
+    private ImageButton btnRefreshServersList;
 
-    Stage stage;
-    SpriteBatch sb;
-    OrthographicCamera cam;
-    Client client;
+    private Stage stage;
+    private SpriteBatch sb;
+    private OrthographicCamera cam;
+    private Client client;
 
     static int tcp = 23900, udp = 23901;
 
-    boolean connectionOk = false;
+    private boolean connectionOk = false;
 //    boolean serverDiscoveringFinish = false;
 
 
@@ -142,34 +146,12 @@ public class LoginScreen implements Screen {
 
         new Thread(new DiscoverHostThread()).start();
 
-        btnValider.addListener(new ClickListener() {
+        btnValider.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (clientPseudo.getText().equals("")) {
-                    errorLabel.setText("Veuillez choisir un pseudo");
-                    return;
-                }
-                try {
-                    client.connect(5000, serverAdress.getText(), tcp, udp);
-                    LoginPacket lp = new LoginPacket();
-                    lp.namePlayer = clientPseudo.getText();
-                    client.sendTCP(lp);
-
-                    while (!connectionOk) {
-                        System.out.println("waiting for server response");
-                    }
-
-
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, clientPseudo.getText()));
-
-
-                } catch (IOException e) {
-                    errorLabel.setText("Serveur inconnu");
-                    e.printStackTrace();
-                }
+                tryConnection();
             }
         });
-
 
         serversAdresses.addListener(new ChangeListener() {
             @Override
@@ -204,6 +186,27 @@ public class LoginScreen implements Screen {
         serverAdress = new TextField("127.0.0.1", skin);
         clientPseudo = new TextField("", skin);
 
+        clientPseudo.setTextFieldListener(new TextField.TextFieldListener() {
+            @Override
+            public void keyTyped(TextField textField, char c) {
+                if(c == '\r')
+                {
+                    tryConnection();
+                }
+            }
+        });
+
+
+        serverAdress.setTextFieldListener(new TextField.TextFieldListener() {
+            @Override
+            public void keyTyped(TextField textField, char c) {
+                if(c == '\r')
+                {
+                    tryConnection();
+                }
+            }
+        });
+
         tableDisplay.add(new Label("MINI GAMES", skin, "title", Color.WHITE)).colspan(3);
         tableDisplay.row();
         tableDisplay.add(serverLabel).align(Align.left);
@@ -223,12 +226,42 @@ public class LoginScreen implements Screen {
         tableDisplay.row();
 
         stage.addActor(tableDisplay);
+        stage.setKeyboardFocus(clientPseudo);
 
         ((OrthographicCamera) stage.getCamera()).zoom = Util.getRatio() / 1.5f;
 
         Gdx.input.setInputProcessor(stage);
 
     }
+
+    private void tryConnection(){
+                try {
+                    if (clientPseudo.getText().equals("")) {
+                        throw new LoginException("Veuillez choisir un pseudo");
+                    }
+                    else if(clientPseudo.getText().length() > 20){
+                        throw new LoginException("Votre pseudo ne doit pas contenir\n plus que 20 caractères !");
+                    }
+                    client.connect(5000, serverAdress.getText(), tcp, udp);
+                    LoginPacket lp = new LoginPacket();
+                    lp.namePlayer = clientPseudo.getText();
+                    client.sendTCP(lp);
+
+                    while (!connectionOk) {
+                        System.out.println("waiting for server response");
+                    }
+
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, clientPseudo.getText()));
+
+                } catch (IOException e) {
+                    errorLabel.setText("Serveur inconnu");
+                    e.printStackTrace();
+                }
+                catch (LoginException e)
+                {
+                    errorLabel.setText(e.getMessage());
+                }
+        }
 
 
     @Override
