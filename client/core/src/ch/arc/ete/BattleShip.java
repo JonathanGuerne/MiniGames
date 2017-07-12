@@ -157,6 +157,7 @@ public class BattleShip extends GameScreen {
 
         if (showMyTab) {
 
+
             batch.begin();
             for (int i = 0; i < playerArrayImage.length; i++) {
                 if (playerArrayImage[i] != null) {
@@ -166,6 +167,7 @@ public class BattleShip extends GameScreen {
             batch.end();
 
         } else {
+
 
             batch.begin();
             for (int i = 0; i < opponentArrayImage.length; i++) {
@@ -284,7 +286,7 @@ public class BattleShip extends GameScreen {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-        if (initGame && !showMessage) {
+        if (initGame && !showMessage ) {
 
             if (screenY < informationLayoutHeight) {
                 return false;
