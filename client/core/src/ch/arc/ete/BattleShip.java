@@ -2,13 +2,12 @@ package ch.arc.ete;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.esotericsoftware.kryonet.Client;
@@ -46,7 +45,12 @@ public class BattleShip extends GameScreen {
     boolean inGame = false;
     boolean showMyTab = true;
 
+    TextButton functionalButton;
+
     int touchIndex = -1;
+
+    private Sprite playerArrayImage[] = new Sprite[NB_CASE * NB_CASE];
+    private Sprite opponentArrayImage[] = new Sprite[NB_CASE * NB_CASE];
 
     public BattleShip(Client client, Player localPlayer) {
         super(client, localPlayer);
@@ -61,8 +65,9 @@ public class BattleShip extends GameScreen {
 
         tabGame = new HashMap<Integer, char[]>();
         tabGame.put(TAB_PLAYER, new char[NB_CASE * NB_CASE]);
-        tabGame.put(TAB_OPPONENT, new char[0]);
-        tabGame.put(TAB_TOUCHED, new char[0]);
+        tabGame.put(TAB_OPPONENT, new char[NB_CASE * NB_CASE]);
+        tabGame.put(TAB_TOUCHED, new char[NB_CASE * NB_CASE]);
+        tabGame.put(TAB_TOUCHED_OPPONENT, new char[NB_CASE * NB_CASE]);
 
         // Gdx.input.setInputProcessor(this);
 
@@ -113,6 +118,10 @@ public class BattleShip extends GameScreen {
                         gameId = bsigp.gameId;
                         setCenterText(text);
                         showMessage = true;
+
+                        playerArrayImage = new Sprite[NB_CASE * NB_CASE];
+                        opponentArrayImage = new Sprite[NB_CASE * NB_CASE];
+
                     } else if (o instanceof BattleShipEndGamePacket) {
                         BattleShipEndGamePacket bsegp = (BattleShipEndGamePacket) o;
                         if (bsegp.idWinner == localPlayer.getId()) {
@@ -149,34 +158,58 @@ public class BattleShip extends GameScreen {
         }
 
         if (showMyTab) {
-            shapeRenderer.setColor(Color.GREEN);
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            for (int i = 0; i < tabGame.get(TAB_PLAYER).length; i++) {
-                if (tabGame.get(TAB_PLAYER)[i] == charUser) {
-                    int x = i % NB_CASE;
-                    int y = 7 - (i / NB_CASE);
-                    shapeRenderer.rect(x * w, y * h, w, h);
+
+            batch.begin();
+
+            for (int i = 0; i < playerArrayImage.length; i++) {
+                if (playerArrayImage[i] != null) {
+                    playerArrayImage[i].draw(batch);
                 }
             }
-            shapeRenderer.end();
+
+            batch.end();
+//
+//            shapeRenderer.setColor(Color.GREEN);
+//            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+//            for (int i = 0; i < tabGame.get(TAB_PLAYER).length; i++) {
+//                if (tabGame.get(TAB_PLAYER)[i] == charUser) {
+//                    int x = i % NB_CASE;
+//                    int y = 7 - (i / NB_CASE);
+//                    shapeRenderer.rect(x * w, y * h, w, h);
+//                }
+//            }
+//            shapeRenderer.end();
 
         } else {
-            if (tabGame.get(TAB_TOUCHED).length != 0) {
-                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                for (int i = 0; i < tabGame.get(TAB_TOUCHED).length; i++) {
-                    shapeRenderer.setColor(Color.BLUE);
+//            if (tabGame.get(TAB_TOUCHED).length != 0) {
+////                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+////                for (int i = 0; i < tabGame.get(TAB_TOUCHED).length; i++) {
+////                    shapeRenderer.setColor(Color.BLUE);
+////
+////                    if (tabGame.get(TAB_TOUCHED)[i] == charUser) {
+////                        if (tabGame.get(TAB_TOUCHED)[i] == tabGame.get(TAB_OPPONENT)[i]) {
+////                            shapeRenderer.setColor(Color.BROWN);
+////                        }
+////                        int x = i % NB_CASE;
+////                        int y = 7 - (i / NB_CASE);
+////                        shapeRenderer.rect(x * w, y * h, w, h);
+////                    }
+////                }
+////                shapeRenderer.end();
+//
+//
+//            }
 
-                    if (tabGame.get(TAB_TOUCHED)[i] == charUser) {
-                        if (tabGame.get(TAB_TOUCHED)[i] == tabGame.get(TAB_OPPONENT)[i]) {
-                            shapeRenderer.setColor(Color.BROWN);
-                        }
-                        int x = i % NB_CASE;
-                        int y = 7 - (i / NB_CASE);
-                        shapeRenderer.rect(x * w, y * h, w, h);
-                    }
+            batch.begin();
+
+            for (int i = 0; i < opponentArrayImage.length; i++) {
+                if (opponentArrayImage[i] != null) {
+                    opponentArrayImage[i].draw(batch);
                 }
-                shapeRenderer.end();
             }
+
+            batch.end();
+
         }
         shapeRenderer.setColor(Color.BLACK);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -185,8 +218,7 @@ public class BattleShip extends GameScreen {
             shapeRenderer.line(0, i * h, Gdx.graphics.getWidth(), i * h);
         }
         shapeRenderer.end();
-        if (showMessage)
-        {
+        if (showMessage) {
             float x = 0;
             float y = Gdx.graphics.getHeight() / 2 + layout.height / 2;
             batch.begin();
@@ -198,20 +230,15 @@ public class BattleShip extends GameScreen {
 
     @Override
     public void update() {
-        if (initGame && shipInitialized == NB_SHIP) {
-            BattleShipStartInitGamePacket bssigp = new BattleShipStartInitGamePacket();
-            bssigp.idPlayer = localPlayer.getId();
-            System.out.println("opponent " + opponentPlayer.getId());
-            bssigp.idOpponent = opponentPlayer.getId();
-            bssigp.tabGame = tabGame.get(TAB_PLAYER);
-            bssigp.gameId = gameId;
 
-            client.sendTCP(bssigp);
-            initGame = false;
-            touchIndex = -1;
-            setCenterText("Attente de l'autre joueur...");
-            showMessage = true;
-        } else if (inGame && touchIndex != -1) {
+
+        initImage(playerArrayImage, TAB_PLAYER, TAB_TOUCHED_OPPONENT, "pirate-ship");
+        if (tabGame.get(TAB_TOUCHED).length != 0) {
+            initImage(opponentArrayImage, TAB_TOUCHED, TAB_OPPONENT, "plouf");
+        }
+
+
+        if (inGame && touchIndex != -1) {
             System.out.println("J'ai jouer!!");
             BattleShipInGamePacket bsigp = new BattleShipInGamePacket();
             bsigp.currentPlayerId = localPlayer.getId();
@@ -225,6 +252,27 @@ public class BattleShip extends GameScreen {
             client.sendTCP(bsigp);
             inGame = false;
             touchIndex = -1;
+        }
+    }
+
+    private void initImage(Sprite[] imageArray, int playerIndex, int otherIndex, String spriteName) {
+        String spriteNameCopy = spriteName;
+        for (int i = 0; i < imageArray.length; i++) {
+            if (imageArray[i] == null && tabGame.get(playerIndex)[i] != '\0') {
+                int x = i % NB_CASE;
+                int y = NB_CASE - 1 - (i / NB_CASE);
+                if (tabGame.get(playerIndex)[i] == tabGame.get(otherIndex)[i]) {
+                    spriteName = "pirate-ship-dead";
+                }
+
+                Texture tex = new Texture(Gdx.files.internal("battleship/" + spriteName + ".png"));
+                imageArray[i] = new Sprite(tex);
+                imageArray[i].setX(x * w);
+                imageArray[i].setY(y * h);
+                imageArray[i].setSize(w, h);
+
+                spriteName = spriteNameCopy;
+            }
         }
     }
 
@@ -283,8 +331,9 @@ public class BattleShip extends GameScreen {
             touchIndex = x + y;
             if (tabGame.get(TAB_PLAYER)[touchIndex] == charUser) {
                 tabGame.get(TAB_PLAYER)[touchIndex] = '\0';
+                playerArrayImage[touchIndex] = null;
                 shipInitialized--;
-            } else {
+            } else if(shipInitialized < NB_SHIP) {
                 tabGame.get(TAB_PLAYER)[touchIndex] = charUser;
                 shipInitialized++;
             }
@@ -320,17 +369,44 @@ public class BattleShip extends GameScreen {
 
     @Override
     protected void setGameMenu() {
-        TextButton btnInvert = new TextButton("Inverser", skin);
+        functionalButton = new TextButton("Confirmer", skin);
 
-        btnInvert.addListener(new ClickListener() {
+        functionalButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                showMyTab = !showMyTab;
+                if (!initGame) {
+                    showMyTab = !showMyTab;
+                }
+                else {
+
+                    if (shipInitialized == NB_SHIP) {
+                        functionalButton.setText("Inverser");
+
+                        BattleShipStartInitGamePacket bssigp = new BattleShipStartInitGamePacket();
+                        bssigp.idPlayer = localPlayer.getId();
+                        System.out.println("opponent " + opponentPlayer.getId());
+                        bssigp.idOpponent = opponentPlayer.getId();
+                        bssigp.tabGame = tabGame.get(TAB_PLAYER);
+                        bssigp.gameId = gameId;
+
+                        client.sendTCP(bssigp);
+                        initGame = false;
+                        touchIndex = -1;
+                        setCenterText("Attente de l'autre joueur...");
+                        showMessage = true;
+
+
+                    } else {
+                        setCenterText("Il manque des bateaux");
+                        showMessage = true;
+                    }
+
+                }
             }
         });
 
-        tableDisplay.add(btnInvert);
+        tableDisplay.add(functionalButton);
     }
 
     @Override
