@@ -170,13 +170,6 @@ public abstract class GameScreen implements Screen, InputProcessor {
             font.draw(batch, layout, x, y);
             batch.end();
 
-//            shapeRendererTextBox.begin(ShapeRenderer.ShapeType.Filled);
-//
-//            shapeRendererTextBox.rect(,font.getScaleY(),layout.width,layout.height,Color.WHITE,Color.BLACK,Color.BLACK, Color.BLACK);
-//
-//            shapeRendererTextBox.end();
-
-
             waitingStage.act();
             waitingStage.draw();
         }
@@ -192,8 +185,6 @@ public abstract class GameScreen implements Screen, InputProcessor {
         gplp.playerName = localPlayer.getPseudo();
         client.sendTCP(gplp);
     }
-
-    ;
 
     protected abstract void setGameMenu();
 

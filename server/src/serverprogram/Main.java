@@ -273,10 +273,13 @@ public class Main {
 
                         System.out.println("Player leaving");
 
-                        if(clientIDWaitingPerGame[MORPION_INDEX] == mpl.playerid){
-                            clientIDWaitingPerGame[MORPION_INDEX] = -1;
+                        for(int i=0;i<clientIDWaitingPerGame.length;i++) {
+                            if (clientIDWaitingPerGame[i] == mpl.playerid) {
+                                clientIDWaitingPerGame[i] = -1;
+                            }
                         }
-                        else if(listPlayer.getPlayerById(mpl.playerid).isPlaying()){
+
+                        if(listPlayer.getPlayerById(mpl.playerid).isPlaying()){
                             Game game = selectGameFromId(listPlayer.getPlayerById(mpl.playerid).getCurrentGameId());
                             if(game.getIdPlayer1() != mpl.playerid){
                                 server.sendToTCP(game.getIdPlayer1(),mpl);
