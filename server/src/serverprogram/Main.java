@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import packets.MorpionPlayerLeaving;
+import packets.GamePlayerLeavingPacket;
 import packets.battleship.BattleShipEndGamePacket;
 import packets.battleship.BattleShipInGamePacket;
 import packets.battleship.BattleShipStartConfirmPacket;
@@ -263,8 +263,8 @@ public class Main {
 
                         System.out.println("Player leaving");
 
-                        if(clientIDWaitingPerGame[MORPION_INEX] == mpl.playerid){
-                            clientIDWaitingPerGame[MORPION_INEX] = -1;
+                        if(clientIDWaitingPerGame[MORPION_INDEX] == mpl.playerid){
+                            clientIDWaitingPerGame[MORPION_INDEX] = -1;
                         }
                         else if(listPlayer.getPlayerById(mpl.playerid).isPlaying()){
                             Game game = selectGameFromId(listPlayer.getPlayerById(mpl.playerid).getCurrentGameId());

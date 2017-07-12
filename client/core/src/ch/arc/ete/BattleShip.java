@@ -30,35 +30,21 @@ import packets.Packet;
 
 public class BattleShip extends GameScreen {
 
-<<<<<<< HEAD
-    final int TAB_PLAYER = 0;
-    final int TAB_OPPONENT = 1;
-    final int TAB_TOUCHED = 2;
-    final int TAB_TOUCHED_OPPONENT = 3;
-    final int NB_CASE = 8;
-    final int NB_SHIP = 3;
-
-
-    ShapeRenderer shapeRenderer;
-    float w, h;
-    char charUser = 'x';
-
-    boolean inGame = false;
-    boolean showMyTab = true;
-    int shipInitialized;
-    boolean initGame;
-=======
-
     private final int TAB_PLAYER = 0;
     private final int TAB_OPPONENT = 1;
-    private ShapeRenderer shapeRenderer;
-    private char charUser;
+    private final int TAB_TOUCHED = 2;
+    private final int TAB_TOUCHED_OPPONENT = 3;
     private final int NB_CASE = 8;
     private final int NB_SHIP = 3;
+
+    private ShapeRenderer shapeRenderer;
+    private char charUser = 'x';
     private boolean showInit;
     private int shipInitialized;
     private boolean initGame;
->>>>>>> origin/master
+
+    boolean inGame = false;
+    boolean showMyTab = true;
 
     int touchIndex = -1;
 
@@ -127,15 +113,12 @@ public class BattleShip extends GameScreen {
                         gameId = bsigp.gameId;
                         setCenterText(text);
                         showMessage = true;
-                    }else if(o instanceof BattleShipEndGamePacket)
-                    {
+                    } else if (o instanceof BattleShipEndGamePacket) {
                         BattleShipEndGamePacket bsegp = (BattleShipEndGamePacket) o;
-                        if(bsegp.idWinner == localPlayer.getId())
-                        {
+                        if (bsegp.idWinner == localPlayer.getId()) {
                             setCenterText("Vous avez gagnez");
                             showMessage = true;
-                        }else
-                        {
+                        } else {
                             setCenterText("Vous avez perdu!!");
                             showMessage = true;
                         }
@@ -165,44 +148,26 @@ public class BattleShip extends GameScreen {
             setCenterText("Init de la partie");
         }
 
-        if(showMyTab)
-        {
+        if (showMyTab) {
             shapeRenderer.setColor(Color.GREEN);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             for (int i = 0; i < tabGame.get(TAB_PLAYER).length; i++) {
-                if (tabGame.get(TAB_PLAYER)[i] == charUser)
-                {
+                if (tabGame.get(TAB_PLAYER)[i] == charUser) {
                     int x = i % NB_CASE;
                     int y = 7 - (i / NB_CASE);
                     shapeRenderer.rect(x * w, y * h, w, h);
                 }
             }
             shapeRenderer.end();
-<<<<<<< HEAD
-        }else
-        {
-            if(tabGame.get(TAB_TOUCHED).length != 0)
-            {
-=======
-        }
 
-        shapeRenderer.setColor(Color.BLACK);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        for (int i = 0; i < NB_CASE; i++) {
-            shapeRenderer.line(i * w, 0, i * w, gameLayoutHeight);
-            shapeRenderer.line(0, i * h, Gdx.graphics.getWidth(), i * h);
-        }
-        shapeRenderer.end();
->>>>>>> origin/master
-
+        } else {
+            if (tabGame.get(TAB_TOUCHED).length != 0) {
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                 for (int i = 0; i < tabGame.get(TAB_TOUCHED).length; i++) {
                     shapeRenderer.setColor(Color.BLUE);
 
-                    if (tabGame.get(TAB_TOUCHED)[i] == charUser)
-                    {
-                        if(tabGame.get(TAB_TOUCHED)[i] == tabGame.get(TAB_OPPONENT)[i])
-                        {
+                    if (tabGame.get(TAB_TOUCHED)[i] == charUser) {
+                        if (tabGame.get(TAB_TOUCHED)[i] == tabGame.get(TAB_OPPONENT)[i]) {
                             shapeRenderer.setColor(Color.BROWN);
                         }
                         int x = i % NB_CASE;
@@ -213,8 +178,15 @@ public class BattleShip extends GameScreen {
                 shapeRenderer.end();
             }
         }
-
-        if (showMessage) {
+        shapeRenderer.setColor(Color.BLACK);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        for (int i = 0; i < NB_CASE; i++) {
+            shapeRenderer.line(i * w, 0, i * w, gameLayoutHeight);
+            shapeRenderer.line(0, i * h, Gdx.graphics.getWidth(), i * h);
+        }
+        shapeRenderer.end();
+        if (showMessage)
+        {
             float x = 0;
             float y = Gdx.graphics.getHeight() / 2 + layout.height / 2;
             batch.begin();
@@ -222,6 +194,7 @@ public class BattleShip extends GameScreen {
             batch.end();
         }
     }
+
 
     @Override
     public void update() {
@@ -308,32 +281,31 @@ public class BattleShip extends GameScreen {
             int x = (int) (screenX / w);
             int y = (NB_CASE * (int) (screenY / h));
             touchIndex = x + y;
-            if(tabGame.get(TAB_PLAYER)[touchIndex] == charUser)
-            {
+            if (tabGame.get(TAB_PLAYER)[touchIndex] == charUser) {
                 tabGame.get(TAB_PLAYER)[touchIndex] = '\0';
                 shipInitialized--;
-            }else
-            {
+            } else {
                 tabGame.get(TAB_PLAYER)[touchIndex] = charUser;
                 shipInitialized++;
             }
-        } else if (gameOver)
-        {
+        } else if (gameOver) {
             /*
 
             Penser à gerer la déconnexion/fin de partie dans le serveur
              */
             ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, this.localPlayer));
-        } else if (inGame && !showMyTab)
-        {
+        } else if (inGame && !showMyTab) {
+            if (screenY < informationLayoutHeight) {
+                return false;
+            }
+            screenY -= informationLayoutHeight;
             int x = (int) (screenX / w);
             int y = (NB_CASE * (int) (screenY / h));
+
             touchIndex = x + y;
-            if(tabGame.get(TAB_TOUCHED)[touchIndex] != charUser)
-            {
+            if (tabGame.get(TAB_TOUCHED)[touchIndex] != charUser) {
                 tabGame.get(TAB_TOUCHED)[touchIndex] = charUser;
-            }else
-            {
+            } else {
                 touchIndex = -1;
             }
         }
@@ -352,8 +324,7 @@ public class BattleShip extends GameScreen {
 
         btnInvert.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y)
-            {
+            public void clicked(InputEvent event, float x, float y) {
 
                 showMyTab = !showMyTab;
             }
