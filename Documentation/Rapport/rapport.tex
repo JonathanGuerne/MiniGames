@@ -69,6 +69,18 @@ L'architecture logicielle détaille les choix qui ont été pris durant l'implé
 Pour optimiser le codage et donc viser à obtenir un code K.I.S.S. (keep it simple and stupid) nous avons choisi de réfléchir sur la logique d'impplémentation
 des classes à l'aide de différents diagramme avant de commencer le projet. Nous avons donc pu réfléchir
 aux différents problèmes potentiel et aux différents moyens de rendre de code plus apte à être retravailler plus tard (ajout de fonctionnalités).
+
+\section{Diagramme de classe}
+Le diagramme de classe a été réalisé au début du projet dans le but de donner une direction au projet, il a ensuite été généré en fin de projet
+dans le but de présenter de façon condensé tous les élémensts du projet (voir figure \ref{diagramme de classe figure}).
+
+\begin{figure}[ht]
+	\centering\includegraphics[width=15cm]{classDiagramm}
+	\caption{Diagramme de classe}
+  \label{diagramme de classe figure}
+\end{figure}
+
+
 \chapter{Communication réseau}
 Comme dit plus haut, le programme est une collection de minis jeux auxquels les clients auront la possibilités de jouer à
 plusieurs. Le programme est décomposé en deux parties : la partie client et la partie serveur. La communication entre ces
@@ -123,7 +135,6 @@ Dans ce chapitre seront présentés les différents minis jeux mis en place dans
 ce projet aisni que leur implémentation.
 Le serveur garde un historique des jeux sous la forme d'une liste d'objets
 contenant les informations sur les différents joueurs opposés durant la partie.
-
 
 \section{Morpion}
 \label{Morpion}

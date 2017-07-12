@@ -1,4 +1,6 @@
-package packets;
+package packets.morpion;
+
+import packets.Packet;
 
 /**
  * Created by jonathan.guerne on 07.06.2017.

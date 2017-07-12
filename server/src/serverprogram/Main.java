@@ -15,11 +15,11 @@ import packets.battleship.BattleShipStartPacket;
 import packets.LoginConfirmPacket;
 import packets.LoginPacket;
 import packets.MiniGamePacket;
-import packets.MorpionEndGamePacket;
-import packets.MorpionInGameConfirmPacket;
-import packets.MorpionInGamePacket;
-import packets.MorpionStartConfirmPacket;
-import packets.MorpionStartPacket;
+import packets.morpion.MorpionEndGamePacket;
+import packets.morpion.MorpionInGameConfirmPacket;
+import packets.morpion.MorpionInGamePacket;
+import packets.morpion.MorpionStartConfirmPacket;
+import packets.morpion.MorpionStartPacket;
 import packets.Packet;
 
 /**

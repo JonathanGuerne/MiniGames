@@ -3,13 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package packets;
+package packets.morpion;
+
+import packets.Packet;
 
 /**
  *
  * @author jonathan.guerne
  */
-public class MorpionInGameConfirmPacket extends Packet{
+public class MorpionInGameConfirmPacket extends Packet {
     public char[] tabGame;
     public int currentPlayerID;
 }

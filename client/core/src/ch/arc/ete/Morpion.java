@@ -13,12 +13,11 @@ import com.esotericsoftware.kryonet.Listener;
 
 import java.util.HashMap;
 
-import packets.MorpionEndGamePacket;
-import packets.MorpionInGameConfirmPacket;
-import packets.MorpionInGamePacket;
-import packets.GamePlayerLeavingPacket;
-import packets.MorpionStartConfirmPacket;
-import packets.MorpionStartPacket;
+import packets.morpion.MorpionEndGamePacket;
+import packets.morpion.MorpionInGameConfirmPacket;
+import packets.morpion.MorpionInGamePacket;
+import packets.morpion.MorpionStartConfirmPacket;
+import packets.morpion.MorpionStartPacket;
 import packets.Packet;
 
 /**
