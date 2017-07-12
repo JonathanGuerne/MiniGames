@@ -3,6 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
+\usepackage{float}
 \usepackage{hyperref}
 \newcommand{\projectName}{Mini Games}
 \title{\projectName}
@@ -37,7 +38,7 @@ deployer le même programme sur différentes platforme, et de la libraire kryone
 \chapter{Conventions}
 
 \chapter{LibGDX}
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering\includegraphics[width=9cm]{libgdx}
 	\caption{Logo de LibGDX}
 \end{figure}
@@ -55,7 +56,7 @@ aucune expérience dans son utilisation pourtant il ne nous a fallu que très pe
  de temps avant de commencer à d’obtenir de bons résultats.
 
 \chapter{Kryonet}
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering\includegraphics[width=9cm]{kryonet}
 	\caption{Logo de Kryonet}
 \end{figure}
@@ -74,12 +75,11 @@ aux différents problèmes potentiel et aux différents moyens de rendre de code
 Le diagramme de classe a été réalisé au début du projet dans le but de donner une direction au projet, il a ensuite été généré en fin de projet
 dans le but de présenter de façon condensé tous les élémensts du projet (voir figure \ref{diagramme de classe figure}).
 
-\begin{figure}[ht]
-	\centering\includegraphics[width=15cm]{classDiagramm}
-	\caption{Diagramme de classe}
+\begin{figure}[H]
+	\centering\includegraphics[width=15cm]{classDiagrammClient}
+	\caption{Diagramme de classe du programme client}
   \label{diagramme de classe figure}
 \end{figure}
-
 
 \chapter{Communication réseau}
 Comme dit plus haut, le programme est une collection de minis jeux auxquels les clients auront la possibilités de jouer à
@@ -148,7 +148,7 @@ Si la partie se finit sans qu'aucun joueur n'est réussit à remplir une ligne/ 
 Quand un joueur démarre une partie s'il ne trouve pas d'adversaire il est mis en attente. Un message lui signalant l'attente d'un
 adversaire s'affiche sur l'écran, une fois le second joueur connecté l'écran de jeu s'affiche (figure \ref{attente adversaire}).
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering\includegraphics[width=9cm]{morpionwaiting}
 	\caption{Attente d'un adversaire}
   \label{attente adversaire}
@@ -157,7 +157,7 @@ adversaire s'affiche sur l'écran, une fois le second joueur connecté l'écran 
 L'écran de jeu est composé en 2 parties : des informations sur la partie ainsi qu'un bouton "retour" se sithue en haut
 de l'écran, tout le reste est occupé par le plateau de jeu (figure \ref{morpion en jeu}).
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering\includegraphics[width=9cm]{morpioningame}
 	\caption{Ecran de jeu du morpion}
   \label{morpion en jeu}
@@ -193,13 +193,13 @@ L'interface du programme est découpé en trois parties principales :
   \item Le jeu en lui-même (voir figures aux chapitres \ref{Morpion} et \ref{Bataille navale})
 \end{itemize}
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering\includegraphics[width=9cm]{loginScreen}
 	\caption{Ecran de login}
 	\label{Ecran de login}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering\includegraphics[width=9cm]{menuJeux}
 	\caption{Ecran de sélection des jeux}
 	\label{Ecran de selection}
