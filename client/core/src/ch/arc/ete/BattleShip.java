@@ -154,7 +154,7 @@ public class BattleShip extends GameScreen {
             for (int i = 0; i < tabGame.get(TAB_PLAYER).length; i++) {
                 if (tabGame.get(TAB_PLAYER)[i] == charUser) {
                     int x = i % NB_CASE;
-                    int y = 7 - (i / NB_CASE);
+                    int y = (NB_CASE - 1) - (i / NB_CASE);
                     shapeRenderer.rect(x * w, y * h, w, h);
                 }
             }
@@ -171,7 +171,7 @@ public class BattleShip extends GameScreen {
                             shapeRenderer.setColor(Color.BROWN);
                         }
                         int x = i % NB_CASE;
-                        int y = 7 - (i / NB_CASE);
+                        int y = (NB_CASE - 1) - (i / NB_CASE);
                         shapeRenderer.rect(x * w, y * h, w, h);
                     }
                 }
@@ -272,7 +272,7 @@ public class BattleShip extends GameScreen {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-        if (initGame && !showMessage) {
+        if (initGame && !showMessage ) {
 
             if (screenY < informationLayoutHeight) {
                 return false;
