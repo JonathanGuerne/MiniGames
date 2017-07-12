@@ -152,21 +152,21 @@ Si la partie se finit sans qu'aucun joueur n'est réussit à remplir une ligne/ 
 \subsection{Implémentation}
 
 Quand un joueur démarre une partie s'il ne trouve pas d'adversaire il est mis en attente. Un message lui signalant l'attente d'un
-adversaire s'affiche sur l'écran, une fois le second joueur connecté l'écran de jeu s'affiche (figure \ref{attente adversaire}).
+adversaire s'affiche sur l'écran, une fois le second joueur connecté l'écran de jeu s'affiche (figure \ref{attente_adversaire}).
 
 \begin{figure}[H]
 	\centering\includegraphics[width=9cm]{morpionwaiting}
 	\caption{Attente d'un adversaire}
-  \label{attente adversaire}
+  \label{attente_adversaire}
 \end{figure}
 
 L'écran de jeu est composé en 2 parties : des informations sur la partie ainsi qu'un bouton "retour" se sithue en haut
-de l'écran, tout le reste est occupé par le plateau de jeu (figure \ref{morpion en jeu}).
+de l'écran, tout le reste est occupé par le plateau de jeu (figure \ref{morpion_en_jeu}).
 
 \begin{figure}[H]
 	\centering\includegraphics[width=9cm]{morpioningame}
 	\caption{Ecran de jeu du morpion}
-  \label{morpion en jeu}
+  \label{morpion_en_jeu}
 \end{figure}
 
 Il s'agit du jeu tour par tour, c'est la raison pour laquelle au lancement du jeu un message est envoyé à chaqu'un des joueurs de la parties
@@ -183,6 +183,28 @@ pour savoir si la partie est terminée ou non, en fonction de cette analyse le s
 \section{Bataille navale}
 \label{Bataille navale}
 
+\subsection{Description}
+Notre jeu de bataille navale, reprend les règles normales du jeu mais avec quelques différence sur le placement et la découverte des bateaux (ennemies ou aliés). Au lieu de pouvoir placer
+des bateaux de taille variable (figure \ref{batailleClassique}) comme dans un jeu classique de bataille navale, notre jeu permet de placer un bateau sur une seule et unique case
+voir figure \ref{notreBataille}. Il s'agira alors pour notre adversaire de trouver nos bateaux sur la grille.
+
+\begin{figure}[H]
+	\centering\includegraphics[width=9cm]{batailleClassique}
+	\caption{Ecran de bataille navale classique}
+	\label{batailleClassiqe}
+\end{figure}
+
+\subsection{Implémentation}
+Comme pour le morpion, dès qu'un joueur commence une partie il est mis dans une file d'attente d'un adversaire (figure \ref{attente_adversaire}).
+Une fois un adversaire trouvé, il y a une phase d'initialisation et à ce moment là le joueur va placer ces bateaux. Une fois l'initialisation confirmée,
+la partie peut alors commencer et chacun son tour chaque joueur va alors devoir découvrir les bateaux de son adversaires.
+
+\begin{figure}[H]
+	\centering\includegraphics[width=9cm]{notreBataille}
+	\caption{Ecran de jeu de la bataille navale}
+	\label{notreBataille}
+\end{figure}
+
 \chapter{Identité graphique}
 Le jeu possède un style fortement inspiré de l'univers des comic book (bande dessinée principalement américaine)
 ce choix d'inspiration est principalement lié à l'utilisation d'un très bon thème graphique pour les éléments
@@ -196,7 +218,7 @@ L'interface du programme est découpé en trois parties principales :
 \begin{itemize}
   \item L'écran de login (firgure \ref{Ecran de login})
   \item Le menu de sélection des minis jeux (figure \ref{Ecran de selection})
-  \item Le jeu en lui-même (voir figures aux chapitres \ref{Morpion} et \ref{Bataille navale})
+  \item Le jeu en lui-même (voir figures aux chapitres \ref{Morpion} et \ref{Bataille_navale})
 \end{itemize}
 
 \begin{figure}[H]
@@ -258,6 +280,7 @@ Ce chapitre présente les différents tests qui ont été effectué sur le progr
 \end{itemize}
 
 \subsection{Bataille navale}
+
 
 \section{Serveur}
 
