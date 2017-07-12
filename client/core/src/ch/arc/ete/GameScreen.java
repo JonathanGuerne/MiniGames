@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -59,7 +60,6 @@ public abstract class GameScreen implements Screen, InputProcessor {
     protected Stage stage;
     protected Stage waitingStage;
     protected Label lblInfo;
-    protected Label playerTurn;
     protected TextButton btnBack;
 
     protected boolean foundOpponent;
@@ -70,6 +70,7 @@ public abstract class GameScreen implements Screen, InputProcessor {
     protected boolean showMessage = false;
 
     protected SpriteBatch batch;
+    private ShapeRenderer shapeRendererTextBox;
     protected GlyphLayout layout;
     protected BitmapFont font;
 
@@ -89,8 +90,10 @@ public abstract class GameScreen implements Screen, InputProcessor {
         stage = new Stage();
         waitingStage = new Stage();
         batch = new SpriteBatch();
+        shapeRendererTextBox = new ShapeRenderer();
         font = Util.createFont(48);
         layout = new GlyphLayout();
+
         final String text = "Attente d'un autre joueur...";
         setCenterText(text);
 
@@ -169,6 +172,13 @@ public abstract class GameScreen implements Screen, InputProcessor {
             batch.begin();
             font.draw(batch, layout, x, y);
             batch.end();
+
+//            shapeRendererTextBox.begin(ShapeRenderer.ShapeType.Filled);
+//
+//            shapeRendererTextBox.rect(,font.getScaleY(),layout.width,layout.height,Color.WHITE,Color.BLACK,Color.BLACK, Color.BLACK);
+//
+//            shapeRendererTextBox.end();
+
 
             waitingStage.act();
             waitingStage.draw();

@@ -35,7 +35,7 @@ import packets.Packet;
 
 public class MainMenu implements Screen {
     private SpriteBatch batch;
-    private BitmapFont font;
+//    private BitmapFont font;
 
     private Client client;
     private Player localPlayer;
@@ -93,8 +93,8 @@ public class MainMenu implements Screen {
 
 
         batch = new SpriteBatch();
-        font = Util.createFont(72);
-        font.setColor(Color.RED);
+//        font = Util.createFont(72);
+//        font.setColor(Color.RED);
 
         tableMenu = new Table();
         stage = new Stage();
@@ -196,6 +196,6 @@ public class MainMenu implements Screen {
     @Override
     public void dispose() {
         batch.dispose();
-        font.dispose();
+//        font.dispose();
     }
 }
