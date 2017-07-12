@@ -26,7 +26,7 @@ d'organiser au mieux le temps à disposition.
 \tableofcontents
 
 \chapter{Introduction}
-\projectName  est une application offrant la possibilité de jouer à des minis jeux très classique tel
+\projectName est une application offrant la possibilité de jouer à des minis jeux très classique tel
 que le morpion ou la bataille navale en réseau et en multi-platforme. C'est à dire que deux personnes
 l'une sur son téléphone android et l'autre sur son ordinateur auront la possibilité de se défier à une partie de jeu en ligne.
 Deux grands outils on été utilisé pour faciliter l'implémentation de ce projet, il sagit du framework Libgdx, qui a servit à
@@ -37,6 +37,10 @@ deployer le même programme sur différentes platforme, et de la libraire kryone
 \chapter{Conventions}
 
 \chapter{LibGDX}
+\begin{figure}[ht]
+	\centering\includegraphics[width=9cm]{libgdx}
+	\caption{Logo de LibGDX}
+\end{figure}
 Dès le lancemment du projet, nous nous sommes orienté vers libGDX qui est un
 framework Java gratuit et open source permettant la conception de jeux vidéo.
 Nous avons fait le choix de travailler avec ce framework en particulier, car
@@ -51,6 +55,10 @@ aucune expérience dans son utilisation pourtant il ne nous a fallu que très pe
  de temps avant de commencer à d’obtenir de bons résultats.
 
 \chapter{Kryonet}
+\begin{figure}[ht]
+	\centering\includegraphics[width=9cm]{kryonet}
+	\caption{Logo de Kryonet}
+\end{figure}
 Ayant travaillé cette année sur des échanges réseau en Java sans utiliser de libraire externe nous avons pu réaliser que la tâche était fastidieuse, c'est donc naturellement que nous
 nous sommes tourné vers Kryonet qui est une librairie open source permettant de faciliter la communication entre différents clients. Un des points essentiel du projet était de pouvoir
 garentir que LibGDX et Kryonet pouvaient cohabiter, après quelques tests et recherches nous avons pu réaliser que c'était bel et bien ée cas ( du moins pour le déploiment sur ordiateur et android).
@@ -116,15 +124,34 @@ ce projet aisni que leur implémentation.
 Le serveur garde un historique des jeux sous la forme d'une liste d'objets
 contenant les informations sur les différents joueurs opposés durant la partie.
 
+
 \section{Morpion}
+\label{Morpion}
 
 \subsection{Description}
 Le morpion est un jeu très simple dans lequel deux joueurs s'affronte sur un plateau de 3 x 3 cases. Chaque joueur possède des caractère (joueur 1 'x' et joueur 2 'o')
 tour à tour ils vont devoir placer ces cartacères dans le plateau de jeu dans le but de faire une ligne horizontale,verticale ou encore une diagonale.
 Si la partie se finit sans qu'aucun joueur n'est réussit à remplir une ligne/ une diagonale c'est un match nul.
 \subsection{Implémentation}
+
+Quand un joueur démarre une partie s'il ne trouve pas d'adversaire il est mis en attente. Un message lui signalant l'attente d'un
+adversaire s'affiche sur l'écran, une fois le second joueur connecté l'écran de jeu s'affiche (figure \ref{attente adversaire}).
+
+\begin{figure}[ht]
+	\centering\includegraphics[width=9cm]{morpionwaiting}
+	\caption{Attente d'un adversaire}
+  \label{attente adversaire}
+\end{figure}
+
 L'écran de jeu est composé en 2 parties : des informations sur la partie ainsi qu'un bouton "retour" se sithue en haut
-de l'écran, tout le reste est occupé par le plateau de jeu.
+de l'écran, tout le reste est occupé par le plateau de jeu (figure \ref{morpion en jeu}).
+
+\begin{figure}[ht]
+	\centering\includegraphics[width=9cm]{morpioningame}
+	\caption{Ecran de jeu du morpion}
+  \label{morpion en jeu}
+\end{figure}
+
 Il s'agit du jeu tour par tour, c'est la raison pour laquelle au lancement du jeu un message est envoyé à chaqu'un des joueurs de la parties
 leur donnant des indications sur ce qu'ils doivent faire ("c'est votre tour" ou "tour de l'adversaire").
 Comme dit plus haut le plateau de jeu est un tabeau de 3x3 cases, il est donc nécaissaire
@@ -137,7 +164,7 @@ pour savoir si la partie est terminée ou non, en fonction de cette analyse le s
  changement de joueur ou id du gagnant et plateau de jeu).
 
 \section{Bataille navale}
-
+\label{Bataille navale}
 
 \chapter{Identité graphique}
 Le jeu possède un style fortement inspiré de l'univers des comic book (bande dessinée principalement américaine)
@@ -147,7 +174,25 @@ textes et les images. C'est de plus un choix qui sort de l'ordinaire car il est 
 reprenant ce sytle graphique ce qui est à notre avis un point positif pour notre projet.
 
 \section{Interface}
-L'interface du programme est découpé en trois parties principales : l'écran de login, le menu de sélection des minis jeux et finalement le jeu en lui-même.
+L'interface du programme est découpé en trois parties principales :
+
+\begin{itemize}
+  \item L'écran de login (firgure \ref{Ecran de login})
+  \item Le menu de sélection des minis jeux (figure \ref{Ecran de selection})
+  \item Le jeu en lui-même (voir figures aux chapitres \ref{Morpion} et \ref{Bataille navale})
+\end{itemize}
+
+\begin{figure}[ht]
+	\centering\includegraphics[width=9cm]{loginScreen}
+	\caption{Ecran de login}
+	\label{Ecran de login}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering\includegraphics[width=9cm]{menuJeux}
+	\caption{Ecran de sélection des jeux}
+	\label{Ecran de selection}
+\end{figure}
 
 \chapter{Tests}
 Ce chapitre présente les différents tests qui ont été effectué sur le programme.
@@ -163,7 +208,6 @@ Ce chapitre présente les différents tests qui ont été effectué sur le progr
   \item Découvrte des serveur dans le réseau local
   \item Changement de l'adresse du serveur lors de la sélection d'un des éléments de la liste des serveur
   \item Le bouton "refresh" relance la recherche de serveur
-  \item
   \item Bonne disposition des éléments graphique dans la fenêtre
 
 \end{itemize}
@@ -221,6 +265,9 @@ Ce chapitre présente les différents tests qui ont été effectué sur le progr
   \item Si un joueur se déconnecte ou s'il appuie sur le bouton retoure le serveur est notifié
   \item Le serveur envoie un Packet à au joueur dont l'adversaire a quitter la partie
 \end{itemize}
+
+\subsection{Bataille navale}
+
 
 
 
