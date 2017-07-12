@@ -11,6 +11,7 @@ public class DesktopLauncher {
 		config.title = "Mini Games";
 		config.height = 768;
 		config.width = 1024;
+		config.resizable = false;
 		//config.fullscreen = true;
 		new LwjglApplication(new Main(), config);
 	}

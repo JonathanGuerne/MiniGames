@@ -104,10 +104,19 @@ public class Main {
                             bsscp.idPlayer2 = connection.getID();
                             clientIDWaitingPerGame[BATTLESHIP_INDEX] = -1;
 
+                            bsscp.namePlayer1 = listPlayer.getPlayerById(bsscp.idPlayer1).getNamePlayer();
+                            bsscp.namePlayer2 = listPlayer.getPlayerById(bsscp.idPlayer2).getNamePlayer();
+
+                            listPlayer.getPlayerById(bsscp.idPlayer1).setPlaying(true);
+                            listPlayer.getPlayerById(bsscp.idPlayer2).setPlaying(true);
+
                             Game battleShip = new Game(GameType.BATTLESHIP, bsscp.idPlayer1, bsscp.idPlayer2, currentGameId++);
                             battleShip.setCharPlayer1(bsscp.charPlayer1);
                             battleShip.setCharPlayer2(bsscp.charPlayer1);
                             listGames.add(battleShip);
+
+                            listPlayer.getPlayerById(bsscp.idPlayer1).setCurrentGameId(battleShip.getId());
+                            listPlayer.getPlayerById(bsscp.idPlayer2).setCurrentGameId(battleShip.getId());
 
                             bsscp.gameId = battleShip.getId();
                             server.sendToTCP(bsscp.idPlayer1, bsscp);
@@ -138,6 +147,7 @@ public class Main {
                             bscig.currentPlayerTabTouched = new char[NB_CASE * NB_CASE];
                             bscig.opponentPlayerTabTouched = new char[NB_CASE * NB_CASE];
                             bscig.opponentPlayerTab = tabOpponent;
+
 
                             bscig.gameId = bssigp.gameId;
 
