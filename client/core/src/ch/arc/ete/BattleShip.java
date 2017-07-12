@@ -69,8 +69,6 @@ public class BattleShip extends GameScreen {
         tabGame.put(TAB_TOUCHED, new char[NB_CASE * NB_CASE]);
         tabGame.put(TAB_TOUCHED_OPPONENT, new char[NB_CASE * NB_CASE]);
 
-        // Gdx.input.setInputProcessor(this);
-
         BattleShipStartPacket bssp = new BattleShipStartPacket();
         bssp.idPlayer = localPlayer.getId();
 
@@ -86,9 +84,9 @@ public class BattleShip extends GameScreen {
                         currentPlayerId = bsscp.idPlayer1;
 
                         if (localPlayer.getId() == bsscp.idPlayer1) {
-                            opponentPlayer = new Player(bsscp.idPlayer2, "toto");
+                            opponentPlayer = new Player(bsscp.idPlayer2, bsscp.namePlayer2);
                         } else {
-                            opponentPlayer = new Player(bsscp.idPlayer1, "Jules");
+                            opponentPlayer = new Player(bsscp.idPlayer1, bsscp.namePlayer1);
                         }
                         System.out.println("oposant " + bsscp.idPlayer2 + " " + bsscp.idPlayer1);
                         gameId = bsscp.gameId;
@@ -160,56 +158,22 @@ public class BattleShip extends GameScreen {
         if (showMyTab) {
 
             batch.begin();
-
             for (int i = 0; i < playerArrayImage.length; i++) {
                 if (playerArrayImage[i] != null) {
                     playerArrayImage[i].draw(batch);
                 }
             }
-
             batch.end();
-//
-//            shapeRenderer.setColor(Color.GREEN);
-//            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//            for (int i = 0; i < tabGame.get(TAB_PLAYER).length; i++) {
-//                if (tabGame.get(TAB_PLAYER)[i] == charUser) {
-//                    int x = i % NB_CASE;
-//                    int y = 7 - (i / NB_CASE);
-//                    shapeRenderer.rect(x * w, y * h, w, h);
-//                }
-//            }
-//            shapeRenderer.end();
 
         } else {
-//            if (tabGame.get(TAB_TOUCHED).length != 0) {
-////                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-////                for (int i = 0; i < tabGame.get(TAB_TOUCHED).length; i++) {
-////                    shapeRenderer.setColor(Color.BLUE);
-////
-////                    if (tabGame.get(TAB_TOUCHED)[i] == charUser) {
-////                        if (tabGame.get(TAB_TOUCHED)[i] == tabGame.get(TAB_OPPONENT)[i]) {
-////                            shapeRenderer.setColor(Color.BROWN);
-////                        }
-////                        int x = i % NB_CASE;
-////                        int y = 7 - (i / NB_CASE);
-////                        shapeRenderer.rect(x * w, y * h, w, h);
-////                    }
-////                }
-////                shapeRenderer.end();
-//
-//
-//            }
 
             batch.begin();
-
             for (int i = 0; i < opponentArrayImage.length; i++) {
                 if (opponentArrayImage[i] != null) {
                     opponentArrayImage[i].draw(batch);
                 }
             }
-
             batch.end();
-
         }
         shapeRenderer.setColor(Color.BLACK);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -333,7 +297,7 @@ public class BattleShip extends GameScreen {
                 tabGame.get(TAB_PLAYER)[touchIndex] = '\0';
                 playerArrayImage[touchIndex] = null;
                 shipInitialized--;
-            } else if(shipInitialized < NB_SHIP) {
+            } else if (shipInitialized < NB_SHIP) {
                 tabGame.get(TAB_PLAYER)[touchIndex] = charUser;
                 shipInitialized++;
             }
@@ -377,8 +341,7 @@ public class BattleShip extends GameScreen {
 
                 if (!initGame) {
                     showMyTab = !showMyTab;
-                }
-                else {
+                } else {
 
                     if (shipInitialized == NB_SHIP) {
                         functionalButton.setText("Inverser");
