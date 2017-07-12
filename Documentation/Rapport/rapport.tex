@@ -92,6 +92,12 @@ Comme dit plus haut, le programme est une collection de minis jeux auxquels les 
 plusieurs. Le programme est décomposé en deux parties : la partie client et la partie serveur. La communication entre ces
 deux parties est facilitée par l'utilisation de Kryonet une librairie Java open source conçu pour gérer les échanges réseau.
 
+\begin{figure}[H]
+	\centering\includegraphics[width=10cm]{maquette_Base}
+	\caption{Illistration de la communication entre les clients et le serveur}
+\end{figure}
+
+
 \section{Les packets}
 Les données envoyées entre le client et le serveur transitent sous la forme de Packets, les packets sont des classes présentent
 chez le client et chez le serveur enregistrer au lancement du service.
@@ -176,7 +182,7 @@ de savoir dans quelle case le joueur clique avant tout. Libgdx mais à dispotion
 de récupérer les coordonées X et Y du clique. Une fois ces coordonnées obtenues on les ananlysent pour savoir quelle est l'index de la case sur laquelle
 le joueur à cliqué. Il est à noter que la récupération de l'index de la case cliqué ne se fait que chez le joueur dont c'est le tour de jouer.
 
-Quand la case est cliquée un Pcket contenant les informations du plateau de jeu fraîchement modifié est envoyé au serveur. Celui-ci traitera le plateau de jeu
+Quand la case est cliquée un Packet contenant les informations du plateau de jeu fraîchement modifié est envoyé au serveur. Celui-ci traitera le plateau de jeu
 pour savoir si la partie est terminée ou non, en fonction de cette analyse le seveur enverra aux deux joueurs les Paquets correspondant (plateau de jeu +
  changement de joueur ou id du gagnant et plateau de jeu).
 
@@ -210,6 +216,14 @@ L'interface du programme est découpé en trois parties principales :
 	\caption{Ecran de sélection des jeux}
 	\label{Ecran de selection}
 \end{figure}
+
+LibGDX fournit des objets Table très utile pour organiser des éléments de formulaires sur plusieurs ligne
+(à la manière d'un tableau HTML) ils ont été utilisé pour permettre de créer l'aligement de l'écran de login et du menu
+présenté ci-dessus.
+
+Les Skins LibGDX sont des collections de ressources graphique utilisés par LibGDX pour personaliser l'ascpect des éléments
+de l'interface. LibGDX fournit un skin par défaut mais comme dit dans l'introduction de ce chapitre nous avons opté pour un skin
+basé sur le thème des "comics" c'est grâce à lui que nos label,text field,bouton,... ont leur aspect.
 
 \chapter{Tests}
 Ce chapitre présente les différents tests qui ont été effectué sur le programme.
@@ -294,6 +308,10 @@ Une des problématique rencontrée a été la mise en place d'un serveur sur and
 périphériques android mais le serveur à lui été dévelopé sans libgdx. Une ébauche d'application android oppérant de la même manière que le serveur Java classique a
 été mise en place, l'implémentation c'est avérée très lourdes et peu fructueuse dans le sens où lorsqu'un client se connectait à un serveur android celui-ci crashait
 immédiatement.
+
+Dans de très rares cas il est également possible que le lancement de la partie ne s'effectue pas tout à fait correctement. Une des deux joueurs aura déjà l'écran du début de partie alors
+que l'autre affiche toujours l'écran d'attente. Cela c'est cependant pas un problème majeur car si ce problème survient les deux joueurs on accès à un bouton "retour" leur
+permettant de revenir à la sélection des minis jeux et de relancer une partie.
 
 \chapter{Améliorations}
 La communication entre pc et android est fonctionnelle mais, comme expliqué plus haut, notre shouaite était d'étendre notre proramme à encore deux autres
