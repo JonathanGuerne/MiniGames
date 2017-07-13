@@ -95,7 +95,6 @@ public class BattleShip extends GameScreen {
                         initGame = true;
                         showMessage = true;
                         shipInitialized = 0;
-                        System.out.println("J'ai recu un packet de confirm");
                     } else if (o instanceof BattleShipInGamePacket) {
                         BattleShipInGamePacket bsigp = (BattleShipInGamePacket) o;
                         currentPlayerId = bsigp.currentPlayerId;
@@ -178,10 +177,10 @@ public class BattleShip extends GameScreen {
             batch.end();
         }
         shapeRenderer.setColor(Color.BLACK);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         for (int i = 0; i <= NB_CASE; i++) {
-            shapeRenderer.line(i * w, 0, i * w, gameLayoutHeight - 3);
-            shapeRenderer.line(0, i * h, Gdx.graphics.getWidth(), i * h);
+            shapeRenderer.rectLine(i * w, 0, i * w, gameLayoutHeight - 3, 2);
+            shapeRenderer.rectLine(0, i * h, Gdx.graphics.getWidth(), i * h, 2);
         }
         shapeRenderer.end();
         if (showMessage) {

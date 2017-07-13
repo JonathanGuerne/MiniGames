@@ -116,8 +116,6 @@ public class Morpion extends GameScreen {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
         for (int i = 0; i < 4; i++) {
-
-
             shapeRenderer.rectLine(i * w, 0, i * w, gameLayoutHeight,3);
             shapeRenderer.rectLine(0, i * h, Gdx.graphics.getWidth(), i * h,3);
         }
