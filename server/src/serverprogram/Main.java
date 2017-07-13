@@ -145,14 +145,11 @@ public class Main {
                                 bscig.currentPlayerTabTouched = new char[NB_CASE * NB_CASE];
                                 bscig.opponentPlayerTabTouched = new char[NB_CASE * NB_CASE];
                                 bscig.opponentPlayerTab = tabOpponent;
-
-
                                 bscig.gameId = bssigp.gameId;
 
                                 server.sendToTCP(bscig.currentPlayerId, bscig);
                                 server.sendToTCP(bscig.opponentPlayerId, bscig);
                             } else {
-                                System.out.println("Je suis tout seul " + bssigp.idPlayer + " " + bssigp.idOpponent);
                                 initializedGame.put(bssigp.idPlayer, bssigp.tabGame);
                             }
                         } else if (p instanceof BattleShipInGamePacket) {
@@ -174,8 +171,6 @@ public class Main {
 
                                 initializedGame.remove(bsigp.currentPlayerId);
                                 initializedGame.remove(bsigp.opponentPlayerId);
-
-
                             } else {
                                 //Read the packet and inverse the currentPlayer and the opponent
                                 BattleShipInGamePacket sendBsigp = new BattleShipInGamePacket();

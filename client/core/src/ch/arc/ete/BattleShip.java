@@ -80,24 +80,30 @@ public class BattleShip extends GameScreen {
             public void received(Connection connection, Object o) {
                 if (o instanceof Packet) {
                     if (o instanceof BattleShipStartConfirmPacket) {
+                        //If the
                         BattleShipStartConfirmPacket bsscp = (BattleShipStartConfirmPacket) o;
+
+                        //A opponent is found
                         foundOpponent = true;
                         currentPlayerId = bsscp.idPlayer1;
 
+                        //Find which player is the opponent from the packet
                         if (localPlayer.getId() == bsscp.idPlayer1) {
                             opponentPlayer = new Player(bsscp.idPlayer2, bsscp.namePlayer2);
                         } else {
                             opponentPlayer = new Player(bsscp.idPlayer1, bsscp.namePlayer1);
                         }
-                        System.out.println("oposant " + bsscp.idPlayer2 + " " + bsscp.idPlayer1);
                         gameId = bsscp.gameId;
 
+                        //The initialization phase is available
                         initGame = true;
                         showMessage = true;
                         shipInitialized = 0;
                     } else if (o instanceof BattleShipInGamePacket) {
                         BattleShipInGamePacket bsigp = (BattleShipInGamePacket) o;
                         currentPlayerId = bsigp.currentPlayerId;
+
+                        //initialized the right board game if it's our turn or not
                         if (localPlayer.getId() == currentPlayerId) {
                             inGame = true;
                             tabGame.put(TAB_PLAYER, bsigp.currentPlayerTab);
@@ -126,7 +132,11 @@ public class BattleShip extends GameScreen {
                         opponentArrayImage = new Sprite[NB_CASE * NB_CASE];
 
                     } else if (o instanceof BattleShipEndGamePacket) {
+                        //if the game is over
                         BattleShipEndGamePacket bsegp = (BattleShipEndGamePacket) o;
+
+
+                        //show if the player win or loose from the packet
                         if (bsegp.idWinner == localPlayer.getId()) {
                             setCenterText("Vous avez gagnez");
                             showMessage = true;
@@ -148,6 +158,7 @@ public class BattleShip extends GameScreen {
 
         ApplicationSkin.getInstance().showBackground();
 
+        //Show the right board game
         if (showMyTab) {
             batch.begin();
             for (int i = 0; i < playerArrayImage.length; i++) {
@@ -156,10 +167,7 @@ public class BattleShip extends GameScreen {
                 }
             }
             batch.end();
-
         } else {
-
-
             batch.begin();
             for (int i = 0; i < opponentArrayImage.length; i++) {
                 if (opponentArrayImage[i] != null) {
@@ -168,6 +176,7 @@ public class BattleShip extends GameScreen {
             }
             batch.end();
         }
+        //draw the lines for the board game
         shapeRenderer.setColor(Color.BLACK);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         for (int i = 0; i <= NB_CASE; i++) {
@@ -175,6 +184,8 @@ public class BattleShip extends GameScreen {
             shapeRenderer.rectLine(0, i * h, Gdx.graphics.getWidth(), i * h, 2);
         }
         shapeRenderer.end();
+
+        //If we need to show a message
         if (showMessage) {
             float x = 0;
             float y = Gdx.graphics.getHeight() / 2 + layout.height / 2;
@@ -184,18 +195,16 @@ public class BattleShip extends GameScreen {
         }
     }
 
-
     @Override
     public void update() {
-
-
         initImage(playerArrayImage, TAB_PLAYER, TAB_TOUCHED_OPPONENT, "pirate-ship");
+
         if (tabGame.get(TAB_TOUCHED).length != 0) {
             initImage(opponentArrayImage, TAB_TOUCHED, TAB_OPPONENT, "plouf");
         }
 
-
         if (inGame && touchIndex != -1) {
+            //if a click is done from the board game
             BattleShipInGamePacket bsigp = new BattleShipInGamePacket();
             bsigp.currentPlayerId = localPlayer.getId();
             bsigp.opponentPlayerId = opponentPlayer.getId();
@@ -205,6 +214,7 @@ public class BattleShip extends GameScreen {
             bsigp.opponentPlayerTabTouched = tabGame.get(TAB_TOUCHED_OPPONENT);
             bsigp.gameId = gameId;
 
+            //send the packet with the new board touched game
             client.sendTCP(bsigp);
             inGame = false;
             touchIndex = -1;
@@ -277,13 +287,13 @@ public class BattleShip extends GameScreen {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if(gameOver)
         {
+            //if the game is over a packet is sent to notify the server
             GamePlayerLeavingPacket gplp = new GamePlayerLeavingPacket();
             gplp.playerid = localPlayer.getId();
             client.sendTCP(gplp);
             ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, this.localPlayer));
         }
         else if (initGame && !showMessage) {
-
             if (screenY < informationLayoutHeight) {
                 return false;
             }
@@ -337,15 +347,16 @@ public class BattleShip extends GameScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (!initGame) {
+                    //if we aren't in the initialization phase the board game is just change
                     showMyTab = !showMyTab;
                 } else {
-
                     if (shipInitialized == NB_SHIP) {
+                        //if there is the right number of ship on the board game we change the text value of the button
+                        //and we finishe the initialization phase
                         functionalButton.setText("Inverser");
 
                         BattleShipStartInitGamePacket bssigp = new BattleShipStartInitGamePacket();
                         bssigp.idPlayer = localPlayer.getId();
-                        System.out.println("opponent " + opponentPlayer.getId());
                         bssigp.idOpponent = opponentPlayer.getId();
                         bssigp.tabGame = tabGame.get(TAB_PLAYER);
                         bssigp.gameId = gameId;
@@ -355,10 +366,8 @@ public class BattleShip extends GameScreen {
                         touchIndex = -1;
                         setCenterText("Attente de l'autre joueur...");
                         showMessage = true;
-
-
                     } else {
-                        System.out.println("J'existe !");
+                        //if there is missing ship
                         setCenterText("Il manque des bateaux");
                         showMessage = true;
                     }
@@ -377,7 +386,6 @@ public class BattleShip extends GameScreen {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-
         return false;
     }
 

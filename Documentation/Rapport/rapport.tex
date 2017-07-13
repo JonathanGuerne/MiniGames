@@ -385,7 +385,20 @@ Ce chapitre présente les différents tests qui ont été effectués sur le prog
 \end{itemize}
 
 \subsection{Bataille navale}
-
+\begin{itemize}
+  \item Le joueur est mis en attente s'il est seul à vouloir jouer
+  \item Le texte "Attente d'un autre joueur" s'affiche pendant l'attente d'une adversaire
+  \item Le bouton "retour" renvoie à au menu de sélection des jeux
+  \item La partie se lance quand deux joueurs lance partie sur le même serveur
+  \item Le texte avertit que les joueurs sont en phase d'initialisation (ils peuvent poser leur bateaux)
+  \item Au clique du bouton confirmer un message apparaît si tous les bateaux ne sont pas posé, sinon la partie commence
+  \item Un texte indique quel joueur doit jouer
+  \item Le plateau de jeu se met à jour depuis le serveur
+  \item Si un joueur touche un bateau ennemie alors celui-ci devient en feu
+  \item Si un joueur gagne la partie un message apparaît pour avertir le gagnant et le perdant
+  \item Quand la partie est terminé si les joueurs clique sur l'écran ils retournent au menu de sélection des minis jeux
+  \item Le texte "votre adversaire a quitter la partie" s'affiche si l'adversaire du joueur a quitter la partie
+\end{itemize}
 
 \section{Serveur}
 
@@ -412,10 +425,11 @@ Ce chapitre présente les différents tests qui ont été effectués sur le prog
 \end{itemize}
 
 \subsection{Bataille navale}
-
-
-
-
+La partie de la bataille navale se comporte comme la partie du morpion, sauf pour la deuxième phase d'initialisation.
+\begin{itemize}
+  \item Si l'autre joueur n'a pas encore valider la position de ses bateaux, alors le premier joueur est mis en attente
+  \item Si un joueur à déjà valider la position de ses bateaux alors la partie commence
+\end{itemize}
 
 \chapter{Problematique}
 Une des problématique rencontrée a été la mise en place d'un serveur sur Android. En effet, LibGDX "facile" le portage de l'application client vers les
