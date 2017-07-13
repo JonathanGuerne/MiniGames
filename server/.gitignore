@@ -81,6 +81,7 @@ obj/
 .idea/sqlDataSources.xml
 .idea/dynamic.xml
 .idea/uiDesigner.xml
+.idea/inspectionProfiles/profiles_settings.xml
 
 # Keystore files
 *.jks

@@ -171,6 +171,11 @@ public class Main {
                                 server.sendToTCP(bsigp.currentPlayerId, bsegp);
                                 server.sendToTCP(bsigp.opponentPlayerId, bsegp);
                                 System.out.println("fin de la partie");
+
+                                initializedGame.remove(bsigp.currentPlayerId);
+                                initializedGame.remove(bsigp.opponentPlayerId);
+
+
                             } else {
                                 //Read the packet and inverse the currentPlayer and the opponent
                                 BattleShipInGamePacket sendBsigp = new BattleShipInGamePacket();
@@ -267,6 +272,24 @@ public class Main {
                                 }
                             }
 
+                            if(listPlayer.exist(connection.getID()) && initializedGame.containsKey(connection.getID())){
+
+                                int player1 = connection.getID();
+                                int player2;
+                                Game currentGame = selectGameFromId(listPlayer.getPlayerById(connection.getID()).getCurrentGameId());
+
+                                if(player1 != currentGame.getIdPlayer1()){
+                                    player2 = currentGame.getIdPlayer1();
+                                }
+                                else{
+                                    player2 = currentGame.getIdPlayer2();
+                                }
+
+                                initializedGame.remove(player1);
+                                initializedGame.remove(player2);
+
+                            }
+
                             if (listPlayer.getPlayerById(mpl.playerid).isPlaying()) {
                                 Game game = selectGameFromId(listPlayer.getPlayerById(mpl.playerid).getCurrentGameId());
                                 if (game.getIdPlayer1() != mpl.playerid) {
@@ -291,6 +314,24 @@ public class Main {
                     if(clientIDWaitingPerGame[i] == connection.getID()){
                         clientIDWaitingPerGame[i] = -1;
                     }
+                }
+
+                if(listPlayer.exist(connection.getID()) && initializedGame.containsKey(connection.getID())){
+
+                    int player1 = connection.getID();
+                    int player2;
+                    Game currentGame = selectGameFromId(listPlayer.getPlayerById(connection.getID()).getCurrentGameId());
+
+                    if(player1 != currentGame.getIdPlayer1()){
+                        player2 = currentGame.getIdPlayer1();
+                    }
+                    else{
+                        player2 = currentGame.getIdPlayer2();
+                    }
+
+                    initializedGame.remove(player1);
+                    initializedGame.remove(player2);
+
                 }
 
                 if(listPlayer.exist(connection.getID()) && listPlayer.getPlayerById(connection.getID()).isPlaying()){

@@ -21,6 +21,7 @@ import packets.BattleShip.BattleShipInGamePacket;
 import packets.BattleShip.BattleShipStartConfirmPacket;
 import packets.BattleShip.BattleShipStartInitGamePacket;
 import packets.BattleShip.BattleShipStartPacket;
+import packets.GamePlayerLeavingPacket;
 import packets.Packet;
 
 /**
@@ -151,14 +152,6 @@ public class BattleShip extends GameScreen {
 
         ApplicationSkin.getInstance().showBackground();
 
-        shapeRenderer.setColor(Color.BLACK);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        for (int i = 0; i < NB_CASE; i++) {
-            shapeRenderer.line(i * w, 0, i * w, Gdx.graphics.getHeight());
-            shapeRenderer.line(0, i * h, gameLayoutWith, i * h);
-        }
-        shapeRenderer.end();
-
         if (initGame) {
             synchronized (stage) {
                 setCenterText("Init de la partie");
@@ -189,8 +182,8 @@ public class BattleShip extends GameScreen {
         }
         shapeRenderer.setColor(Color.BLACK);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        for (int i = 0; i < NB_CASE; i++) {
-            shapeRenderer.line(i * w, 0, i * w, gameLayoutHeight);
+        for (int i = 0; i <= NB_CASE; i++) {
+            shapeRenderer.line(i * w, 0, i * w, gameLayoutHeight - 3);
             shapeRenderer.line(0, i * h, Gdx.graphics.getWidth(), i * h);
         }
         shapeRenderer.end();
@@ -314,10 +307,9 @@ public class BattleShip extends GameScreen {
                 shipInitialized++;
             }
         } else if (gameOver) {
-            /*
-
-            Penser à gerer la déconnexion/fin de partie dans le serveur
-             */
+            GamePlayerLeavingPacket gplp = new GamePlayerLeavingPacket();
+            gplp.playerid = localPlayer.getId();
+            client.sendTCP(gplp);
             ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, this.localPlayer));
         } else if (inGame && !showMyTab) {
             if (screenY < informationLayoutHeight) {
