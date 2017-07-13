@@ -247,19 +247,19 @@ pour savoir si la partie est terminée ou non, en fonction de cette analyse le s
 \label{Bataille navale}
 
 \subsection{Description}
-Notre jeu de bataille navale, reprend les règles normales du jeu mais avec quelques différence sur le placement et la découverte des bateaux (ennemies ou alliés). Au lieu de pouvoir placer
+Notre jeu de bataille navale, reprend les règles normales du jeu mais avec quelques différences sur le placement et la découverte des bateaux (ennemies ou alliés). Au lieu de pouvoir placer
 des bateaux de taille variable (figure \ref{batailleClassique}) comme dans un jeu classique de bataille navale, notre jeu permet de placer un bateau sur une seule et unique case
 voir figure \ref{notreBataille}. Il s'agira alors pour notre adversaire de trouver nos bateaux sur la grille.
 
 \begin{figure}[H]
 	\centering\includegraphics[width=9cm]{batailleClassique}
 	\caption{Ecran de bataille navale classique}
-	\label{batailleClassiqe}
+	\label{batailleClassique}
 \end{figure}
 
 \subsection{Implémentation}
 Comme pour le morpion, dès qu'un joueur commence une partie il est mis dans une file d'attente d'un adversaire (figure \ref{attente_adversaire}).
-Une fois un adversaire trouvé, il y a une phase d'initialisation et à ce moment là le joueur va placer ces bateaux (figure \ref{notreBataille}). Une fois l'initialisation confirmée,
+Une fois un adversaire trouvé, il y a une phase d'initialisation et à ce moment-là le joueur va placer ces bateaux (figure \ref{notreBataille}). Une fois l'initialisation confirmée,
 la partie peut alors commencer et chacun son tour chaque joueur va alors devoir découvrir les bateaux de son adversaires.
 
 \begin{figure}[H]
@@ -267,9 +267,38 @@ la partie peut alors commencer et chacun son tour chaque joueur va alors devoir 
 	\caption{Ecran de jeu de la bataille navale}
 	\label{notreBataille}
 \end{figure}
+Le joueur à la possibilité d'appuyer ou il veut sur le plateau pour trouver les bateaux de son opposant. S'il touche un bateau, celui-ci prend alors feu (figure \ref{shipInFire}). S'il tire
+à côté, des gouttes d'eau apparaissent (figure \ref{tears}).
 
-Une fois tous les batteaux de son adversaire trouvé (figure ), la partie se termine
+\begin{figure}[H]
+	\centering\includegraphics[width=3cm]{pirate-ship-dead}
+	\caption{Bateau en feu}
+	\label{shipInFire}
+\end{figure}
 
+\begin{figure}[H]
+	\centering\includegraphics[width=3cm, height=3cm]{plouf}
+	\caption{Gouttes d'eau}
+	\label{tears}
+\end{figure}
+
+Durant une partie, le joueur à aussi la possibilité de changer le plateau de jeu qu'il veut afficher. Il peut choisir entre le plateau de jeu où il y ses propres bateaux ou
+il peut afficher le tableau avec les endroits où il a tiré.\par{}
+Une fois tous les bateaux de son adversaire trouvé (figure \ref{batailleWin}) la partie se termine.
+
+\begin{figure}[H]
+	\centering\includegraphics[width=9cm]{batailleWin}
+	\caption{Ecran de victoire de la bataille navale}
+	\label{batailleWin}
+\end{figure}
+
+Durant la partie, il y a deux grandes phases de synchronisation. Une première comme dans le jeu de morpion, et la deuxième au moment où le premier joueur confirme le positionnement
+de ses bateaux. Il envoie alors un packet au serveur, celui-ci va stocker l’ID et le tableau des bateaux du joueur. Une fois que le deuxième joueur envoie un packet de confirmation,
+le serveur va tester si son adversaire à déjà confirmer la pose de ses bateaux. Si oui, alors la partie est lancée et les joueurs tour par tour vont appuyer pour toucher les bateaux
+de l’adversaire.\par{}
+Pour la gestion des bateaux et où le joueur tire, nous utilisons quatre tableaux, chaque joueur en possédant deux. Un premier tableau pour le positionement des bateaux et un deuxième pour
+savoir ou il a tiré. C'est en parcourant le tableau du positionnement des bateaux et en le testant avec le tableaux des tires de l'adversaire que nous pouvons savoir si un bateau
+à été touché.
 
 \chapter{Identité graphique}
 Le jeu possède un style fortement inspiré de l'univers des comic book (bande dessinée principalement américaine)
