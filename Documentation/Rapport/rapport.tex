@@ -6,8 +6,7 @@
 \usepackage{float}
 \usepackage{hyperref}
 \usepackage{array}
-\newcommand{\projectName}{Mini Games}
-\title{\projectName}
+\title{Mini Games}
 
 \author{M. \textsc{Friedli}, A. \textsc{Gillioz}, J. \textsc{Guerne}\\
 He-Arc Ingénierie\\
@@ -15,12 +14,13 @@ He-Arc Ingénierie\\
 \date{\today{}}
 \begin{document}
 \maketitle{}
+
 \begin{abstract}
 La HES d'été permet aux étudiants de deuxième année d'étude dans le domaine de l'informatique
 la possibilité de travailler sur un projet libre dans le but d'approfondir leurs connaissances.
 
 Ce rapport décrit, explique les choix d'implémentations pris dans la réalisation de notre
-projet \projectName.
+projet Mini Games.
 
 Une planification des tâches ainsi qu'une spécification du travaille ont été réalisés dans le but
 d'organiser au mieux le temps à disposition.
@@ -28,15 +28,31 @@ d'organiser au mieux le temps à disposition.
 \tableofcontents
 
 \chapter{Introduction}
-\projectName est une application offrant la possibilité de jouer à des minis jeux très classique tel
+Mini Games est une application offrant la possibilité de jouer à des minis jeux très classique tel
 que le morpion ou la bataille navale en réseau et en multi-platforme. C'est à dire que deux personnes
 l'une sur son téléphone android et l'autre sur son ordinateur auront la possibilité de se défier à une partie de jeu en ligne.
-Deux grands outils on été utilisé pour faciliter l'implémentation de ce projet, il sagit du framework Libgdx, qui a servit à
+Deux grands outils ont été utilisés pour faciliter l'implémentation de ce projet, il sagit du framework Libgdx, qui a servit à
 deployer le même programme sur différentes platforme, et de la libraire kryonet, qui a elle facilitée les échanges réseau.
+
+Les jeux listés dans le cahier des charges sont les suivants :
+\begin{itemize}
+	\item Morpion
+	\item Bataille navale
+	\item (Bonus : Jeu de dame)
+\end{itemize}
+L'objectif principal de ce projet n'est pas de développer des jeux compliqués et très
+développé mais plutôt de se concenter sur le multi-plateforme et le réseau.
 
 \chapter{Planification}
 
-\chapter{Conventions}
+\chapter{Conventions de nommages}
+Le code a été écrit en respectant la convention camelCase pour les variables et
+les méthodes. Le camelCase consiste à commencer les noms par des minuscules et si
+le nom est une composition de plusieurs mots utiliser une majuscule comme séparateur.
+Les classes respectent la convention PascalCase qui reprend les mêmes conventions que
+le camelCase excepté le fait que les noms commencent par des majuscules.
+Les verbes sont privilégiés lors du nommage de méthode par soucis de clarté.
+L’utilisation de l’anglais plutôt que le français a été préféré.
 
 \chapter{LibGDX}
 \begin{figure}[H]
@@ -116,12 +132,12 @@ possèder les mêmes classes ses classes doivent être enregistrées avec le bon
 Kryonet. Les identifiants sont ici de simple integer.
 
 \begin{tabular}{|l|c|}
-\hline Identifiiant du Packets & Domaine d'utilisation \\
-
+\hline
+ Identifiant du Packets & Domaine d'utilisation \\
 \hline [0-999] & Login et configuration générale \\
-\hline [1000-1999] & Packets liés au morpion \\
-\hline [2000-2999] & Packets liés à la bataille navale \\
-
+\hline[1000-1999] & Packets liés au morpion \\
+\hline[2000-2999] & Packets liés à la bataille navale \\
+\hline
 \end{tabular}
 
 \section{Sécurité}
