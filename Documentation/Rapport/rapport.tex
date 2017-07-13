@@ -124,6 +124,13 @@ Kryonet. Les identifiants sont ici de simple integer.
 
 \end{tabular}
 
+\section{Sécurité}
+Pour empêcher des versions obselettes de se connecter au serveur un système de version a été mis en place.
+Chaque Packets qui transite possède une version, le serveur peut tester si cette version est suffisamment
+récente avant même d'analyser le contenu du Packet envoyé, si le Packet à une version trop vielle le serveur n'en fera rien.
+En absence de réponse du serveur le joueur ne pourra donc pas se connecter.
+
+
 \section{Initialisation de la connexion}
 A l'ouverture du programme le client est invité à entrer une adresse de serveur
 et un pseudo pour tenter ensuite de se connecter. Afin de faciliter l'entrée de l'adresse du serveur la fonction de
