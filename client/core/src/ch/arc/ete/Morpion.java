@@ -20,8 +20,13 @@ import packets.morpion.MorpionStartConfirmPacket;
 import packets.morpion.MorpionStartPacket;
 import packets.Packet;
 
-/**
- * Created by jonathan.guerne on 01.05.2017.
+/* ---------------------------------------------------------------------------------------------
+ * Projet        : HES d'été - Minis Games
+ * Auteurs       : Marc Friedli, Anthony gilloz, Jonathan guerne
+ * Date          : Juillet 2017
+ * ---------------------------------------------------------------------------------------------
+ * Morpion.java   : morpion mini game implementation
+ * ---------------------------------------------------------------------------------------------
  */
 
 public class Morpion extends GameScreen {
@@ -60,12 +65,16 @@ public class Morpion extends GameScreen {
             @Override
             public void received(Connection connection, Object o) {
                 if (o instanceof Packet) {
+
                     if (o instanceof MorpionStartConfirmPacket && !foundOpponent) {
+                        //if the server send a morpionstartconfirmpacket
 
                         MorpionStartConfirmPacket mscp = (MorpionStartConfirmPacket) o;
 
+                        //found an opponent
                         foundOpponent = true;
                         currentPlayerId = mscp.idPlayer1;
+
 
                         if (localPlayer.getId() == mscp.idPlayer1) {
                             charUser = mscp.charPlayer1;
@@ -78,16 +87,25 @@ public class Morpion extends GameScreen {
                         gameId = mscp.gameId;
 
                     } else if (o instanceof MorpionInGameConfirmPacket) {
+                        //morpioningameconfirmpacket is a packet send by the server each time a player send him a morpioningamepacket
+
                         MorpionInGameConfirmPacket migcp = (MorpionInGameConfirmPacket) o;
                         touchIndex = -1;
+                        //update the tabgame
                         tabGame.put(0, migcp.tabGame);
+                        //change the current player id
                         currentPlayerId = migcp.currentPlayerID;
+                        //show a message in the center of the screen
                         displayCurrentPlayer(opponentPlayer.getPseudo());
 
                     } else if (o instanceof MorpionEndGamePacket) {
+                        //if the game is over
                         MorpionEndGamePacket megp = (MorpionEndGamePacket) o;
+                        //update the tabgame
                         tabGame.put(0, megp.tabGame);
+                        //the game is over
                         gameOver = true;
+                        //change the winnerId
                         winnerId = megp.winnerId;
                     }
                 }
@@ -108,9 +126,11 @@ public class Morpion extends GameScreen {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        //displaying the background image
         ApplicationSkin.getInstance().showBackground();
 
 
+        //displaying black lines (horizontal and vertical) use a guide for the player to click on the right case
         shapeRenderer.setColor(Color.BLACK);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -122,6 +142,7 @@ public class Morpion extends GameScreen {
 
         shapeRenderer.end();
 
+        //displaying the image (red 'x' and blue 'o')
         batch.begin();
 
         for(int i = 0; i < imageArray.length; i++) {
@@ -132,6 +153,7 @@ public class Morpion extends GameScreen {
 
         batch.end();
 
+        //if there is a message to show
         if (showMessage) {
             float x = 0;
             float y = Gdx.graphics.getHeight() / 2 + layout.height / 2;
@@ -145,6 +167,7 @@ public class Morpion extends GameScreen {
     @Override
     public void update() {
 
+        //create a new image if needed
         for (int i = 0; i < imageArray.length; i++) {
             if (imageArray[i] == null && tabGame.get(0)[i] != '\0') {
                 int x = i % 3;
@@ -157,9 +180,10 @@ public class Morpion extends GameScreen {
             }
         }
 
+        //if the game isn't over
         if (!gameOver) {
+            //if it is the turn of the local player
             if (currentPlayerId == localPlayer.getId()) {
-                //if touchIndex is a value >= 0 and tab[touchIndex] is null
                 if (touchIndex != -1 && tabGame.get(0)[touchIndex] == '\0') {
                     tabGame.get(0)[touchIndex] = charUser;
                     MorpionInGamePacket migp = new MorpionInGamePacket();
@@ -173,6 +197,7 @@ public class Morpion extends GameScreen {
                 }
             }
         } else {
+            //display the correct text based on the winnerId
             if (winnerId == localPlayer.getId()) {
                 setCenterText("Vous avez gagne");
             } else if (winnerId == -1) {
@@ -226,12 +251,16 @@ public class Morpion extends GameScreen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+
         if(!gameOver) {
+            //if the game isn't over
             if(screenY < informationLayoutHeight)
             {
+                //if the player click out of the gamescreen
                 return false;
             }
             if(!showMessage) {
+                //if there is no message to show
                 screenY -= informationLayoutHeight;
                 int x = (int) (screenX / w);
                 int y = (3 * (int) (screenY / h));
@@ -239,10 +268,12 @@ public class Morpion extends GameScreen {
             }
             else
             {
+                //hide the message
                 showMessage = false;
                 setCenterText("");
             }
         } else {
+            //send the player back to the mainmenu
             ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, localPlayer));
         }
 

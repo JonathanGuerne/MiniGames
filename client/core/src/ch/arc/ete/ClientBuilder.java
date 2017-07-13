@@ -18,8 +18,13 @@ import packets.morpion.MorpionStartConfirmPacket;
 import packets.morpion.MorpionStartPacket;
 import packets.Packet;
 
-/**
- * Created by jonathan.guerne on 01.05.2017.
+/* ---------------------------------------------------------------------------------------------
+ * Projet        : HES d'été - Minis Games
+ * Auteurs       : Marc Friedli, Anthony gilloz, Jonathan guerne
+ * Date          : Juillet 2017
+ * ---------------------------------------------------------------------------------------------
+ * ClientBuilder.java   : class use to register all needed Packets
+ * ---------------------------------------------------------------------------------------------
  */
 
 public class ClientBuilder {

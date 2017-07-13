@@ -1,7 +1,12 @@
 package ch.arc.ete;
 
-/**
- * Created by marc.friedli on 11.07.2017.
+/* ---------------------------------------------------------------------------------------------
+ * Projet        : HES d'été - Minis Games
+ * Auteurs       : Marc Friedli, Anthony gilloz, Jonathan guerne
+ * Date          : Juillet 2017
+ * ---------------------------------------------------------------------------------------------
+ * LoginEXception.java   : use to handle login exception
+ * ---------------------------------------------------------------------------------------------
  */
 
 public class LoginException extends Exception {

@@ -1,7 +1,12 @@
 package ch.arc.ete;
 
-/**
- * Created by jonathan.guerne on 31.05.2017.
+/* ---------------------------------------------------------------------------------------------
+ * Projet        : HES d'été - Minis Games
+ * Auteurs       : Marc Friedli, Anthony gilloz, Jonathan guerne
+ * Date          : Juillet 2017
+ * ---------------------------------------------------------------------------------------------
+ * Player.java   : this class is use locally to store information about a player
+ * ---------------------------------------------------------------------------------------------
  */
 
 public class Player {

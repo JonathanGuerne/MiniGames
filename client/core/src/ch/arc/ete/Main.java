@@ -2,8 +2,14 @@ package ch.arc.ete;
 
 import com.badlogic.gdx.Game;
 
-/**
- * Created by jonathan.guerne on 27.04.2017.
+/* ---------------------------------------------------------------------------------------------
+ * Projet        : HES d'été - Minis Games
+ * Auteurs       : Marc Friedli, Anthony gilloz, Jonathan guerne
+ * Date          : Juillet 2017
+ * ---------------------------------------------------------------------------------------------
+ * Main.java   :    extending game, lauch at the start of the program
+ *                  use screen.
+ * ---------------------------------------------------------------------------------------------
  */
 
 public class Main extends Game {

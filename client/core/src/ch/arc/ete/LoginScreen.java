@@ -2,7 +2,6 @@ package ch.arc.ete;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -30,8 +28,6 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.net.InetAddress;
 
@@ -39,8 +35,13 @@ import packets.LoginConfirmPacket;
 import packets.LoginPacket;
 import packets.Packet;
 
-/**
- * Created by jonathan.guerne on 27.04.2017.
+/* ---------------------------------------------------------------------------------------------
+ * Projet        : HES d'été - Minis Games
+ * Auteurs       : Marc Friedli, Anthony gilloz, Jonathan guerne
+ * Date          : Juillet 2017
+ * ---------------------------------------------------------------------------------------------
+ * LoginScreen.java   :  Connexion screen open at the start of the program
+ * ---------------------------------------------------------------------------------------------
  */
 public class LoginScreen implements Screen {
 
@@ -63,19 +64,24 @@ public class LoginScreen implements Screen {
 
     private boolean connectionOk = false;
 
-//    boolean serverDiscoveringFinish = false;
-
-
+    /**
+     * show is called  1 time when the screen appears
+     * it's like a constructor
+     */
     @Override
     public void show() {
 
         sb = new SpriteBatch();
         stage = new Stage();
 
+        //the client builder is use to register all the needed packet
         ClientBuilder cb = new ClientBuilder();
+
+        //create a client object (class from kryonet) and give him the registered packets
         client = cb.build(new Client());
         client.start();
 
+        //tableDisplay is use to manage the disposition of graphical elements in the screen
         Table tableDisplay = new Table();
 
         tableDisplay.setPosition(0, 0);
@@ -86,9 +92,8 @@ public class LoginScreen implements Screen {
         tableDisplay.center();
 
 
+        //the skin is use to personalize all graphical element from the screen
         Skin skin = ApplicationSkin.getInstance().getSkin();
-
-//        serversListLabel = new Label("Liste des serveurs : ",skin);
 
         serversListLabel = new Label("Liste des serveurs : ", skin);
 
@@ -113,6 +118,9 @@ public class LoginScreen implements Screen {
 
         System.out.println("Discovering Hosts...");
 
+        /**
+         * Discover server in background so the client can still use the app
+         */
         class DiscoverHostThread implements Runnable {
 
             @Override
@@ -121,12 +129,14 @@ public class LoginScreen implements Screen {
                 Array<String> listAddressesString = new Array<String>();
                 java.util.List<InetAddress> listAddresses;
 
+                //attempt to find server on tcp port
                 listAddresses = client.discoverHosts(tcp, 3000);
                 for (InetAddress adr : listAddresses) {
                     if (!listAddressesString.contains(adr.getHostAddress(), false)) {
                         listAddressesString.add(adr.getHostAddress());
                     }
                 }
+                //attempt to find server on udp port
                 listAddresses = client.discoverHosts(udp, 2000);
                 for (InetAddress adr : listAddresses) {
                     if (!listAddressesString.contains(adr.getHostAddress(), false)) {
@@ -139,14 +149,17 @@ public class LoginScreen implements Screen {
                 } else {
                     serversAdresses.setItems(listAddressesString);
                     serversAdresses.setDisabled(false);
-//                    serverDiscoveringFinish = true;
                 }
 
             }
         }
 
+        //start the server discovering
         new Thread(new DiscoverHostThread()).start();
 
+        /**
+         * event call on button "Connexion" clicked
+         */
         btnValider.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -154,16 +167,19 @@ public class LoginScreen implements Screen {
             }
         });
 
+        /**
+         * event call when the selected item from the server list change
+         */
         serversAdresses.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-//                if (serverDiscoveringFinish) {
                 serverAdress.setText(serversAdresses.getSelected());
-//                }
             }
         });
 
-
+        /**
+         * event call on button "Refresh" clicked
+         */
         btnRefreshServersList.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -171,10 +187,15 @@ public class LoginScreen implements Screen {
             }
         });
 
+        /**
+         * this part of the code is use to received packet from the server
+         */
         client.addListener(new Listener() {
             @Override
             public void received(Connection connection, Object o) {
+                //first check if it's a packet
                 if (o instanceof Packet) {
+                    //then check what instance of packet it is
                     if (o instanceof LoginConfirmPacket) {
                         LoginConfirmPacket lcp = (LoginConfirmPacket) o;
                         clientPseudo.setText(lcp.namePlayer);
@@ -206,6 +227,8 @@ public class LoginScreen implements Screen {
             }
         });
 
+        //putting all graphical elements in the table
+
         tableDisplay.add(new Label("MINI GAMES", skin, "title", Color.WHITE)).colspan(3);
         tableDisplay.row();
         tableDisplay.add(serverLabel).align(Align.left);
@@ -227,12 +250,18 @@ public class LoginScreen implements Screen {
         stage.addActor(tableDisplay);
         stage.setKeyboardFocus(clientPseudo);
 
+
         ((OrthographicCamera) stage.getCamera()).zoom = Util.getRatio() / 1.5f;
 
         Gdx.input.setInputProcessor(stage);
 
     }
 
+    /**
+     * attempt to connect to the server
+     * the address use is the one write in the textfield
+     * if the user didn't write a pseudo the program won't let him connect to the server
+     */
     private void tryConnection() {
         try {
             if (clientPseudo.getText().equals("")) {
@@ -270,6 +299,10 @@ public class LoginScreen implements Screen {
     }
 
 
+    /**
+     * displaying screen content
+     * @param delta
+     */
     @Override
     public void render(float delta) {
 

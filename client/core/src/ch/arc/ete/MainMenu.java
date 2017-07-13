@@ -1,41 +1,34 @@
 package ch.arc.ete;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.esotericsoftware.kryonet.Server;
 
-import java.io.IOException;
-
-import packets.LoginConfirmPacket;
-import packets.LoginPacket;
-import packets.MiniGamePacket;
-import packets.Packet;
-
+/* ---------------------------------------------------------------------------------------------
+ * Projet        : HES d'été - Minis Games
+ * Auteurs       : Marc Friedli, Anthony gilloz, Jonathan guerne
+ * Date          : Juillet 2017
+ * ---------------------------------------------------------------------------------------------
+ * MainMenu.java   :  MainMenu is the class use to select witch game will be played
+ * ---------------------------------------------------------------------------------------------
+ */
 
 public class MainMenu implements Screen {
     private SpriteBatch batch;
-//    private BitmapFont font;
 
     private Client client;
     private Player localPlayer;
@@ -54,12 +47,22 @@ public class MainMenu implements Screen {
 
     private boolean lostConnection;
 
+    /**
+     * maimmenu constructor using a connection to the server and the user pseudo
+     * @param client connecion
+     * @param pseudo pseudo
+     */
     public MainMenu(final Client client, String pseudo) {
         this.client = client;
         this.localPlayer = new Player(this.client.getID(), pseudo);
 
     }
 
+    /**
+     * mainmenu constructor using a connection to the server and a already create Player object
+     * @param client connection
+     * @param localPlayer playerObject
+     */
     public MainMenu(final Client client, Player localPlayer)
     {
         this.client = client;
@@ -71,18 +74,6 @@ public class MainMenu implements Screen {
     public void show() {
 
         client.addListener(new Listener() {
-
-            @Override
-            public void received(Connection connection, Object object) {
-                    if(object instanceof Packet){
-                        if(object instanceof MiniGamePacket){
-                            System.out.println("MINI GAME PACKET");
-                            MiniGamePacket mp = (MiniGamePacket) object;
-                        }
-                    }
-
-            }
-
             @Override
             public void disconnected(Connection connection) {
                 client.close();
@@ -93,9 +84,6 @@ public class MainMenu implements Screen {
 
 
         batch = new SpriteBatch();
-//        font = Util.createFont(72);
-//        font.setColor(Color.RED);
-
         tableMenu = new Table();
         stage = new Stage();
 
@@ -196,6 +184,6 @@ public class MainMenu implements Screen {
     @Override
     public void dispose() {
         batch.dispose();
-//        font.dispose();
+        stage.dispose();
     }
 }

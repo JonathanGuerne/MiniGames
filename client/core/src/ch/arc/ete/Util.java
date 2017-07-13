@@ -1,13 +1,19 @@
 package ch.arc.ete;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
-/**
- * Created by jonathan.guerne on 22.04.2017.
+/* ---------------------------------------------------------------------------------------------
+ * Projet        : HES d'été - Minis Games
+ * Auteurs       : Marc Friedli, Anthony gilloz, Jonathan guerne
+ * Date          : Juillet 2017
+ * ---------------------------------------------------------------------------------------------
+ * Util.java   :    collection of util function and infos
+ *                  all methods and fields are statics so they can be called without
+  *                 Creating an Util object
+ * ---------------------------------------------------------------------------------------------
  */
 
 public class Util {

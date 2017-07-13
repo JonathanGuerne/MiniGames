@@ -13,15 +13,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.esotericsoftware.kryonet.Client;
-
-
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
@@ -30,8 +28,15 @@ import java.util.HashMap;
 import packets.GamePlayerLeavingPacket;
 import packets.Packet;
 
-/**
- * Created by jonathan.guerne on 01.05.2017.
+/* ---------------------------------------------------------------------------------------------
+ * Projet        : HES d'été - Minis Games
+ * Auteurs       : Marc Friedli, Anthony gilloz, Jonathan guerne
+ * Date          : Juillet 2017
+ * ---------------------------------------------------------------------------------------------
+ * GameScreen.java   :  GameScreen is an abtract class implemented by all minis games and providing
+ *                      functionality such as handling player leaving, displaying a waiting screen
+ *                      before an opponent is found
+ * ---------------------------------------------------------------------------------------------
  */
 
 public abstract class GameScreen implements Screen, InputProcessor {
@@ -71,21 +76,26 @@ public abstract class GameScreen implements Screen, InputProcessor {
     protected GlyphLayout layout;
     protected BitmapFont font;
 
-    protected int gameLayoutWith = Gdx.graphics.getWidth() / 10 * 8;
-    protected int informationLayoutWith = Gdx.graphics.getWidth() / 10 * 2;
-
     protected int gameLayoutHeight = Gdx.graphics.getHeight() / 10 * 9;
     protected int informationLayoutHeight = Gdx.graphics.getHeight() - gameLayoutHeight;
 
 
+    /**
+     * constructor of the game screen
+     * need a connection and a player
+     * @param client connection to the server
+     * @param localPlayer Player object
+     */
     public GameScreen(final Client client, final Player localPlayer) {
         this.client = client;
         this.localPlayer = localPlayer;
         this.foundOpponent = false;
         this.initializationOver = false;
 
+        //stage is use to display in game information and waiting stage is use to display a message while the player is waiting
         stage = new Stage();
         waitingStage = new Stage();
+
         batch = new SpriteBatch();
         shapeRendererTextBox = new ShapeRenderer();
         font = Util.createFont(48);
@@ -175,10 +185,20 @@ public abstract class GameScreen implements Screen, InputProcessor {
         }
     }
 
+    /**
+     * abstract function for displaying content
+     */
     public abstract void display();
 
+    /**
+     * abstract function for updating content
+     */
     public abstract void update();
 
+    /**
+     * we call this method when a player is about to left the game. it send a message to the server
+     * letting him know that the game is over
+     */
     protected void playerLeft() {
         GamePlayerLeavingPacket gplp = new GamePlayerLeavingPacket();
         gplp.playerid = localPlayer.getId();
@@ -186,12 +206,24 @@ public abstract class GameScreen implements Screen, InputProcessor {
         client.sendTCP(gplp);
     }
 
+    /**
+     * abstract method that allow a mini game to add element into the part of the screen displaying
+     * in game information
+     */
     protected abstract void setGameMenu();
 
+    /**
+     * simplification call for changing the text display in the center of the screen
+     * @param text text to display
+     */
     protected void setCenterText(String text) {
         layout.setText(font, text, Color.BLACK, Gdx.graphics.getWidth(), Align.center, true);
     }
 
+    /**
+     * generate the part of the screen displayin the information about the game
+     * including the "retour" button used to go back to the main menu
+     */
     protected void initInformationTable() {
         tableDisplay = new Table();
         tableDisplay.setPosition(0, gameLayoutHeight);
@@ -213,6 +245,10 @@ public abstract class GameScreen implements Screen, InputProcessor {
         gameLoaded = true;
     }
 
+    /**
+     * use to display in the center of the screen witch player turn it is
+     * @param opponentName require the name of the opponent player
+     */
     protected void displayCurrentPlayer(String opponentName) {
         String text = (currentPlayerId == localPlayer.getId()) ? "C'est votre tour." : "C'est le tour de " + opponentName;
         setCenterText(text);

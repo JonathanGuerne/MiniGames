@@ -5,9 +5,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-/**
- * Created by jonathan.guerne on 11.07.2017.
+/* ---------------------------------------------------------------------------------------------
+ * Projet        : HES d'été - Minis Games
+ * Auteurs       : Marc Friedli, Anthony gilloz, Jonathan guerne
+ * Date          : Juillet 2017
+ * ---------------------------------------------------------------------------------------------
+ * ApplicationSkin.java   :  this class is a singleton use to get the programme skin
+ *                          we used a singleton so that it is only generate one time.
+ * ---------------------------------------------------------------------------------------------
  */
+
 public class ApplicationSkin {
 
     private Skin skin;
