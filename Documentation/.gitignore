@@ -6,3 +6,7 @@
 *.log
 *.toc
 *.synctex.gz
+*.out
+
+## Visio
+*.vsdx
