@@ -97,25 +97,22 @@ public class BattleShip extends GameScreen {
                         shipInitialized = 0;
                         System.out.println("J'ai recu un packet de confirm");
                     } else if (o instanceof BattleShipInGamePacket) {
-                        String text;
                         BattleShipInGamePacket bsigp = (BattleShipInGamePacket) o;
                         currentPlayerId = bsigp.currentPlayerId;
                         if (localPlayer.getId() == currentPlayerId) {
-                            text = "C'est votre tour";
                             inGame = true;
                             tabGame.put(TAB_PLAYER, bsigp.currentPlayerTab);
                             tabGame.put(TAB_OPPONENT, bsigp.opponentPlayerTab);
                             tabGame.put(TAB_TOUCHED, bsigp.currentPlayerTabTouched);
                             tabGame.put(TAB_TOUCHED_OPPONENT, bsigp.opponentPlayerTabTouched);
                         } else {
-                            text = "C'est le tour de votre adversaire";
                             tabGame.put(TAB_PLAYER, bsigp.opponentPlayerTab);
                             tabGame.put(TAB_OPPONENT, bsigp.currentPlayerTab);
                             tabGame.put(TAB_TOUCHED, bsigp.opponentPlayerTabTouched);
                             tabGame.put(TAB_TOUCHED_OPPONENT, bsigp.currentPlayerTabTouched);
                         }
                         gameId = bsigp.gameId;
-                        setCenterText(text);
+                        displayCurrentPlayer(opponentPlayer.getPseudo());
                         showMessage = true;
 
                         for(Sprite s : playerArrayImage){
@@ -208,7 +205,6 @@ public class BattleShip extends GameScreen {
 
 
         if (inGame && touchIndex != -1) {
-            System.out.println("J'ai jouer!!");
             BattleShipInGamePacket bsigp = new BattleShipInGamePacket();
             bsigp.currentPlayerId = localPlayer.getId();
             bsigp.opponentPlayerId = opponentPlayer.getId();
