@@ -275,8 +275,14 @@ public class BattleShip extends GameScreen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
-        if (initGame && !showMessage ) {
+        if(gameOver)
+        {
+            GamePlayerLeavingPacket gplp = new GamePlayerLeavingPacket();
+            gplp.playerid = localPlayer.getId();
+            client.sendTCP(gplp);
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, this.localPlayer));
+        }
+        else if (initGame && !showMessage) {
 
             if (screenY < informationLayoutHeight) {
                 return false;
@@ -293,11 +299,6 @@ public class BattleShip extends GameScreen {
                 tabGame.get(TAB_PLAYER)[touchIndex] = charUser;
                 shipInitialized++;
             }
-        } else if (gameOver) {
-            GamePlayerLeavingPacket gplp = new GamePlayerLeavingPacket();
-            gplp.playerid = localPlayer.getId();
-            client.sendTCP(gplp);
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, this.localPlayer));
         } else if (inGame && !showMyTab) {
             if (screenY < informationLayoutHeight) {
                 return false;
