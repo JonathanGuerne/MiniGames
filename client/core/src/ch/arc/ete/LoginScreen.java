@@ -62,6 +62,7 @@ public class LoginScreen implements Screen {
     static int tcp = 23900, udp = 23901;
 
     private boolean connectionOk = false;
+
 //    boolean serverDiscoveringFinish = false;
 
 
@@ -146,7 +147,7 @@ public class LoginScreen implements Screen {
 
         new Thread(new DiscoverHostThread()).start();
 
-        btnValider.addListener(new ClickListener(){
+        btnValider.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 tryConnection();
@@ -189,8 +190,7 @@ public class LoginScreen implements Screen {
         clientPseudo.setTextFieldListener(new TextField.TextFieldListener() {
             @Override
             public void keyTyped(TextField textField, char c) {
-                if(c == '\r')
-                {
+                if (c == '\r') {
                     tryConnection();
                 }
             }
@@ -200,8 +200,7 @@ public class LoginScreen implements Screen {
         serverAdress.setTextFieldListener(new TextField.TextFieldListener() {
             @Override
             public void keyTyped(TextField textField, char c) {
-                if(c == '\r')
-                {
+                if (c == '\r') {
                     tryConnection();
                 }
             }
@@ -234,34 +233,41 @@ public class LoginScreen implements Screen {
 
     }
 
-    private void tryConnection(){
-                try {
-                    if (clientPseudo.getText().equals("")) {
-                        throw new LoginException("Veuillez choisir un pseudo");
-                    }
-                    else if(clientPseudo.getText().length() > 20){
-                        throw new LoginException("Votre pseudo ne doit pas contenir\n plus que 20 caractères !");
-                    }
-                    client.connect(5000, serverAdress.getText(), tcp, udp);
-                    LoginPacket lp = new LoginPacket();
-                    lp.namePlayer = clientPseudo.getText();
-                    client.sendTCP(lp);
+    private void tryConnection() {
+        try {
+            if (clientPseudo.getText().equals("")) {
+                throw new LoginException("Veuillez choisir un pseudo");
+            } else if (clientPseudo.getText().length() > 20) {
+                throw new LoginException("Votre pseudo ne doit pas contenir\n plus que 20 caractères !");
+            }
+            client.connect(5000, serverAdress.getText(), tcp, udp);
+            LoginPacket lp = new LoginPacket();
+            lp.namePlayer = clientPseudo.getText();
+            client.sendTCP(lp);
 
-                    while (!connectionOk) {
-                        System.out.println("waiting for server response");
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(3000);
+                        if(!connectionOk){
+                            errorLabel.setText("pas de reponses, verifiez les mises à jour.");
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
 
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, clientPseudo.getText()));
-
-                } catch (IOException e) {
-                    errorLabel.setText("Serveur inconnu");
-                    e.printStackTrace();
                 }
-                catch (LoginException e)
-                {
-                    errorLabel.setText(e.getMessage());
-                }
+
+            }).start();
+
+        } catch (IOException e) {
+            errorLabel.setText("Serveur inconnu");
+            e.printStackTrace();
+        } catch (LoginException e) {
+            errorLabel.setText(e.getMessage());
         }
+    }
 
 
     @Override
@@ -274,6 +280,10 @@ public class LoginScreen implements Screen {
 
         stage.act();
         stage.draw();
+
+        if(connectionOk){
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, clientPseudo.getText()));
+        }
     }
 
     @Override

@@ -117,6 +117,14 @@ public class BattleShip extends GameScreen {
                         setCenterText(text);
                         showMessage = true;
 
+                        for(Sprite s : playerArrayImage){
+                            s = null;
+                        }
+                        for(Sprite s : opponentArrayImage){
+                            s = null;
+                        }
+
+
                         playerArrayImage = new Sprite[NB_CASE * NB_CASE];
                         opponentArrayImage = new Sprite[NB_CASE * NB_CASE];
 
@@ -152,7 +160,9 @@ public class BattleShip extends GameScreen {
         shapeRenderer.end();
 
         if (initGame) {
-            setCenterText("Init de la partie");
+            synchronized (stage) {
+                setCenterText("Init de la partie");
+            }
         }
 
         if (showMyTab) {

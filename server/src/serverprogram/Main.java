@@ -40,6 +40,10 @@ public class Main {
     public final static int NB_CASE = 8;
     public final static int NB_SHIP = 3;
 
+    public final static  int MIN_VERSION = 1;
+    public final static  int CURRENT_VERSION = 1;
+
+
     static ArrayList<Game> listGames = new ArrayList<>();
     static PlayerList listPlayer = new PlayerList();
 
@@ -77,223 +81,207 @@ public class Main {
 
                 if (object instanceof Packet) {
                     Packet p = (Packet) object;
-                    if (p instanceof MiniGamePacket)
-                    {
-                        MiniGamePacket miniGamePacket = (MiniGamePacket) p;
+                    if (p.maj >= MIN_VERSION && p.maj <= CURRENT_VERSION) {
+                        if (p instanceof MiniGamePacket) {
+                            MiniGamePacket miniGamePacket = (MiniGamePacket) p;
+                        }
+                        if (p instanceof LoginPacket) {
+
+                            LoginPacket lp = (LoginPacket) object;
+
+                            listPlayer.add(new Player(connection.getID(), lp.namePlayer));
+
+                            LoginConfirmPacket lcp = new LoginConfirmPacket();
+                            lcp.namePlayer = lp.namePlayer;
+                            server.sendToTCP(connection.getID(), lcp);
+                        }
+                        //BEGIN BATTLE SHIP
+                        if (p instanceof BattleShipStartPacket) {
+                            if (clientIDWaitingPerGame[BATTLESHIP_INDEX] == -1) {
+                                clientIDWaitingPerGame[BATTLESHIP_INDEX] = connection.getID();
+                            } else {
+                                BattleShipStartConfirmPacket bsscp = new BattleShipStartConfirmPacket();
+                                bsscp.idPlayer1 = clientIDWaitingPerGame[BATTLESHIP_INDEX];
+                                bsscp.idPlayer2 = connection.getID();
+                                clientIDWaitingPerGame[BATTLESHIP_INDEX] = -1;
+
+                                bsscp.namePlayer1 = listPlayer.getPlayerById(bsscp.idPlayer1).getNamePlayer();
+                                bsscp.namePlayer2 = listPlayer.getPlayerById(bsscp.idPlayer2).getNamePlayer();
+
+                                listPlayer.getPlayerById(bsscp.idPlayer1).setPlaying(true);
+                                listPlayer.getPlayerById(bsscp.idPlayer2).setPlaying(true);
+
+                                Game battleShip = new Game(GameType.BATTLESHIP, bsscp.idPlayer1, bsscp.idPlayer2, currentGameId++);
+                                battleShip.setCharPlayer1(bsscp.charPlayer1);
+                                battleShip.setCharPlayer2(bsscp.charPlayer1);
+                                listGames.add(battleShip);
+
+                                listPlayer.getPlayerById(bsscp.idPlayer1).setCurrentGameId(battleShip.getId());
+                                listPlayer.getPlayerById(bsscp.idPlayer2).setCurrentGameId(battleShip.getId());
+
+                                bsscp.gameId = battleShip.getId();
+                                server.sendToTCP(bsscp.idPlayer1, bsscp);
+                                server.sendToTCP(bsscp.idPlayer2, bsscp);
+                            }
+                        } else if (p instanceof BattleShipStartInitGamePacket) {
+                            BattleShipStartInitGamePacket bssigp = (BattleShipStartInitGamePacket) p;
+                            if (initializedGame.containsKey(bssigp.idOpponent)) {
+                                System.out.println("j'ai copain");
+                                int idPlayer = bssigp.idPlayer;
+                                int idOpponent = bssigp.idOpponent;
+                                char[] tabPlayer = bssigp.tabGame;
+                                char[] tabOpponent = initializedGame.get(bssigp.idOpponent);
+                                if (bssigp.idPlayer > bssigp.idOpponent) {
+                                    idPlayer = bssigp.idOpponent;
+                                    idOpponent = bssigp.idPlayer;
+                                    tabPlayer = initializedGame.get(bssigp.idOpponent);
+                                    tabOpponent = bssigp.tabGame;
+                                }
+
+                                BattleShipInGamePacket bscig = new BattleShipInGamePacket();
+                                bscig.currentPlayerId = idPlayer;
+                                bscig.opponentPlayerId = idOpponent;
+                                bscig.currentPlayerTab = tabPlayer;
+                                bscig.currentPlayerTabTouched = new char[NB_CASE * NB_CASE];
+                                bscig.opponentPlayerTabTouched = new char[NB_CASE * NB_CASE];
+                                bscig.opponentPlayerTab = tabOpponent;
+
+
+                                bscig.gameId = bssigp.gameId;
+
+                                server.sendToTCP(bscig.currentPlayerId, bscig);
+                                server.sendToTCP(bscig.opponentPlayerId, bscig);
+                            } else {
+                                System.out.println("Je suis tout seul " + bssigp.idPlayer + " " + bssigp.idOpponent);
+                                initializedGame.put(bssigp.idPlayer, bssigp.tabGame);
+                            }
+                        } else if (p instanceof BattleShipInGamePacket) {
+                            BattleShipInGamePacket bsigp = (BattleShipInGamePacket) p;
+                            int counterTouched = 0;
+
+                            for (int i = 0; i < bsigp.currentPlayerTab.length; i++) {
+                                if (bsigp.currentPlayerTabTouched[i] == bsigp.opponentPlayerTab[i] && bsigp.currentPlayerTabTouched[i] != '\0') {
+                                    counterTouched++;
+                                }
+                            }
+                            //If the number of counterTouched is egual to the NB_SHIP this is the end of the game
+                            if (counterTouched == NB_SHIP) {
+                                BattleShipEndGamePacket bsegp = new BattleShipEndGamePacket();
+                                bsegp.idWinner = bsigp.currentPlayerId;
+                                server.sendToTCP(bsigp.currentPlayerId, bsegp);
+                                server.sendToTCP(bsigp.opponentPlayerId, bsegp);
+                                System.out.println("fin de la partie");
+                            } else {
+                                //Read the packet and inverse the currentPlayer and the opponent
+                                BattleShipInGamePacket sendBsigp = new BattleShipInGamePacket();
+                                sendBsigp.currentPlayerId = bsigp.opponentPlayerId;
+                                sendBsigp.opponentPlayerId = bsigp.currentPlayerId;
+                                sendBsigp.currentPlayerTab = bsigp.opponentPlayerTab;
+                                sendBsigp.opponentPlayerTab = bsigp.currentPlayerTab;
+                                sendBsigp.currentPlayerTabTouched = bsigp.opponentPlayerTabTouched;
+                                sendBsigp.opponentPlayerTabTouched = bsigp.currentPlayerTabTouched;
+                                sendBsigp.gameId = bsigp.gameId;
+
+                                server.sendToTCP(sendBsigp.currentPlayerId, sendBsigp);
+                                server.sendToTCP(sendBsigp.opponentPlayerId, sendBsigp);
+                            }
+
+                        }
+                        //BEGIN MORPION
+                        if (p instanceof MorpionStartPacket) {
+                            if (clientIDWaitingPerGame[MORPION_INDEX] == -1) {
+                                clientIDWaitingPerGame[MORPION_INDEX] = connection.getID();
+                            } else {
+                                MorpionStartConfirmPacket mscp = new MorpionStartConfirmPacket();
+                                mscp.idPlayer1 = clientIDWaitingPerGame[MORPION_INDEX];
+                                mscp.player1Name = listPlayer.getPlayerById(mscp.idPlayer1).getNamePlayer();
+                                listPlayer.getPlayerById(mscp.idPlayer1).setPlaying(true);
+                                mscp.idPlayer2 = connection.getID();
+                                mscp.player2Name = listPlayer.getPlayerById(mscp.idPlayer2).getNamePlayer();
+                                listPlayer.getPlayerById(mscp.idPlayer2).setPlaying(true);
+
+
+                                clientIDWaitingPerGame[MORPION_INDEX] = -1;
+                                System.out.println(mscp.idPlayer1 + " and " + mscp.idPlayer2 + " will play");
+
+                                Game morpion = new Game(GameType.MORPION, mscp.idPlayer1, mscp.idPlayer2, currentGameId++);
+                                morpion.setCharPlayer1(mscp.charPlayer1);
+                                morpion.setCharPlayer2(mscp.charPlayer2);
+                                listGames.add(morpion);
+
+                                listPlayer.getPlayerById(mscp.idPlayer1).setCurrentGameId(morpion.getId());
+                                listPlayer.getPlayerById(mscp.idPlayer2).setCurrentGameId(morpion.getId());
+
+                                mscp.gameId = morpion.getId();
+
+                                server.sendToTCP(mscp.idPlayer1, mscp);
+                                server.sendToTCP(mscp.idPlayer2, mscp);
+                            }
+                        }
+                        if (p instanceof MorpionInGamePacket) {
+                            MorpionInGamePacket migp = (MorpionInGamePacket) p;
+
+                            GameChar winnerChar = new GameChar();
+
+                            if (MorpionHandler.getInstance().isGameOver(migp.tabGame, winnerChar)) {
+
+                                MorpionEndGamePacket megp = new MorpionEndGamePacket();
+
+                                if (winnerChar.getInfoChar() == selectGameFromId(migp.gameId).getCharPlayer1()) {
+                                    //player 1 win
+                                    megp.winnerId = selectGameFromId(migp.gameId).getIdPlayer1();
+                                } else if (winnerChar.getInfoChar() == selectGameFromId(migp.gameId).getCharPlayer2()) {
+                                    //player 2 win
+                                    megp.winnerId = selectGameFromId(migp.gameId).getIdPlayer2();
+                                } else {
+                                    megp.winnerId = -1;
+                                }
+
+                                megp.gameId = migp.gameId;
+                                megp.tabGame = migp.tabGame;
+
+                                listPlayer.getPlayerById(migp.currentPlayerID).setPlaying(false);
+                                listPlayer.getPlayerById(migp.opponentPlayerID).setPlaying(false);
+
+                                server.sendToTCP(migp.currentPlayerID, megp);
+                                server.sendToTCP(migp.opponentPlayerID, megp);
+
+                            } else {
+
+                                MorpionInGameConfirmPacket migcp = new MorpionInGameConfirmPacket();
+                                migcp.tabGame = migp.tabGame;
+                                migcp.currentPlayerID = migp.opponentPlayerID;
+
+                                server.sendToTCP(migp.currentPlayerID, migcp);
+                                server.sendToTCP(migp.opponentPlayerID, migcp);
+                            }
+                        }
+                        if (p instanceof GamePlayerLeavingPacket) {
+                            GamePlayerLeavingPacket mpl = (GamePlayerLeavingPacket) p;
+
+                            System.out.println("Player leaving");
+
+                            for (int i = 0; i < clientIDWaitingPerGame.length; i++) {
+                                if (clientIDWaitingPerGame[i] == mpl.playerid) {
+                                    clientIDWaitingPerGame[i] = -1;
+                                }
+                            }
+
+                            if (listPlayer.getPlayerById(mpl.playerid).isPlaying()) {
+                                Game game = selectGameFromId(listPlayer.getPlayerById(mpl.playerid).getCurrentGameId());
+                                if (game.getIdPlayer1() != mpl.playerid) {
+                                    server.sendToTCP(game.getIdPlayer1(), mpl);
+                                } else {
+                                    server.sendToTCP(game.getIdPlayer2(), mpl);
+                                }
+
+                                listPlayer.getPlayerById(game.getIdPlayer1()).setPlaying(false);
+                                listPlayer.getPlayerById(game.getIdPlayer2()).setPlaying(false);
+                            }
+
+                        }
+                        //END MORPION
                     }
-                    if (p instanceof LoginPacket) {
-
-                        LoginPacket lp = (LoginPacket) object;
-
-                        listPlayer.add(new Player(connection.getID(),lp.namePlayer));
-
-                        LoginConfirmPacket lcp = new LoginConfirmPacket();
-                        lcp.namePlayer =lp.namePlayer;
-                        server.sendToTCP(connection.getID(), lcp);
-                    }
-                    //BEGIN BATTLE SHIP
-                    if(p instanceof BattleShipStartPacket)
-                    {
-                        if(clientIDWaitingPerGame[BATTLESHIP_INDEX] == -1)
-                        {
-                            clientIDWaitingPerGame[BATTLESHIP_INDEX] = connection.getID();
-                        }else
-                        {
-                            BattleShipStartConfirmPacket bsscp = new BattleShipStartConfirmPacket();
-                            bsscp.idPlayer1 = clientIDWaitingPerGame[BATTLESHIP_INDEX];
-                            bsscp.idPlayer2 = connection.getID();
-                            clientIDWaitingPerGame[BATTLESHIP_INDEX] = -1;
-
-                            bsscp.namePlayer1 = listPlayer.getPlayerById(bsscp.idPlayer1).getNamePlayer();
-                            bsscp.namePlayer2 = listPlayer.getPlayerById(bsscp.idPlayer2).getNamePlayer();
-
-                            listPlayer.getPlayerById(bsscp.idPlayer1).setPlaying(true);
-                            listPlayer.getPlayerById(bsscp.idPlayer2).setPlaying(true);
-
-                            Game battleShip = new Game(GameType.BATTLESHIP, bsscp.idPlayer1, bsscp.idPlayer2, currentGameId++);
-                            battleShip.setCharPlayer1(bsscp.charPlayer1);
-                            battleShip.setCharPlayer2(bsscp.charPlayer1);
-                            listGames.add(battleShip);
-
-                            listPlayer.getPlayerById(bsscp.idPlayer1).setCurrentGameId(battleShip.getId());
-                            listPlayer.getPlayerById(bsscp.idPlayer2).setCurrentGameId(battleShip.getId());
-
-                            bsscp.gameId = battleShip.getId();
-                            server.sendToTCP(bsscp.idPlayer1, bsscp);
-                            server.sendToTCP(bsscp.idPlayer2, bsscp);
-                        }
-                    }else if(p instanceof BattleShipStartInitGamePacket)
-                    {
-                        BattleShipStartInitGamePacket bssigp = (BattleShipStartInitGamePacket) p;
-                        if(initializedGame.containsKey(bssigp.idOpponent))
-                        {
-                            System.out.println("j'ai copain");
-                            int idPlayer = bssigp.idPlayer;
-                            int idOpponent = bssigp.idOpponent;
-                            char[] tabPlayer = bssigp.tabGame;
-                            char[] tabOpponent = initializedGame.get(bssigp.idOpponent);
-                            if(bssigp.idPlayer > bssigp.idOpponent)
-                            {
-                                idPlayer = bssigp.idOpponent;
-                                idOpponent = bssigp.idPlayer;
-                                tabPlayer = initializedGame.get(bssigp.idOpponent);
-                                tabOpponent = bssigp.tabGame;
-                            }
-
-                            BattleShipInGamePacket bscig = new BattleShipInGamePacket();
-                            bscig.currentPlayerId = idPlayer;
-                            bscig.opponentPlayerId = idOpponent;
-                            bscig.currentPlayerTab = tabPlayer;
-                            bscig.currentPlayerTabTouched = new char[NB_CASE * NB_CASE];
-                            bscig.opponentPlayerTabTouched = new char[NB_CASE * NB_CASE];
-                            bscig.opponentPlayerTab = tabOpponent;
-
-
-                            bscig.gameId = bssigp.gameId;
-
-                            server.sendToTCP(bscig.currentPlayerId, bscig);
-                            server.sendToTCP(bscig.opponentPlayerId, bscig);
-                        }else
-                        {
-                            System.out.println("Je suis tout seul " + bssigp.idPlayer + " " + bssigp.idOpponent);
-                            initializedGame.put(bssigp.idPlayer, bssigp.tabGame);
-                        }
-                    }else if(p instanceof BattleShipInGamePacket)
-                    {
-                        BattleShipInGamePacket bsigp = (BattleShipInGamePacket) p;
-                        int counterTouched = 0;
-
-                        for(int i = 0; i < bsigp.currentPlayerTab.length; i++)
-                        {
-                            if(bsigp.currentPlayerTabTouched[i] == bsigp.opponentPlayerTab[i] && bsigp.currentPlayerTabTouched[i] != '\0')
-                            {
-                                counterTouched++;
-                            }
-                        }
-                        //If the number of counterTouched is egual to the NB_SHIP this is the end of the game
-                        if(counterTouched == NB_SHIP)
-                        {
-                            BattleShipEndGamePacket bsegp = new BattleShipEndGamePacket();
-                            bsegp.idWinner = bsigp.currentPlayerId;
-                            server.sendToTCP(bsigp.currentPlayerId, bsegp);
-                            server.sendToTCP(bsigp.opponentPlayerId, bsegp);
-                            System.out.println("fin de la partie");
-                        }else
-                        {
-                            //Read the packet and inverse the currentPlayer and the opponent
-                            BattleShipInGamePacket sendBsigp = new BattleShipInGamePacket();
-                            sendBsigp.currentPlayerId = bsigp.opponentPlayerId;
-                            sendBsigp.opponentPlayerId = bsigp.currentPlayerId;
-                            sendBsigp.currentPlayerTab = bsigp.opponentPlayerTab;
-                            sendBsigp.opponentPlayerTab = bsigp.currentPlayerTab;
-                            sendBsigp.currentPlayerTabTouched = bsigp.opponentPlayerTabTouched;
-                            sendBsigp.opponentPlayerTabTouched = bsigp.currentPlayerTabTouched;
-                            sendBsigp.gameId = bsigp.gameId;
-
-                            server.sendToTCP(sendBsigp.currentPlayerId, sendBsigp);
-                            server.sendToTCP(sendBsigp.opponentPlayerId, sendBsigp);
-                        }
-
-                    }
-                    //BEGIN MORPION
-                    if (p instanceof MorpionStartPacket) {
-                       if(clientIDWaitingPerGame[MORPION_INDEX] == -1){
-                           clientIDWaitingPerGame[MORPION_INDEX] = connection.getID();
-                       }
-                       else{
-                           MorpionStartConfirmPacket mscp = new MorpionStartConfirmPacket();
-                           mscp.idPlayer1 = clientIDWaitingPerGame[MORPION_INDEX];
-                           mscp.player1Name = listPlayer.getPlayerById(mscp.idPlayer1).getNamePlayer();
-                           listPlayer.getPlayerById(mscp.idPlayer1).setPlaying(true);
-                           mscp.idPlayer2 = connection.getID();
-                           mscp.player2Name = listPlayer.getPlayerById(mscp.idPlayer2).getNamePlayer();
-                           listPlayer.getPlayerById(mscp.idPlayer2).setPlaying(true);
-
-
-                           clientIDWaitingPerGame[MORPION_INDEX] = -1;
-                           System.out.println(mscp.idPlayer1+" and "+mscp.idPlayer2+" will play");
-
-                           Game morpion =new Game(GameType.MORPION,mscp.idPlayer1,mscp.idPlayer2,currentGameId++);
-                           morpion.setCharPlayer1(mscp.charPlayer1);
-                           morpion.setCharPlayer2(mscp.charPlayer2);
-                           listGames.add(morpion);
-
-                           listPlayer.getPlayerById(mscp.idPlayer1).setCurrentGameId(morpion.getId());
-                           listPlayer.getPlayerById(mscp.idPlayer2).setCurrentGameId(morpion.getId());
-
-                           mscp.gameId = morpion.getId();
-
-                           server.sendToTCP(mscp.idPlayer1, mscp);
-                           server.sendToTCP(mscp.idPlayer2, mscp);
-                       }
-                    }
-                    if(p instanceof MorpionInGamePacket){
-                        MorpionInGamePacket migp = (MorpionInGamePacket) p;
-
-                        GameChar winnerChar = new GameChar();
-
-                        if(MorpionHandler.getInstance().isGameOver(migp.tabGame,winnerChar)){
-
-                            MorpionEndGamePacket megp = new MorpionEndGamePacket();
-
-                            if(winnerChar.getInfoChar() == selectGameFromId(migp.gameId).getCharPlayer1()){
-                                //player 1 win
-                                megp.winnerId = selectGameFromId(migp.gameId).getIdPlayer1();
-                            }
-                            else if(winnerChar.getInfoChar() == selectGameFromId(migp.gameId).getCharPlayer2()){
-                                //player 2 win
-                                megp.winnerId = selectGameFromId(migp.gameId).getIdPlayer2();
-                            }
-                            else{
-                                megp.winnerId = -1;
-                            }
-
-                            megp.gameId = migp.gameId;
-                            megp.tabGame = migp.tabGame;
-
-                            listPlayer.getPlayerById(migp.currentPlayerID).setPlaying(false);
-                            listPlayer.getPlayerById(migp.opponentPlayerID).setPlaying(false);
-
-                            server.sendToTCP(migp.currentPlayerID,megp);
-                            server.sendToTCP(migp.opponentPlayerID,megp);
-
-                        }
-                        else {
-
-                            MorpionInGameConfirmPacket migcp = new MorpionInGameConfirmPacket();
-                            migcp.tabGame = migp.tabGame;
-                            migcp.currentPlayerID = migp.opponentPlayerID;
-
-                            server.sendToTCP(migp.currentPlayerID, migcp);
-                            server.sendToTCP(migp.opponentPlayerID, migcp);
-                        }
-                    }
-                    if(p instanceof GamePlayerLeavingPacket){
-                        GamePlayerLeavingPacket mpl = (GamePlayerLeavingPacket) p;
-
-                        System.out.println("Player leaving");
-
-                        for(int i=0;i<clientIDWaitingPerGame.length;i++) {
-                            if (clientIDWaitingPerGame[i] == mpl.playerid) {
-                                clientIDWaitingPerGame[i] = -1;
-                            }
-                        }
-
-                        if(listPlayer.getPlayerById(mpl.playerid).isPlaying()){
-                            Game game = selectGameFromId(listPlayer.getPlayerById(mpl.playerid).getCurrentGameId());
-                            if(game.getIdPlayer1() != mpl.playerid){
-                                server.sendToTCP(game.getIdPlayer1(),mpl);
-                            }
-                            else{
-                                server.sendToTCP(game.getIdPlayer2(),mpl);
-                            }
-
-                            listPlayer.getPlayerById(game.getIdPlayer1()).setPlaying(false);
-                            listPlayer.getPlayerById(game.getIdPlayer2()).setPlaying(false);
-                        }
-
-                    }
-                    //END MORPION
                 }
             }
 
@@ -305,7 +293,7 @@ public class Main {
                     }
                 }
 
-                if(listPlayer.getPlayerById(connection.getID()).isPlaying()){
+                if(listPlayer.exist(connection.getID()) && listPlayer.getPlayerById(connection.getID()).isPlaying()){
                     Game game = selectGameFromId(listPlayer.getPlayerById(connection.getID()).getCurrentGameId());
 
                     GamePlayerLeavingPacket gplp = new GamePlayerLeavingPacket();

@@ -5,8 +5,8 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{hyperref}
-\newcommand{\projectName}{Mini Games}
-\title{\projectName}
+\usepackage{array}
+\title{Mini Games}
 
 \author{M. \textsc{Friedli}, A. \textsc{Gillioz}, J. \textsc{Guerne}\\
 He-Arc Ingénierie\\
@@ -14,12 +14,13 @@ He-Arc Ingénierie\\
 \date{\today{}}
 \begin{document}
 \maketitle{}
+
 \begin{abstract}
 La HES d'été permet aux étudiants de deuxième année d'étude dans le domaine de l'informatique
 la possibilité de travailler sur un projet libre dans le but d'approfondir leurs connaissances.
 
 Ce rapport décrit, explique les choix d'implémentations pris dans la réalisation de notre
-projet \projectName.
+projet Mini Games.
 
 Une planification des tâches ainsi qu'une spécification du travaille ont été réalisés dans le but
 d'organiser au mieux le temps à disposition.
@@ -27,15 +28,51 @@ d'organiser au mieux le temps à disposition.
 \tableofcontents
 
 \chapter{Introduction}
-\projectName est une application offrant la possibilité de jouer à des minis jeux très classique tel
+Mini Games est une application offrant la possibilité de jouer à des minis jeux très classique tel
 que le morpion ou la bataille navale en réseau et en multi-platforme. C'est à dire que deux personnes
 l'une sur son téléphone android et l'autre sur son ordinateur auront la possibilité de se défier à une partie de jeu en ligne.
-Deux grands outils on été utilisé pour faciliter l'implémentation de ce projet, il sagit du framework Libgdx, qui a servit à
+Deux grands outils ont été utilisés pour faciliter l'implémentation de ce projet, il sagit du framework Libgdx, qui a servit à
 deployer le même programme sur différentes platforme, et de la libraire kryonet, qui a elle facilitée les échanges réseau.
+
+Les jeux listés dans le cahier des charges sont les suivants :
+\begin{itemize}
+	\item Morpion
+	\item Bataille navale
+	\item (Bonus : Jeu de dame)
+\end{itemize}
+L'objectif principal de ce projet n'est pas de développer des jeux compliqués et très
+développé mais plutôt de se concenter sur le multi-plateforme et le réseau.
 
 \chapter{Planification}
 
-\chapter{Conventions}
+Nous avons réparti le travail selon les affinités, compétences et disponibilités de chacun.
+\par
+\begin{itemize}
+	\item Gestion client - serveur : Jonathan Guerne
+	\item Morpions : Jonathan Guerne
+	\item Bataille navale : Anthony Gilloz
+	\item User Interfaces : Jonathan Guerne et Marc Friedli
+	\item Test : Jonathan Guerne, Anthony Gilloz et Marc Friedli
+	\item Rapport : Jonathan Guerne, Anthony Gilloz et Marc Friedli
+	\item Relecture : Marc Friedli
+\end{itemize}
+\par
+Nous avons ensuite déterminer les principales tâches à réaliser et leur avons donné un ordre de priorité (Figure \ref{planif}).
+
+\begin{figure}[H]
+	\centering\includegraphics[width=15cm]{Planif}
+	\caption{Ordre de réalisation des tâches}
+	\label{planif}
+\end{figure}
+
+\chapter{Conventions de nommages}
+Le code a été écrit en respectant la convention camelCase pour les variables et
+les méthodes. Le camelCase consiste à commencer les noms par des minuscules et si
+le nom est une composition de plusieurs mots utiliser une majuscule comme séparateur.
+Les classes respectent la convention PascalCase qui reprend les mêmes conventions que
+le camelCase excepté le fait que les noms commencent par des majuscules.
+Les verbes sont privilégiés lors du nommage de méthode par soucis de clarté.
+L’utilisation de l’anglais plutôt que le français a été préféré.
 
 \chapter{LibGDX}
 \begin{figure}[H]
@@ -92,6 +129,12 @@ Comme dit plus haut, le programme est une collection de minis jeux auxquels les 
 plusieurs. Le programme est décomposé en deux parties : la partie client et la partie serveur. La communication entre ces
 deux parties est facilitée par l'utilisation de Kryonet une librairie Java open source conçu pour gérer les échanges réseau.
 
+\begin{figure}[H]
+	\centering\includegraphics[width=10cm]{maquette_Base}
+	\caption{Illistration de la communication entre les clients et le serveur}
+\end{figure}
+
+
 \section{Les packets}
 Les données envoyées entre le client et le serveur transitent sous la forme de Packets, les packets sont des classes présentent
 chez le client et chez le serveur enregistrer au lancement du service.
@@ -103,6 +146,26 @@ un listener qui va automatiquement gérer la réception des Packets et analyser 
 L'implémentaion du serveur est identique à la nuance près qu'elle laisse le choit
 de la personne (de l'adresse) à qui sera envoyé le Packets. En effet toutes les infos, tous les Packets,
 transitent par le serveur, c'est lui ensuite qui les traitent et les renvoient aux différents clients conscernés.
+
+Pour que le serveur et le client puissent travailler avec les mêmes packets en plus de
+possèder les mêmes classes ses classes doivent être enregistrées avec le bon identifiant auprès de
+Kryonet. Les identifiants sont ici de simple integer.
+
+\begin{tabular}{|l|c|}
+\hline
+ Identifiant du Packets & Domaine d'utilisation \\
+\hline [0-999] & Login et configuration générale \\
+\hline[1000-1999] & Packets liés au morpion \\
+\hline[2000-2999] & Packets liés à la bataille navale \\
+\hline
+\end{tabular}
+
+\section{Sécurité}
+Pour empêcher des versions obselettes de se connecter au serveur un système de version a été mis en place.
+Chaque Packets qui transite possède une version, le serveur peut tester si cette version est suffisamment
+récente avant même d'analyser le contenu du Packet envoyé, si le Packet à une version trop vielle le serveur n'en fera rien.
+En absence de réponse du serveur le joueur ne pourra donc pas se connecter.
+
 
 \section{Initialisation de la connexion}
 A l'ouverture du programme le client est invité à entrer une adresse de serveur
@@ -146,9 +209,9 @@ contenant les informations sur les différents joueurs opposés durant la partie
 \label{Morpion}
 
 \subsection{Description}
-Le morpion est un jeu très simple dans lequel deux joueurs s'affronte sur un plateau de 3 x 3 cases. Chaque joueur possède des caractère (joueur 1 'x' et joueur 2 'o')
-tour à tour ils vont devoir placer ces cartacères dans le plateau de jeu dans le but de faire une ligne horizontale,verticale ou encore une diagonale.
-Si la partie se finit sans qu'aucun joueur n'est réussit à remplir une ligne/ une diagonale c'est un match nul.
+Le morpion est un jeu très simple dans lequel deux joueurs s'affronte sur un plateau de 3 x 3 cases. Chaque joueur possède des caractère (joueur 1 'x' et joueur 2 'o').
+Tour à tour, ils vont devoir placer ces cartacères dans le plateau de jeu dans le but de faire une ligne horizontale,verticale ou encore diagonale.
+Si la partie se finit sans qu'aucun joueur n'ai réussi à remplir une ligne/ une diagonale c'est un match nul.
 \subsection{Implémentation}
 
 Quand un joueur démarre une partie s'il ne trouve pas d'adversaire il est mis en attente. Un message lui signalant l'attente d'un
@@ -172,12 +235,12 @@ de l'écran, tout le reste est occupé par le plateau de jeu (figure \ref{morpio
 Il s'agit du jeu tour par tour, c'est la raison pour laquelle au lancement du jeu un message est envoyé à chaqu'un des joueurs de la parties
 leur donnant des indications sur ce qu'ils doivent faire ("c'est votre tour" ou "tour de l'adversaire").
 Comme dit plus haut le plateau de jeu est un tabeau de 3x3 cases, il est donc nécaissaire
-de savoir dans quelle case le joueur clique avant tout. Libgdx mais à dispotion des listener de clicks sur l'écran ce qui signifie qu'il sera possible
-de récupérer les coordonées X et Y du clique. Une fois ces coordonnées obtenues on les ananlysent pour savoir quelle est l'index de la case sur laquelle
-le joueur à cliqué. Il est à noter que la récupération de l'index de la case cliqué ne se fait que chez le joueur dont c'est le tour de jouer.
+de savoir dans quelle case le joueur clique avant tout. LibGDX mais à disposition des listeners de clics sur l'écran ce qui signifie qu'il sera possible
+de récupérer les coordonées X et Y du clic. Une fois ces coordonnées obtenues on les ananlysent pour savoir quelle est l'index de la case sur laquelle
+le joueur à cliqué. Il est à noter que la récupération de l'index de la case cliquée ne se fait que chez le joueur dont c'est le tour de jouer.
 
-Quand la case est cliquée un Pcket contenant les informations du plateau de jeu fraîchement modifié est envoyé au serveur. Celui-ci traitera le plateau de jeu
-pour savoir si la partie est terminée ou non, en fonction de cette analyse le seveur enverra aux deux joueurs les Paquets correspondant (plateau de jeu +
+Quand la case est cliquée un paquet contenant les informations du plateau de jeu fraîchement modifié est envoyé au serveur. Celui-ci traitera le plateau de jeu
+pour savoir si la partie est terminée ou non, en fonction de cette analyse le seveur enverra aux deux joueurs les paquets correspondant (plateau de jeu +
  changement de joueur ou id du gagnant et plateau de jeu).
 
 \section{Bataille navale}
@@ -211,6 +274,8 @@ ce choix d'inspiration est principalement lié à l'utilisation d'un très bon t
 d'interface de LigGDX. Le thème nous plaisant nous avons choisi d'associer notre jeu à cet univers en adaptant l'interface, les
 textes et les images. C'est de plus un choix qui sort de l'ordinaire car il est plutôt rare de voir des jeux
 reprenant ce sytle graphique ce qui est à notre avis un point positif pour notre projet.
+\par
+Concernant l'image utilisée en backgroud, il s'agit d'une image dont on peut acheter le droit de diffusion ou tous les droits directement sur internet. Comme il s'agit d'un projet qui n'a pas pour objectif (actuellement) d'être déployé, nous n'avons pas effectué l'achat. Si nous décidions l'inverse, il faudrait payer.
 
 \section{Interface}
 L'interface du programme est découpé en trois parties principales :
@@ -218,7 +283,7 @@ L'interface du programme est découpé en trois parties principales :
 \begin{itemize}
   \item L'écran de login (firgure \ref{Ecran de login})
   \item Le menu de sélection des minis jeux (figure \ref{Ecran de selection})
-  \item Le jeu en lui-même (voir figures aux chapitres \ref{Morpion} et \ref{Bataille_navale})
+  \item Le jeu en lui-même (voir figures aux chapitres \ref{Morpion} et \ref{Bataille navale})
 \end{itemize}
 
 \begin{figure}[H]
@@ -232,6 +297,14 @@ L'interface du programme est découpé en trois parties principales :
 	\caption{Ecran de sélection des jeux}
 	\label{Ecran de selection}
 \end{figure}
+
+LibGDX fournit des objets Table très utile pour organiser des éléments de formulaires sur plusieurs ligne
+(à la manière d'un tableau HTML) ils ont été utilisé pour permettre de créer l'aligement de l'écran de login et du menu
+présenté ci-dessus.
+
+Les Skins LibGDX sont des collections de ressources graphique utilisés par LibGDX pour personaliser l'ascpect des éléments
+de l'interface. LibGDX fournit un skin par défaut mais comme dit dans l'introduction de ce chapitre nous avons opté pour un skin
+basé sur le thème des "comics" c'est grâce à lui que nos label,text field,bouton,... ont leur aspect.
 
 \chapter{Tests}
 Ce chapitre présente les différents tests qui ont été effectué sur le programme.
@@ -318,6 +391,14 @@ périphériques android mais le serveur à lui été dévelopé sans libgdx. Une
 été mise en place, l'implémentation c'est avérée très lourdes et peu fructueuse dans le sens où lorsqu'un client se connectait à un serveur android celui-ci crashait
 immédiatement.
 
+Dans de très rares cas il est également possible que le lancement de la partie ne s'effectue pas tout à fait correctement. Une des deux joueurs aura déjà l'écran du début de partie alors
+que l'autre affiche toujours l'écran d'attente. Cela c'est cependant pas un problème majeur car si ce problème survient les deux joueurs on accès à un bouton "retour" leur
+permettant de revenir à la sélection des minis jeux et de relancer une partie.
+
+Un autre problème que nous avons rencontré est le fait que, pour des raisons de performences, LibGDX n'est pas thread-safe, ce qui fait que, en fonction de l'ordre d'arrivée des paquets, il est possible que le programme tente d'accéder à une ressource qui n'existe pas encore. Il s'agit d'un problème connu de LibGDX qui, pour l'instant, refuse de le corriger afin de garder leurs performences. Cependant, ce problème n'arrivant que lors de très rares occasions, il aurait été trop couteux en terme de ressources de le corriger et s'assurer que le fix était bien effectif car nous n'avons pas moyen de trouver quel appel devrait être exécuté sans changement de contexte (atomique).
+
+Le programme requiert également une grande quantité de mémoire ce qui nous laisse penser que tous n'est pas supprimé comme il devrait l'être.
+
 \chapter{Améliorations}
 La communication entre pc et android est fonctionnelle mais, comme expliqué plus haut, notre shouaite était d'étendre notre proramme à encore deux autres
 plate-formes : IOS et HTML5 (navigateur web). Certain problème d'implpémentation pourrait survenir (utilisation d'outil non supportés sur certaines plate-formes, etc.)
@@ -334,8 +415,11 @@ en place de ces deux outils dans un même environnement.
 
 \chapter{Bibliographie}
 
-image pirate
+\href{http://www.flaticon.com/free-icon/pirate-ship_361245#term=pirate%20ship&page=1&position=6}{Lien de l'image du bateau pirate}
 
-\href{http://www.flaticon.com/free-icon/pirate-ship_361245#term=pirate%20ship&page=1&position=6}{Lien de l'image}
+\href{https://www.dreamstime.com/stock-illustration-retro-comic-background-old-yellow-green-halftone-gradient-pop-art-style-image81648431}{Lien de l'image du background}
+
+
+https://github.com/libgdx/libgdx/issues/3491
 
 \end{document}
