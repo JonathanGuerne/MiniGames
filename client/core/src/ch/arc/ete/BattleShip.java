@@ -148,15 +148,7 @@ public class BattleShip extends GameScreen {
 
         ApplicationSkin.getInstance().showBackground();
 
-        if (initGame) {
-            synchronized (stage) {
-                setCenterText("Init de la partie");
-            }
-        }
-
         if (showMyTab) {
-
-
             batch.begin();
             for (int i = 0; i < playerArrayImage.length; i++) {
                 if (playerArrayImage[i] != null) {
@@ -332,12 +324,17 @@ public class BattleShip extends GameScreen {
 
     @Override
     protected void setGameMenu() {
+        if (initGame && !gameOver) {
+            synchronized (stage) {
+                setCenterText("Init de la partie");
+            }
+        }
+
         functionalButton = new TextButton("Confirmer", skin);
 
         functionalButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
                 if (!initGame) {
                     showMyTab = !showMyTab;
                 } else {
@@ -360,6 +357,7 @@ public class BattleShip extends GameScreen {
 
 
                     } else {
+                        System.out.println("J'existe !");
                         setCenterText("Il manque des bateaux");
                         showMessage = true;
                     }
