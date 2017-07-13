@@ -397,6 +397,8 @@ permettant de revenir à la sélection des minis jeux et de relancer une partie.
 
 Un autre problème que nous avons rencontré est le fait que, pour des raisons de performences, LibGDX n'est pas thread-safe, ce qui fait que, en fonction de l'ordre d'arrivée des paquets, il est possible que le programme tente d'accéder à une ressource qui n'existe pas encore. Il s'agit d'un problème connu de LibGDX qui, pour l'instant, refuse de le corriger afin de garder leurs performences. Cependant, ce problème n'arrivant que lors de très rares occasions, il aurait été trop couteux en terme de ressources de le corriger et s'assurer que le fix était bien effectif car nous n'avons pas moyen de trouver quel appel devrait être exécuté sans changement de contexte (atomique).
 
+Le programme requiert également une grande quantité de mémoire ce qui nous laisse penser que tous n'est pas supprimé comme il devrait l'être.
+
 \chapter{Améliorations}
 La communication entre pc et android est fonctionnelle mais, comme expliqué plus haut, notre shouaite était d'étendre notre proramme à encore deux autres
 plate-formes : IOS et HTML5 (navigateur web). Certain problème d'implpémentation pourrait survenir (utilisation d'outil non supportés sur certaines plate-formes, etc.)
@@ -414,7 +416,7 @@ en place de ces deux outils dans un même environnement.
 \chapter{Bibliographie}
 
 \href{http://www.flaticon.com/free-icon/pirate-ship_361245#term=pirate%20ship&page=1&position=6}{Lien de l'image du bateau pirate}
-	
+
 \href{https://www.dreamstime.com/stock-illustration-retro-comic-background-old-yellow-green-halftone-gradient-pop-art-style-image81648431}{Lien de l'image du background}
 
 
