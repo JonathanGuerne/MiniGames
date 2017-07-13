@@ -5,6 +5,7 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{hyperref}
+\usepackage{array}
 \newcommand{\projectName}{Mini Games}
 \title{\projectName}
 
@@ -109,6 +110,19 @@ un listener qui va automatiquement gérer la réception des Packets et analyser 
 L'implémentaion du serveur est identique à la nuance près qu'elle laisse le choit
 de la personne (de l'adresse) à qui sera envoyé le Packets. En effet toutes les infos, tous les Packets,
 transitent par le serveur, c'est lui ensuite qui les traitent et les renvoient aux différents clients conscernés.
+
+Pour que le serveur et le client puissent travailler avec les mêmes packets en plus de
+possèder les mêmes classes ses classes doivent être enregistrées avec le bon identifiant auprès de
+Kryonet. Les identifiants sont ici de simple integer.
+
+\begin{tabular}{|l|c|}
+\hline Identifiiant du Packets & Domaine d'utilisation \\
+
+\hline [0-999] & Login et configuration générale \\
+\hline [1000-1999] & Packets liés au morpion \\
+\hline [2000-2999] & Packets liés à la bataille navale \\
+
+\end{tabular}
 
 \section{Initialisation de la connexion}
 A l'ouverture du programme le client est invité à entrer une adresse de serveur
