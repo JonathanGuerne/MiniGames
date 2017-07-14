@@ -113,6 +113,7 @@ public abstract class GameScreen implements Screen, InputProcessor {
         btnBack.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                //on "retour" button click
                 playerLeft();
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, localPlayer));
             }
@@ -126,6 +127,7 @@ public abstract class GameScreen implements Screen, InputProcessor {
             public void received(Connection connection, Object o) {
                 if (o instanceof Packet) {
                     if (o instanceof GamePlayerLeavingPacket) {
+                        //the server send us the info that our opponent as leave the game
                         GamePlayerLeavingPacket gplp = (GamePlayerLeavingPacket) o;
                         setCenterText("L'adversaire à quitté la partie...");
                         gameOver = true;
@@ -145,11 +147,19 @@ public abstract class GameScreen implements Screen, InputProcessor {
             if (!initializationOver) {
                 initializationOver = true;
 
+                /*
+                *   The inputmulitplexer is use so that we can both use element of the graphical interface
+                *   such as a button in this case and get an event when a click on the screen append.
+                *   We need this because otherwise we couldn't handle both ingame input such as touch the screen to select a case
+                *   and using button like for example the "retour" button
+                */
                 InputMultiplexer multiplexer = new InputMultiplexer();
                 multiplexer.addProcessor(this);
                 multiplexer.addProcessor(stage);
                 Gdx.input.setInputProcessor(multiplexer);
                 initInformationTable();
+
+
             }
             update();
             display();

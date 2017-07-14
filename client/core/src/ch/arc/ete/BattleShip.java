@@ -24,12 +24,18 @@ import packets.BattleShip.BattleShipStartPacket;
 import packets.GamePlayerLeavingPacket;
 import packets.Packet;
 
-/**
- * Created by jonathan.guerne on 01.05.2017.
+/* ---------------------------------------------------------------------------------------------
+ * Projet        : HES d'été - Minis Games
+ * Auteurs       : Marc Friedli, Anthony gilloz, Jonathan guerne
+ * Date          : Juillet 2017
+ * ---------------------------------------------------------------------------------------------
+ * BattleShip.java   :  implementation of the battleship game
+ * ---------------------------------------------------------------------------------------------
  */
 
 public class BattleShip extends GameScreen {
 
+    //constant to help understand what those value stand for
     private final int TAB_PLAYER = 0;
     private final int TAB_OPPONENT = 1;
     private final int TAB_TOUCHED = 2;
@@ -50,6 +56,7 @@ public class BattleShip extends GameScreen {
 
     int touchIndex = -1;
 
+    //array of image one for the player ships game boards and the other for the player shoot table
     private Sprite playerArrayImage[] = new Sprite[NB_CASE * NB_CASE];
     private Sprite opponentArrayImage[] = new Sprite[NB_CASE * NB_CASE];
 
@@ -64,15 +71,16 @@ public class BattleShip extends GameScreen {
         h = gameLayoutHeight / NB_CASE;
         shapeRenderer.setColor(Color.BLACK);
 
+        //setup 2 game boards for each player (one for ships and the other for shoot) see documentation
         tabGame = new HashMap<Integer, char[]>();
         tabGame.put(TAB_PLAYER, new char[NB_CASE * NB_CASE]);
         tabGame.put(TAB_OPPONENT, new char[NB_CASE * NB_CASE]);
         tabGame.put(TAB_TOUCHED, new char[NB_CASE * NB_CASE]);
         tabGame.put(TAB_TOUCHED_OPPONENT, new char[NB_CASE * NB_CASE]);
 
+        //tell the server that we wanna start a game
         BattleShipStartPacket bssp = new BattleShipStartPacket();
         bssp.idPlayer = localPlayer.getId();
-
         client.sendTCP(bssp);
 
         client.addListener(new Listener() {
@@ -80,7 +88,6 @@ public class BattleShip extends GameScreen {
             public void received(Connection connection, Object o) {
                 if (o instanceof Packet) {
                     if (o instanceof BattleShipStartConfirmPacket) {
-                        //If the
                         BattleShipStartConfirmPacket bsscp = (BattleShipStartConfirmPacket) o;
 
                         //A opponent is found
@@ -221,12 +228,20 @@ public class BattleShip extends GameScreen {
         }
     }
 
+    /**
+     * method use to simplify image initialization
+     * @param imageArray the array we want to put new image in
+     * @param playerIndex the index of the game board to show (index of tabgame)
+     * @param otherIndex the index which whom the playerIndex may have collision (player ships and opponent shoots)
+     * @param spriteName the basic sprite to display
+     */
     private void initImage(Sprite[] imageArray, int playerIndex, int otherIndex, String spriteName) {
         String spriteNameCopy = spriteName;
         for (int i = 0; i < imageArray.length; i++) {
             if (imageArray[i] == null && tabGame.get(playerIndex)[i] != '\0') {
                 int x = i % NB_CASE;
                 int y = NB_CASE - 1 - (i / NB_CASE);
+                //if there is a collision the image is change to the one with the ship taking fire
                 if (tabGame.get(playerIndex)[i] == tabGame.get(otherIndex)[i]) {
                     spriteName = "pirate-ship-dead";
                 }
@@ -294,6 +309,7 @@ public class BattleShip extends GameScreen {
             ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(client, this.localPlayer));
         }
         else if (initGame && !showMessage) {
+            //will place a ship on the case touch by the user
             if (screenY < informationLayoutHeight) {
                 return false;
             }
@@ -301,6 +317,7 @@ public class BattleShip extends GameScreen {
             int x = (int) (screenX / w);
             int y = (NB_CASE * (int) (screenY / h));
             touchIndex = x + y;
+            //if the player already have a ship on this case it means that he wants to remove it
             if (tabGame.get(TAB_PLAYER)[touchIndex] == charUser) {
                 tabGame.get(TAB_PLAYER)[touchIndex] = '\0';
                 playerArrayImage[touchIndex] = null;
@@ -309,7 +326,9 @@ public class BattleShip extends GameScreen {
                 tabGame.get(TAB_PLAYER)[touchIndex] = charUser;
                 shipInitialized++;
             }
+
         } else if (inGame && !showMyTab) {
+            //if we are ingame and we are diaplay the game board with the player's shoot
             if (screenY < informationLayoutHeight) {
                 return false;
             }
@@ -333,14 +352,20 @@ public class BattleShip extends GameScreen {
     }
 
 
+
     @Override
     protected void setGameMenu() {
+
+        //add element to the information part of the screen at the top
+
         if (initGame && !gameOver) {
             synchronized (stage) {
                 setCenterText("Init de la partie");
             }
         }
 
+        //this button will be use to confirm the placement of the ships at the beginning of the game
+        //and then he will allow the player to switch between game board
         functionalButton = new TextButton("Confirmer", skin);
 
         functionalButton.addListener(new ClickListener() {

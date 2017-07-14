@@ -251,8 +251,10 @@ public class LoginScreen implements Screen {
         stage.setKeyboardFocus(clientPseudo);
 
 
+        //applaying a zoom to the interface based on the ratio of the screen (useful for mobile devices)
         ((OrthographicCamera) stage.getCamera()).zoom = Util.getRatio() / 1.5f;
 
+        //bind the input with graphical elements in the interface
         Gdx.input.setInputProcessor(stage);
 
     }
