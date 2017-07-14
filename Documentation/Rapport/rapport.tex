@@ -124,6 +124,11 @@ dans le but de présenter de façon condensé tous les éléments du projet (voi
   \label{diagramme de classe serveur figure}
 \end{figure}
 
+L'interface Screen fournie par LibGDX permet d'afficher, comme son nom l'indique, des écrans. C'est pourquoi toutes les classes graphiques de ce
+projet l'implémente. Le design pattern template method a été utilisé dans l'implémentation des minis jeux, une classe abstraite nommée GameScreen est héritée
+par les implémentations concrètes de minis jeux mais un grands nombre de fonctionnalités propre à tous les jeux (message d'attente d'aversaire,gestion de l'abandon de l'adversaire,...)
+ont été directement implémentés dans la class GameScreen.
+
 \chapter{Communication réseau}
 Comme dit plus haut, le programme est une collection de minis jeux auxquels les clients auront la possibilité de jouer à
 plusieurs. Le programme est décomposé en deux parties : la partie client et la partie serveur. La communication entre ces
