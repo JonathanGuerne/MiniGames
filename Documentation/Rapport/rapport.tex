@@ -95,7 +95,7 @@ aucune expérience dans son utilisation pourtant il ne nous a fallu que très pe
 \chapter{Kryonet}
 \begin{figure}[H]
 	\centering\includegraphics[width=9cm]{kryonet}
-	\caption{Logo de Kryonet}
+	\caption{Logo de KryoNet}
 \end{figure}
 Ayant travaillé cette année sur des échanges réseau en Java sans utiliser de bibliothèque externe, nous avons pu constaté que la tâche était fastidieuse. C'est donc naturellement que nous
 nous sommes tourné vers KryoNet qui est une bibliothèque open source permettant de faciliter la communication entre différents clients. Un des points essentiel du projet était de pouvoir
@@ -124,10 +124,10 @@ dans le but de présenter de façon condensé tous les éléments du projet (voi
   \label{diagramme de classe serveur figure}
 \end{figure}
 
-L'interface Screen fournie par LibGDX permet d'afficher, comme son nom l'indique, des écrans. C'est pourquoi toutes les classes graphiques de ce
-projet l'implémente. Le design pattern template method a été utilisé dans l'implémentation des minis jeux, une classe abstraite nommée GameScreen est héritée
+L'interface "Screen" fournie par LibGDX permet d'afficher, comme son nom l'indique, des écrans. C'est pourquoi toutes les classes graphiques de ce
+projet l'implémentent. Le design pattern template method a été utilisé dans l'implémentation des minis jeux, une classe abstraite nommée GameScreen est héritée
 par les implémentations concrètes de minis jeux mais un grands nombre de fonctionnalités propre à tous les jeux (message d'attente d'aversaire,gestion de l'abandon de l'adversaire,...)
-ont été directement implémentés dans la class GameScreen.
+ont été directement implémentés dans la classe GameScreen.
 
 \chapter{Communication réseau}
 Comme dit plus haut, le programme est une collection de minis jeux auxquels les clients auront la possibilité de jouer à
