@@ -1,7 +1,13 @@
 package serverprogram;
 
-/**
- * Created by jonathan.guerne on 02.07.2017.
+/* ---------------------------------------------------------------------------------------------
+ * Projet        : HES d'été - Minis Games
+ * Auteurs       : Marc Friedli, Anthony gilloz, Jonathan guerne
+ * Date          : Juillet 2017
+ * ---------------------------------------------------------------------------------------------
+ * GameChar.java   : use by the morpionhandler to share the winner char
+ *                   can be use later to add information about the game (more than juste a Character)
+ * ---------------------------------------------------------------------------------------------
  */
 public class GameChar {
     private char infoChar;

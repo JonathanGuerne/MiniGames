@@ -1,7 +1,11 @@
 package serverprogram;
-
-/**
- * Created by jonathan.guerne on 11.07.2017.
+/* ---------------------------------------------------------------------------------------------
+ * Projet        : HES d'été - Minis Games
+ * Auteurs       : Marc Friedli, Anthony gilloz, Jonathan guerne
+ * Date          : Juillet 2017
+ * ---------------------------------------------------------------------------------------------
+ * Player.java   : the player class contain information about a player registered to the server
+ * ---------------------------------------------------------------------------------------------
  */
 
 public class Player {

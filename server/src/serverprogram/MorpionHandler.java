@@ -1,7 +1,12 @@
 package serverprogram;
 
-/**
- * Created by jonathan.guerne on 21.06.2017.
+/* ---------------------------------------------------------------------------------------------
+ * Projet        : HES d'été - Minis Games
+ * Auteurs       : Marc Friedli, Anthony gilloz, Jonathan guerne
+ * Date          : Juillet 2017
+ * ---------------------------------------------------------------------------------------------
+ * MoprionHandler.java   :  will handle the logic for the morpion game
+ * ---------------------------------------------------------------------------------------------
  */
 
 public class MorpionHandler {
@@ -12,6 +17,7 @@ public class MorpionHandler {
 
     }
 
+    //create as a singleton so there is only one morpionhandler
     public static MorpionHandler getInstance() {
         if (instance == null) {
 
@@ -28,6 +34,9 @@ public class MorpionHandler {
      * @return true if the game is over false otherwise
      */
     public boolean isGameOver(char[] gameBoard, GameChar winner) {
+
+        //check all win scenario line, diagonal but also if the array is full. If none of that happend
+        //then return false, Gamechar winner will contain the char of the winner if there is one
 
         for (int i = 0; i <= 6; i += 3) {
             if (gameBoard[i] != '\0' && (gameBoard[i] == gameBoard[i + 1] && gameBoard[i + 1] == gameBoard[i + 2])) {

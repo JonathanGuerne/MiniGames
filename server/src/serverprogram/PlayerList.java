@@ -1,9 +1,14 @@
 package serverprogram;
 
 import java.util.ArrayList;
-
-/**
- * Created by jonathan.guerne on 11.07.2017.
+/* ---------------------------------------------------------------------------------------------
+ * Projet        : HES d'été - Minis Games
+ * Auteurs       : Marc Friedli, Anthony gilloz, Jonathan guerne
+ * Date          : Juillet 2017
+ * ---------------------------------------------------------------------------------------------
+ * PlayerList.java   :  list of Player object add more functionality than a basic list such as
+  *                     search element by id (not index)
+ * ---------------------------------------------------------------------------------------------
  */
 
 public class PlayerList {

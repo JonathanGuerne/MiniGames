@@ -23,35 +23,47 @@ import packets.morpion.MorpionStartConfirmPacket;
 import packets.morpion.MorpionStartPacket;
 import packets.Packet;
 
-/**
- * @author Jonathan Guerne
+/* ---------------------------------------------------------------------------------------------
+ * Projet        : HES d'été - Minis Games
+ * Auteurs       : Marc Friedli, Anthony gilloz, Jonathan guerne
+ * Date          : Juillet 2017
+ * ---------------------------------------------------------------------------------------------
+ * Main.java   :    main class of the server use to launch it
+ * ---------------------------------------------------------------------------------------------
  */
+
 public class Main {
 
+    //port on wich the server will be host
     static int tcp = 23900, udp = 23901;
 
-    public static HashMap<Integer, Connection> clients = new HashMap<Integer, Connection>();
-    
+    //array containing wich player is waiting to play for a specific game
     public static int clientIDWaitingPerGame[] = {-1,-1};
 
+    //index of each game in clientIDWaitingPerGame
     public final static int MORPION_INDEX = 0;
     public final static int BATTLESHIP_INDEX = 1;
 
+    //constants use in the battleship game
     public final static int NB_CASE = 8;
     public final static int NB_SHIP = 3;
 
+    //constants use when the server received a packet to check his validity
     public final static  int MIN_VERSION = 1;
     public final static  int CURRENT_VERSION = 1;
 
-
+    //list of game and player
     static ArrayList<Game> listGames = new ArrayList<>();
     static PlayerList listPlayer = new PlayerList();
 
+
     public static HashMap<Integer, char[]> initializedGame = new HashMap<>();
 
+    //this variable is use to know the index of a game, will be increment each time
     private static int currentGameId = 1;
 
     public static void main(String args[]) throws IOException {
+        //creating a server object and registering needed packets
         Server server = new Server();
 
         server.getKryo().register(Packet.class, 100);
@@ -71,6 +83,7 @@ public class Main {
         server.getKryo().register(BattleShipStartInitGamePacket.class, 2030);
         server.getKryo().register(BattleShipEndGamePacket.class, 2040);
 
+        //starting the server on specific port
         server.start();
 
         server.bind(tcp, udp);
@@ -81,12 +94,15 @@ public class Main {
 
                 if (object instanceof Packet) {
                     Packet p = (Packet) object;
+                    //check the validity of a packet when received
                     if (p.maj >= MIN_VERSION && p.maj <= CURRENT_VERSION) {
                         if (p instanceof MiniGamePacket) {
                             MiniGamePacket miniGamePacket = (MiniGamePacket) p;
                         }
                         if (p instanceof LoginPacket) {
 
+                            //if someone new login in the server add him to the list of player using his
+                            //connection id
                             LoginPacket lp = (LoginPacket) object;
 
                             listPlayer.add(new Player(connection.getID(), lp.namePlayer));
@@ -189,31 +205,45 @@ public class Main {
                         }
                         //BEGIN MORPION
                         if (p instanceof MorpionStartPacket) {
+                            //if the is no one waiting the player, the player will wait
                             if (clientIDWaitingPerGame[MORPION_INDEX] == -1) {
                                 clientIDWaitingPerGame[MORPION_INDEX] = connection.getID();
                             } else {
+                                //if there is already someone waiting to play the game can start
+
+                                //create a packet witch will be send to both player letting them know information about the game
                                 MorpionStartConfirmPacket mscp = new MorpionStartConfirmPacket();
-                                mscp.idPlayer1 = clientIDWaitingPerGame[MORPION_INDEX];
-                                mscp.player1Name = listPlayer.getPlayerById(mscp.idPlayer1).getNamePlayer();
-                                listPlayer.getPlayerById(mscp.idPlayer1).setPlaying(true);
-                                mscp.idPlayer2 = connection.getID();
-                                mscp.player2Name = listPlayer.getPlayerById(mscp.idPlayer2).getNamePlayer();
-                                listPlayer.getPlayerById(mscp.idPlayer2).setPlaying(true);
 
+                                //synchronized the array to avoid concurrent problem
+                                synchronized (clientIDWaitingPerGame)
+                                {
+                                    mscp.idPlayer1 = clientIDWaitingPerGame[MORPION_INDEX];
+                                    mscp.player1Name = listPlayer.getPlayerById(mscp.idPlayer1).getNamePlayer();
+                                    listPlayer.getPlayerById(mscp.idPlayer1).setPlaying(true);
+                                    mscp.idPlayer2 = connection.getID();
+                                    mscp.player2Name = listPlayer.getPlayerById(mscp.idPlayer2).getNamePlayer();
+                                    listPlayer.getPlayerById(mscp.idPlayer2).setPlaying(true);
 
-                                clientIDWaitingPerGame[MORPION_INDEX] = -1;
-                                System.out.println(mscp.idPlayer1 + " and " + mscp.idPlayer2 + " will play");
+                                    //no one is waiting any more
+                                    clientIDWaitingPerGame[MORPION_INDEX] = -1;
+                                    System.out.println(mscp.idPlayer1 + " and " + mscp.idPlayer2 + " will play");
 
+                                }
+
+                                //create a new game and add it to the list
                                 Game morpion = new Game(GameType.MORPION, mscp.idPlayer1, mscp.idPlayer2, currentGameId++);
                                 morpion.setCharPlayer1(mscp.charPlayer1);
                                 morpion.setCharPlayer2(mscp.charPlayer2);
                                 listGames.add(morpion);
 
+                                //update player info about what game they are currently playing
                                 listPlayer.getPlayerById(mscp.idPlayer1).setCurrentGameId(morpion.getId());
                                 listPlayer.getPlayerById(mscp.idPlayer2).setCurrentGameId(morpion.getId());
 
                                 mscp.gameId = morpion.getId();
 
+
+                                //send packet to players
                                 server.sendToTCP(mscp.idPlayer1, mscp);
                                 server.sendToTCP(mscp.idPlayer2, mscp);
                             }
@@ -223,10 +253,14 @@ public class Main {
 
                             GameChar winnerChar = new GameChar();
 
+                            //check if the game is win or not
                             if (MorpionHandler.getInstance().isGameOver(migp.tabGame, winnerChar)) {
+                                //if someone has won the game or if it is a draw
 
+                                //crate a packet telling the player that the game is over
                                 MorpionEndGamePacket megp = new MorpionEndGamePacket();
 
+                                //use the winner char to find the winner id
                                 if (winnerChar.getInfoChar() == selectGameFromId(migp.gameId).getCharPlayer1()) {
                                     //player 1 win
                                     megp.winnerId = selectGameFromId(migp.gameId).getIdPlayer1();
@@ -240,14 +274,17 @@ public class Main {
                                 megp.gameId = migp.gameId;
                                 megp.tabGame = migp.tabGame;
 
+                                //players are no longer playing
                                 listPlayer.getPlayerById(migp.currentPlayerID).setPlaying(false);
                                 listPlayer.getPlayerById(migp.opponentPlayerID).setPlaying(false);
 
+                                //send them the packet
                                 server.sendToTCP(migp.currentPlayerID, megp);
                                 server.sendToTCP(migp.opponentPlayerID, megp);
 
                             } else {
 
+                                //if the game is not win create a new packet and send it to both player
                                 MorpionInGameConfirmPacket migcp = new MorpionInGameConfirmPacket();
                                 migcp.tabGame = migp.tabGame;
                                 migcp.currentPlayerID = migp.opponentPlayerID;
@@ -255,18 +292,21 @@ public class Main {
                                 server.sendToTCP(migp.currentPlayerID, migcp);
                                 server.sendToTCP(migp.opponentPlayerID, migcp);
                             }
-                        }
+                        } //END MORPION
                         if (p instanceof GamePlayerLeavingPacket) {
+                            //if a player is leaving a game using going back to the main menu the server will go here
                             GamePlayerLeavingPacket mpl = (GamePlayerLeavingPacket) p;
 
                             System.out.println("Player leaving");
 
+                            //check if he was waiting to play if it's the case remove him from the array
                             for (int i = 0; i < clientIDWaitingPerGame.length; i++) {
                                 if (clientIDWaitingPerGame[i] == mpl.playerid) {
                                     clientIDWaitingPerGame[i] = -1;
                                 }
                             }
 
+                            //remove the player entry in the game board hashmap use by the battleship game
                             if(listPlayer.exist(connection.getID()) && initializedGame.containsKey(connection.getID())){
 
                                 int player1 = connection.getID();
@@ -285,32 +325,40 @@ public class Main {
 
                             }
 
+                            //if the player was in a game
                             if (listPlayer.getPlayerById(mpl.playerid).isPlaying()) {
+                                //found the player's game
                                 Game game = selectGameFromId(listPlayer.getPlayerById(mpl.playerid).getCurrentGameId());
+                                //found his opponent and send him the playerleaving packet
                                 if (game.getIdPlayer1() != mpl.playerid) {
                                     server.sendToTCP(game.getIdPlayer1(), mpl);
                                 } else {
                                     server.sendToTCP(game.getIdPlayer2(), mpl);
                                 }
 
+                                //both player are no longer playing
                                 listPlayer.getPlayerById(game.getIdPlayer1()).setPlaying(false);
                                 listPlayer.getPlayerById(game.getIdPlayer2()).setPlaying(false);
                             }
 
                         }
-                        //END MORPION
+
                     }
                 }
             }
 
             @Override
             public void disconnected(Connection connection) {
+                //if a client disconnect from the server
+
+                //check if he was waiting for a game, if hw was remove him from the array
                 for(int i=0;i<clientIDWaitingPerGame.length;i++){
                     if(clientIDWaitingPerGame[i] == connection.getID()){
                         clientIDWaitingPerGame[i] = -1;
                     }
                 }
 
+                //remove the player entry in the game board hashmap use by the battleship game
                 if(listPlayer.exist(connection.getID()) && initializedGame.containsKey(connection.getID())){
 
                     int player1 = connection.getID();
@@ -329,6 +377,7 @@ public class Main {
 
                 }
 
+                //check if the player was playing, if he notify his opponent
                 if(listPlayer.exist(connection.getID()) && listPlayer.getPlayerById(connection.getID()).isPlaying()){
                     Game game = selectGameFromId(listPlayer.getPlayerById(connection.getID()).getCurrentGameId());
 
@@ -357,6 +406,11 @@ public class Main {
     }
 
 
+    /**
+     * return a game from the list of game based of his id
+     * @param id id of the game to get
+     * @return game
+     */
     public static Game selectGameFromId(int id){
         for(Game g : listGames){
             if(g.getId() == id){
