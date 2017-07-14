@@ -113,20 +113,26 @@ public class Main {
                         }
                         //BEGIN BATTLE SHIP
                         if (p instanceof BattleShipStartPacket) {
+
                             if (clientIDWaitingPerGame[BATTLESHIP_INDEX] == -1) {
+                                //if there is no one in the waiting array for battleship
                                 clientIDWaitingPerGame[BATTLESHIP_INDEX] = connection.getID();
                             } else {
+                                //if there is an other player who want to play
                                 BattleShipStartConfirmPacket bsscp = new BattleShipStartConfirmPacket();
                                 bsscp.idPlayer1 = clientIDWaitingPerGame[BATTLESHIP_INDEX];
                                 bsscp.idPlayer2 = connection.getID();
                                 clientIDWaitingPerGame[BATTLESHIP_INDEX] = -1;
 
+                                //get players name
                                 bsscp.namePlayer1 = listPlayer.getPlayerById(bsscp.idPlayer1).getNamePlayer();
                                 bsscp.namePlayer2 = listPlayer.getPlayerById(bsscp.idPlayer2).getNamePlayer();
 
+                                //players are playing
                                 listPlayer.getPlayerById(bsscp.idPlayer1).setPlaying(true);
                                 listPlayer.getPlayerById(bsscp.idPlayer2).setPlaying(true);
 
+                                //Create a new game and add it to the list
                                 Game battleShip = new Game(GameType.BATTLESHIP, bsscp.idPlayer1, bsscp.idPlayer2, currentGameId++);
                                 battleShip.setCharPlayer1(bsscp.charPlayer1);
                                 battleShip.setCharPlayer2(bsscp.charPlayer1);
@@ -140,13 +146,15 @@ public class Main {
                                 server.sendToTCP(bsscp.idPlayer2, bsscp);
                             }
                         } else if (p instanceof BattleShipStartInitGamePacket) {
+                            //after the initialization part
                             BattleShipStartInitGamePacket bssigp = (BattleShipStartInitGamePacket) p;
                             if (initializedGame.containsKey(bssigp.idOpponent)) {
-                                System.out.println("j'ai copain");
+                                //if the player got an oppenent
                                 int idPlayer = bssigp.idPlayer;
                                 int idOpponent = bssigp.idOpponent;
                                 char[] tabPlayer = bssigp.tabGame;
                                 char[] tabOpponent = initializedGame.get(bssigp.idOpponent);
+                                //check who will play first based on the id off
                                 if (bssigp.idPlayer > bssigp.idOpponent) {
                                     idPlayer = bssigp.idOpponent;
                                     idOpponent = bssigp.idPlayer;
@@ -154,6 +162,7 @@ public class Main {
                                     tabOpponent = bssigp.tabGame;
                                 }
 
+                                //send infos to plyers
                                 BattleShipInGamePacket bscig = new BattleShipInGamePacket();
                                 bscig.currentPlayerId = idPlayer;
                                 bscig.opponentPlayerId = idOpponent;
